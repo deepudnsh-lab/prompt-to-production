@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 11: Before & After · NeuralDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF;--surface:#F7F7F9;--border:#E8ECF0;
+  --red:#E8000D;--red-tint:#FFF0F0;--red-soft:#FFD6D8;
+  --slate:#64748B;--navy:#0F172A;
+  --ink:#0A0A0F;--ink-mid:#3D3D4A;--ink-muted:#7A7A8C;--ink-faint:#B8B8C8;
+  --rule:#EFEFEF;
+  --before-bg:#F5F1EC;--before-border:#C4B49A;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--surface);font-family:'Space Grotesk',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+.cover-band{background:var(--white);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--rule);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--red);opacity:.5;}
+.cover-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;line-height:.95;color:var(--ink);letter-spacing:-.03em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:var(--red);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--rule);margin:0 -80px;}
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;line-height:1.1;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--red);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:28px 0;}
+.sum-card{background:var(--surface);border:1px solid var(--rule);padding:22px 18px;position:relative;overflow:hidden;}
+.sum-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);}
+.sum-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.2rem;color:var(--red);line-height:1;margin-bottom:5px;}
+.sum-label{font-size:11px;color:var(--ink-muted);line-height:1.4;}
+.col-headers{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px;}
+.col-head{padding:11px 20px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;}
+.col-head.b{background:var(--before-bg);color:#6B5840;border-left:3px solid var(--before-border);}
+.col-head.a{background:var(--red-tint);color:var(--red);border-left:3px solid var(--red);}
+.ba-row{margin-bottom:2px;}
+.ba-label{background:var(--navy);padding:10px 20px;display:flex;align-items:center;gap:12px;}
+.ba-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--red-soft);flex-shrink:0;}
+.ba-title{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.ba-cols{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.ba-cell{padding:18px 20px;}
+.ba-cell.b{background:var(--before-bg);border-left:3px solid var(--before-border);}
+.ba-cell.a{background:var(--red-tint);border-left:3px solid var(--red);}
+.ex{font-family:'IBM Plex Mono',monospace;font-size:10px;line-height:1.7;padding:10px 13px;margin-bottom:10px;}
+.ex.b{background:rgba(196,180,154,.18);color:#4A3820;}
+.ex.a{background:rgba(232,0,13,.06);color:var(--red);}
+.rationale{font-size:12.5px;color:var(--ink-mid);line-height:1.7;}
+.rationale strong{color:var(--ink);}
+.impact-box{background:var(--navy);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;}
+.impact-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.impact-box::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.06) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+.ib-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,0,13,.45);margin-bottom:12px;position:relative;z-index:1;}
+.ib-text{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:var(--white);line-height:1.55;position:relative;z-index:1;}
+.ib-text em{font-style:normal;color:var(--red-soft);}
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .sum-grid{grid-template-columns:1fr 1fr;}
+  .col-headers,.ba-cols{grid-template-columns:1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · NeuralDesk · Brand 04 of 06</div>
+    <h1 class="cover-title">Before<br><em>&amp; After</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 11 — Before &amp; After</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">NeuralDesk</div></div>
+    <div class="meta-block"><div class="meta-label">Decisions compared</div><div class="meta-value">9 design decisions</div></div>
+  </div>
+</div>
+<div class="accent-rule"></div>
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — What this comparison shows</div>
+    <h2 class="section-heading">The category default<br><em>versus NeuralDesk.</em></h2>
+    <p class="body-text">The "before" column is not a bad design. It is the average design — what Tableau, ThoughtSpot, and Looker Studio produce when no deliberate decisions have been made about who the buyer actually is. NeuralDesk is the after: the same category, a completely different set of choices made from the research, the persona, and the gap analysis. Nine decisions are compared. Each one traces directly to a specific finding in Steps 4–6. None were made by taste.</p>
+    <div class="sum-grid">
+      <div class="sum-card"><div class="sum-num">9</div><div class="sum-label">Design decisions compared against the category average</div></div>
+      <div class="sum-card"><div class="sum-num">5</div><div class="sum-label">Universal gaps from the competitor audit that NeuralDesk closes</div></div>
+      <div class="sum-card"><div class="sum-num">0</div><div class="sum-label">Decisions made by taste alone — every choice has a research source</div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — Nine decisions · category average vs NeuralDesk</div>
+    <h2 class="section-heading">What changed.<br><em>Why</em> it changed.</h2>
+
+    <div class="col-headers">
+      <div class="col-head b">Before · Category average · Tableau · ThoughtSpot · Looker Studio</div>
+      <div class="col-head a">After · NeuralDesk · Direction C · Arctic / Clarity</div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">01</div><div class="ba-title">Hero headline · the first words Marcus reads</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">"See and understand your data." — Tableau
+"Data to Decisions, Powered by Agents" — ThoughtSpot
+"Visualize your data for free" — Looker Studio</div>
+          <div class="rationale">Category headlines describe the product or its mechanism. None describe what Marcus actually feels when he has been waiting three days for a report. The buyer's pain is invisible in every competitor headline. "Powered by AI" communicates nothing in 2026 — it is the most overused claim in SaaS.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">One question.
+One answer. Now.</div>
+          <div class="rationale">Nine words. Three sentences. No jargon. <strong>"Now"</strong> answers Marcus's primary anxiety before he has to ask. Direction C's Space Grotesk 300 at 4rem requires copy this short to breathe. It arrived in the first draft and was not changed. The word describes the experience, not the product.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">02</div><div class="ba-title">Hero layout · alignment and first-viewport structure</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">Split layout — copy left, screenshot right.
+Left-aligned headline. Dark background.
+Static UI image. Single CTA.</div>
+          <div class="rationale">The left-aligned split is the default SaaS hero. NeuralDesk's first build used exactly this and read as generic B2B. Direction C's minimal authority register requires full-width centred content — left-aligned split is editorial, not minimal. The first build was entirely rebuilt after this was identified.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">Centre-aligned headline, rule, sub-copy, CTAs.
+Four live product UI screens — tab-switched below.
+White dominant. Red only on CTAs and data.</div>
+          <div class="rationale"><strong>Centred copy reads as a statement. Left-aligned reads as a document.</strong> NeuralDesk makes a statement — then proves it with four functioning dashboard screens. The white dominant background shows the product clearly without theatrical dark-mode lighting. The product UI below the copy is more credible than any static screenshot.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">03</div><div class="ba-title">Product demonstration · what the hero shows Marcus</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">Static product screenshot — frozen UI image.
+No interaction. No query context.
+"See it in action" → demo request gate.</div>
+          <div class="rationale">A static screenshot shows what the interface looks like, not how it works. Marcus cannot tell what question was asked, what the answer was, or whether it works for his data. "See it in action" leading to a demo form is the interaction pattern that loses Marcus before he reads a single feature.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">Four live CSS dashboard screens — tab-switched.
+Overview · Funnels · Channels · Retention.
+Animated typewriter cycling real PM questions.</div>
+          <div class="rationale"><strong>Marcus can click each tab and see exactly which questions NeuralDesk answers.</strong> The typewriter cycles through questions he actually asks. The UI is built in CSS — loads instantly, no images, works offline. It demonstrates the product rather than illustrating it. No demo gate. No form. No calendar invite.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">04</div><div class="ba-title">Pricing visibility · the decision Marcus makes in one session</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">Tableau: no pricing on homepage.
+ThoughtSpot: "Contact sales for pricing."
+Looker Studio: free only — no paid tiers shown.</div>
+          <div class="rationale">Step 4 confirmed that every premium AI analytics competitor hides pricing behind a demo gate. "Contact sales" is an immediate exit for Marcus — it signals the product is priced above his solo approval limit and requires a calendar invite he doesn't have time for.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">Free ($0) · Pro ($29/mo) · Team ($79/mo).
+Visible on homepage. No gate. No call.
+"Generate a one-pager for your manager →"</div>
+          <div class="rationale"><strong>Visible pricing is a trust signal.</strong> Pro at $29/month is within Marcus's solo approval limit. The "justify to your manager" one-pager link is the most consequential line on the pricing section — it generates the ammunition Marcus needs for the Slack message to his manager that converts solo adoption to team adoption.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">05</div><div class="ba-title">CTA language · the words on the primary button</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">"Get a Demo"
+"Start Free Trial" (requires credit card)
+"Contact Sales"</div>
+          <div class="rationale">"Get a Demo" requires a 30-minute call Marcus doesn't have. Free trial with credit card adds friction before Marcus has seen a result. "Contact Sales" is the hardest gate. Every competitor CTA places a barrier between Marcus and the product at exactly the moment he is most likely to convert.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">"Start free — no card needed"  ← primary
+"→ See how it works"           ← secondary</div>
+          <div class="rationale"><strong>Two CTAs at hero level — not one.</strong> The primary removes every barrier for the ready buyer. The secondary retains the buyer who needs one more piece of evidence — keeping him on the page rather than tabbing to a competitor. The final CTA section has one button only: if Marcus has scrolled seven sections, he is ready. A second CTA there introduces doubt.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">06</div><div class="ba-title">Social proof · how trust is built on the page</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">"Trusted by 500+ companies" (unverifiable)
+Generic star ratings — no named outcomes.
+"Great tool! Highly recommend." — no company.</div>
+          <div class="rationale">Marcus (Step 5, Behaviour B06) is deeply skeptical of AI claims. Generic social proof has negative credibility — it signals real outcomes are unavailable. "500+ companies" is unverifiable. A five-star rating with no attribution cannot be evaluated. He tabs to the next competitor.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">Metrics first: 3 hrs saved · 60s to insight · 98.4% accuracy.
+"We went from a 4-day turnaround to before my next standup."
+— Sarah K. · Senior PM · Stripe · since Jan 2026</div>
+          <div class="rationale"><strong>Three specific metrics land before any testimonial</strong> — doing the credibility work first. By the time Marcus reads Sarah's quote, he has already accepted the three-hour saving as real. Every testimonial has: a full name, a job title, a recognisable company, and a specific measurable outcome. Nothing generic. Nothing that cannot be verified.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">07</div><div class="ba-title">Copy register · technical vs outcome-led language</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">"Connect your data warehouse."
+"Query with natural language."
+"Build BI pipelines." "Powered by AI."</div>
+          <div class="rationale">Step 4 found that all five competitors use data engineering terminology in their hero sections. "Connect your data warehouse" assumes Marcus has one — he has a Google Sheet. "Powered by AI" in 2026 communicates nothing. Marcus has been burned by this language before (Step 5, Behaviour B06) and closes the tab before reading further.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">"Ask NeuralDesk anything about your data."
+"No analyst needed. No data warehouse required."
+"Your spreadsheet. A question. 60 seconds."</div>
+          <div class="rationale"><strong>Written in exclusions as much as inclusions.</strong> "No SQL. No API keys. No setup call." removes the specific objections Marcus has from every previous tool. "Your spreadsheet" is the precise word that signals NeuralDesk understands its buyer — not "your data sources." His spreadsheet. The product is described in the register of the result, not the technology.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">08</div><div class="ba-title">Visual direction · colour theme and palette choice</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">Dark mode. Deep navy or near-black background.
+Cyan, purple, or blue accent.
+High information density. Small type.</div>
+          <div class="rationale">Step 6 confirmed: every premium AI analytics competitor — Tableau, ThoughtSpot, Power BI, and the broader AI SaaS category — defaults to dark mode. Dark mode is so dominant it is now the convention, not the differentiator. Any dark-mode AI analytics product looks like every other dark-mode AI analytics product.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">White dominant (#FFFFFF). Maximum breathing room.
+Pure red #E8000D as the only accent colour.
+Space Grotesk 300 wide-tracked · IBM Plex Mono labels.</div>
+          <div class="rationale"><strong>White dominant is the most visually distinctive choice in this category precisely because nobody else does it.</strong> Notion, Airtable, Loom — tools Marcus already trusts — are all light mode. NeuralDesk reads as "software I can use immediately" rather than "software that requires expertise." The pure red accent earns full visual weight because it appears so rarely.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-row">
+      <div class="ba-label"><div class="ba-num">09</div><div class="ba-title">Information architecture · the sequence of sections</div></div>
+      <div class="ba-cols">
+        <div class="ba-cell b">
+          <div class="ex b">Hero → Features → Integrations
+→ Testimonials → Pricing (sometimes hidden)
+→ "Get started" CTA</div>
+          <div class="rationale">The category default IA is features-first, built for a buyer who needs to understand the product before they decide if they want it. Marcus is not that buyer — he decides in one session. A features-first structure wastes his 20 minutes before he reaches the information that actually matters: can I trust it, can I afford it, how do I start.</div>
+        </div>
+        <div class="ba-cell a">
+          <div class="ex a">Hero → Trust strip → How it works
+→ Product demo → Social proof
+→ Pricing → Final CTA</div>
+          <div class="rationale"><strong>Each section answers the specific question Marcus has at that moment in the scroll.</strong> Trust strip immediately after hero because his first question is "is this legitimate?" Pricing in section six — he must see the product before he reads the price. Final CTA has one button only — no credit card, no demo, just start. The IA is Marcus's evaluation session, not the product's feature list.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — The cumulative effect</div>
+    <h2 class="section-heading">The category plays it safe.<br><em>NeuralDesk</em> makes a choice.</h2>
+    <div class="impact-box">
+      <div class="ib-label">What nine research-led decisions add up to</div>
+      <div class="ib-text">Every competitor made the same choices: dark mode, demo gate, feature-led copy, hidden pricing, generic social proof. Those choices are not wrong — they are the accumulated wisdom of a category built for enterprise sales. <em>NeuralDesk rejects all of them</em> because the research identified a buyer who is not the enterprise buyer: a PM who makes a solo decision, in one session, with a company card, before his next standup. The before column is what the category built for a procurement process. The after is what research produces when you start from the actual buyer.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 11 — BEFORE &amp; AFTER · NEURALDESK</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+</div>
+</div>
+</body>
+</html>

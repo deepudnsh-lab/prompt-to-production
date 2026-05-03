@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 08: Copywriting · Ember & Oak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+    --live-bg: #0E0A06;
+    --live-cream: #F5EDD8;
+    --live-ember: #C85A2A;
+    --live-gold: #C9A84C;
+    --live-muted: rgba(245,237,216,0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--paper); font-family: 'DM Sans', sans-serif; color: var(--ink); font-size: 15px; line-height: 1.7; }
+  .document { max-width: 960px; margin: 0 auto; padding: 80px; background: #fff; }
+
+  /* COVER */
+  .cover-band { background: var(--ink); margin: -80px -80px 0; padding: 56px 80px 48px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; }
+  .project-series { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent-light); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .project-series::before { content: ''; display: inline-block; width: 28px; height: 1px; background: var(--accent); }
+  .cover-title { font-family: 'DM Serif Display', serif; font-size: 44px; line-height: 1.05; color: #fff; letter-spacing: -0.02em; }
+  .cover-title em { font-style: italic; color: var(--accent-light); }
+  .cover-meta { text-align: right; }
+  .meta-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
+  .meta-value { font-size: 13px; color: #fff; font-weight: 300; }
+  .meta-block { margin-bottom: 20px; }
+  .meta-block:last-child { margin-bottom: 0; }
+  .accent-rule { height: 3px; background: linear-gradient(to right, var(--accent), var(--accent-light), transparent); margin: 0 -80px; }
+  .doc-body { padding-top: 64px; }
+  .section { margin-bottom: 56px; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+  .section-heading { font-family: 'DM Serif Display', serif; font-size: 32px; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 20px; }
+  .section-heading em { font-style: italic; color: var(--accent); }
+  .body-text { font-size: 15px; line-height: 1.8; color: var(--ink-mid); margin-bottom: 16px; }
+  .page-rule { height: 1px; background: var(--rule); margin: 56px -80px; }
+  .note-box { background: var(--tag-bg); border-left: 3px solid var(--accent); padding: 18px 22px; margin: 24px 0; }
+  .note-box p { font-size: 13px; color: var(--ink-mid); line-height: 1.7; }
+  .note-box strong { color: var(--ink); }
+
+  /* ── VOICE PRINCIPLES ── */
+  .voice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 24px 0; }
+  .voice-card { background: var(--tag-bg); padding: 20px; }
+  .voice-card-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .voice-card-rule { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+  .voice-card-example { font-size: 12px; color: var(--ink-muted); line-height: 1.6; }
+  .voice-yes { color: #1A6B3A; }
+  .voice-no  { color: #A02020; }
+
+  /* ── COPY SECTION BLOCK ── */
+  .copy-block { border: 1px solid var(--rule); margin-bottom: 2px; overflow: hidden; }
+
+  .copy-block-header {
+    background: var(--ink);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .copy-block-section {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+  }
+
+  .copy-block-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.08em;
+  }
+
+  /* Live preview panel — shows copy as it will appear in the design */
+  .copy-live {
+    background: var(--live-bg);
+    padding: 36px 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* Annotation panel — explains the copy decisions */
+  .copy-annotation {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .ann-col {
+    padding: 18px 20px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .ann-col:last-child { border-right: none; }
+
+  .ann-col-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+
+  .ann-col-text { font-size: 12px; color: var(--ink-mid); line-height: 1.65; }
+  .ann-col-text strong { color: var(--ink); font-weight: 500; }
+
+  /* ── LIVE COPY STYLES (Direction A — Noir) ── */
+  .live-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(200,90,42,0.7);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .live-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--live-ember); }
+
+  .live-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    color: var(--live-cream);
+    letter-spacing: -0.02em;
+    line-height: 1.0;
+    margin-bottom: 16px;
+  }
+
+  .live-headline em { font-style: italic; color: rgba(200,90,42,0.85); }
+
+  .live-body {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: rgba(245,237,216,0.55);
+    line-height: 1.75;
+    margin-bottom: 16px;
+    max-width: 520px;
+  }
+
+  .live-strip {
+    display: flex;
+    gap: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(245,237,216,0.08);
+    flex-wrap: wrap;
+  }
+
+  .live-strip-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,237,216,0.22);
+  }
+
+  .live-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: var(--live-ember);
+    color: var(--live-bg);
+    font-weight: 500;
+    margin-top: 16px;
+  }
+
+  .live-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 9px 20px;
+    border: 1px solid rgba(200,90,42,0.4);
+    color: rgba(200,90,42,0.7);
+    margin-top: 16px;
+    margin-left: 8px;
+  }
+
+  .live-rule { width: 36px; height: 1px; background: var(--live-ember); margin-bottom: 14px; }
+
+  .live-section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(200,90,42,0.6);
+    margin-bottom: 10px;
+  }
+
+  .live-menu-item {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(245,237,216,0.07);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .live-menu-item:last-child { border-bottom: none; }
+
+  .live-menu-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--live-cream);
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+
+  .live-menu-desc {
+    font-size: 11px;
+    color: rgba(245,237,216,0.4);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .live-menu-wood {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(200,90,42,0.55);
+    white-space: nowrap;
+  }
+
+  .live-scarcity {
+    background: rgba(200,90,42,0.08);
+    border: 1px solid rgba(200,90,42,0.2);
+    padding: 14px 18px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .live-scarcity-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--live-ember);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .live-scarcity-text {
+    font-size: 12px;
+    color: rgba(245,237,216,0.55);
+    line-height: 1.55;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+  }
+
+  .live-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(245,237,216,0.06);
+  }
+
+  .live-nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    letter-spacing: 0.16em;
+    color: rgba(245,237,216,0.85);
+    text-transform: uppercase;
+  }
+
+  .live-nav-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .live-nav-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,237,216,0.3);
+  }
+
+  .live-nav-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: var(--live-ember);
+    color: var(--live-bg);
+    padding: 6px 14px;
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; }
+  .footer-left { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); letter-spacing: 0.1em; }
+  .footer-right { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-faint); letter-spacing: 0.1em; text-align: right; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .document { padding: 24px 20px; }
+    .cover-band { margin: -24px -20px 0; padding: 40px 24px 32px; grid-template-columns: 1fr; gap: 20px; }
+    .cover-title { font-size: 30px; }
+    .cover-meta { text-align: left; }
+    .accent-rule { margin: 0 -20px; }
+    .page-rule { margin: 40px -20px; }
+    .section-heading { font-size: 24px; }
+    .voice-grid { grid-template-columns: 1fr; }
+    .copy-live { padding: 24px 20px; }
+    .copy-annotation { grid-template-columns: 1fr; }
+    .ann-col { border-right: none; border-bottom: 1px solid var(--rule); }
+    .ann-col:last-child { border-bottom: none; }
+    .live-nav-links { display: none; }
+    .live-headline { font-size: 28px !important; }
+    .live-strip { gap: 12px; }
+    .live-menu-item { grid-template-columns: 1fr; gap: 4px; }
+    .live-scarcity { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .doc-footer { flex-direction: column; gap: 10px; align-items: flex-start; }
+    .footer-right { text-align: left; }
+    .copy-block-header { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Ember &amp; Oak · Brand 01 of 06</div>
+      <h1 class="cover-title">Content &amp;<br><em>Copywriting</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+      <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 08 — Copy</div></div>
+      <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Ember &amp; Oak</div></div>
+      <div class="meta-block"><div class="meta-label">Voice</div><div class="meta-value">Direction A · Noir</div></div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1: WHY COPY FIRST -->
+    <div class="section">
+      <div class="section-label">01 — Why copy comes before layout</div>
+      <h2 class="section-heading">Words decide<br>the <em>design.</em></h2>
+
+      <p class="body-text">Most designers reach for layout before they have the words. The result is placeholder copy that shapes the layout, and then real copy that never quite fits. In this project, copy comes first — every headline, every menu description, every CTA, every scarcity signal is written before a single layout decision is made. The layout in Step 9 will be built around these exact words.</p>
+
+      <p class="body-text">Each section of copy below is shown in two ways: a live dark-mode preview in the Noir direction's actual typefaces and colours, and a written annotation explaining what the copy is doing and why every word was chosen. Nothing is accidental. Rohit — the persona — is the filter for every decision.</p>
+
+      <div class="note-box">
+        <p><strong>The copy rules for Ember &amp; Oak:</strong> Specific over superlative. Sensory over declarative. Short over long. Every claim must be provable or observable. The word "best" never appears. The words "hickory," "apple," "cedar," and "camphor" appear often. The scarcity signal ("28 guests each evening") appears at least twice. The CTA is always "Reserve a Table" — never "Book Now."</p>
+      </div>
+    </div>
+
+    <!-- SECTION 2: VOICE PRINCIPLES -->
+    <div class="section">
+      <div class="section-label">02 — Voice principles</div>
+      <h2 class="section-heading">How Ember &amp; Oak<br><em>speaks.</em></h2>
+
+      <div class="voice-grid">
+        <div class="voice-card">
+          <div class="voice-card-label">Principle 01</div>
+          <div class="voice-card-rule">Specific, not superlative</div>
+          <div class="voice-card-example">
+            <span class="voice-no">✗ "The finest wood-fire dining in Bangalore"</span><br><br>
+            <span class="voice-yes">✓ "Hickory for the lamb. Apple for the sea bass. Cedar for the mushrooms."</span>
+          </div>
+        </div>
+        <div class="voice-card">
+          <div class="voice-card-label">Principle 02</div>
+          <div class="voice-card-rule">Sensory, not descriptive</div>
+          <div class="voice-card-example">
+            <span class="voice-no">✗ "A unique dining experience featuring premium ingredients"</span><br><br>
+            <span class="voice-yes">✓ "The smoke arrives before the plate. That is intentional."</span>
+          </div>
+        </div>
+        <div class="voice-card">
+          <div class="voice-card-label">Principle 03</div>
+          <div class="voice-card-rule">Unhurried, not urgent</div>
+          <div class="voice-card-example">
+            <span class="voice-no">✗ "Book your table today! Limited slots available!"</span><br><br>
+            <span class="voice-yes">✓ "Twenty-eight seats. One sitting each evening. The fire is lit at four."</span>
+          </div>
+        </div>
+        <div class="voice-card">
+          <div class="voice-card-label">Principle 04</div>
+          <div class="voice-card-rule">Short sentences. Full stops.</div>
+          <div class="voice-card-example">
+            <span class="voice-no">✗ "At Ember &amp; Oak, we believe that the finest dining experiences are those that honour both the ingredient and the flame that transforms it."</span><br><br>
+            <span class="voice-yes">✓ "The ingredient. The flame. The time between."</span>
+          </div>
+        </div>
+        <div class="voice-card">
+          <div class="voice-card-label">Principle 05</div>
+          <div class="voice-card-rule">Confident, not apologetic</div>
+          <div class="voice-card-example">
+            <span class="voice-no">✗ "We hope you'll enjoy our carefully crafted seasonal menu"</span><br><br>
+            <span class="voice-yes">✓ "The menu changes when the season does. Not before."</span>
+          </div>
+        </div>
+        <div class="voice-card">
+          <div class="voice-card-label">Principle 06</div>
+          <div class="voice-card-rule">The wood is always named</div>
+          <div class="voice-card-example">
+            <span class="voice-no">✗ "Slow-cooked over open flame with premium wood"</span><br><br>
+            <span class="voice-yes">✓ "Slow-cooked over hickory for six hours. No glaze. No shortcut."</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: THE COPY — SECTION BY SECTION -->
+    <div class="section">
+      <div class="section-label">03 — The copy · section by section</div>
+      <h2 class="section-heading">Every word.<br><em>In order.</em></h2>
+
+      <!-- ── NAVIGATION ── -->
+      <div class="copy-block">
+        <div class="copy-block-header">
+          <span class="copy-block-section">Section 01 · Navigation</span>
+          <span class="copy-block-note">Persistent across all viewports · Fixed top bar</span>
+        </div>
+        <div class="copy-live">
+          <div class="live-nav">
+            <div class="live-nav-logo">Ember &amp; Oak</div>
+            <div class="live-nav-links">
+              <span class="live-nav-link">The fire</span>
+              <span class="live-nav-link">The menu</span>
+              <span class="live-nav-link">The experience</span>
+            </div>
+            <div class="live-nav-cta">Reserve a Table</div>
+          </div>
+        </div>
+        <div class="copy-annotation">
+          <div class="ann-col">
+            <div class="ann-col-label">Copy decisions</div>
+            <div class="ann-col-text">Navigation labels are "The fire / The menu / The experience" rather than generic "About / Menu / Book." The definite article "The" signals that these are not categories but things that exist with intention — Ember &amp; Oak's fire, menu, and experience, not any fire or menu. The CTA is "Reserve a Table" — not "Book Now" or "Book a Table." "Reserve" is quieter and more considered. It implies the table is already set.</div>
+          </div>
+          <div class="ann-col">
+            <div class="ann-col-label">What Rohit reads from this</div>
+            <div class="ann-col-text">The navigation structure tells him immediately that this restaurant has a point of view — it organises itself around what it does (fire, menu, experience) rather than what it is. "Reserve a Table" rather than "Book Now" signals unhurried confidence rather than e-commerce urgency. Both signals contribute to the 5-second trust test.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HERO ── -->
+      <div class="copy-block" style="margin-top:2px;">
+        <div class="copy-block-header">
+          <span class="copy-block-section">Section 02 · Hero</span>
+          <span class="copy-block-note">First viewport · Above the fold · Maximum visual weight</span>
+        </div>
+        <div class="copy-live">
+          <div class="live-eyebrow">Bangalore · Est. 2026 · 28 guests each evening</div>
+          <div class="live-headline" style="font-size:52px;">Where fire<br>meets <em>flavour.</em></div>
+          <div class="live-body">Wood-fired. Seasonal. Unhurried.<br>The fire is lit at four. Dinner begins at seven.</div>
+          <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;">
+            <div class="live-cta">Reserve a Table →</div>
+            <div class="live-cta-ghost">View the menu</div>
+          </div>
+          <div class="live-strip">
+            <span class="live-strip-item">Hickory for the lamb</span>
+            <span class="live-strip-item">Apple for the sea bass</span>
+            <span class="live-strip-item">Cedar for the mushrooms</span>
+            <span class="live-strip-item">Camphor for the dessert</span>
+          </div>
+        </div>
+        <div class="copy-annotation">
+          <div class="ann-col">
+            <div class="ann-col-label">Copy decisions</div>
+            <div class="ann-col-text"><strong>Eyebrow:</strong> "28 guests each evening" appears here at the first viewport — not buried below. This is the scarcity signal. It does not feel like a marketing tactic because it is presented as factual information, not urgency. <strong>Headline:</strong> "Where fire meets flavour" is the tagline as a statement. The em dash and italic on "flavour" creates rhythm and draws the eye. <strong>Sub-copy:</strong> Three words then a sentence. "Wood-fired. Seasonal. Unhurried." — the full stops make each word carry its own weight. The fire timing ("lit at four, dinner at seven") is specific and visual. <strong>Strip:</strong> The wood types at the bottom are the most distinctive copy on the page — no competitor does this. They are labels, not sentences, and they are always specific.</div>
+          </div>
+          <div class="ann-col">
+            <div class="ann-col-label">What Rohit reads from this</div>
+            <div class="ann-col-text">Within the first 5 seconds Rohit knows: it's in Bangalore, it opened in 2026, only 28 people eat here per sitting, it's wood-fired, and the specific wood varies by protein. This is more information than most fine dining sites give him in the entire homepage — and none of it is a superlative. His product-trained brain responds to specificity. He trusts this immediately because it is showing, not telling.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PHILOSOPHY ── -->
+      <div class="copy-block" style="margin-top:2px;">
+        <div class="copy-block-header">
+          <span class="copy-block-section">Section 03 · The fire — philosophy</span>
+          <span class="copy-block-note">Second section · Narrative · No CTA</span>
+        </div>
+        <div class="copy-live">
+          <div class="live-section-label">The fire</div>
+          <div class="live-rule"></div>
+          <div class="live-headline" style="font-size:36px;">Not every flame<br>cooks the same <em>way.</em></div>
+          <div class="live-body" style="margin-top:16px;">
+            Hickory burns slow and dense — it is for proteins that need time. Apple burns clean and sweet — it is for delicate fish that must not be overwhelmed. Cedar carries a resinous depth that belongs only to the mushroom course. Camphor smokes from a distance and never touches the food directly.
+            <br><br>
+            Every wood is chosen before the menu is written. Not after.
+          </div>
+        </div>
+        <div class="copy-annotation">
+          <div class="ann-col">
+            <div class="ann-col-label">Copy decisions</div>
+            <div class="ann-col-text"><strong>Headline:</strong> Starts with "Not" — a confident negation that immediately sets up a distinction. It implies that other restaurants use fire without thinking about it. Ember &amp; Oak does. <strong>Body copy:</strong> Four woods, four sentences, each structured identically (wood — property — application). The parallel structure makes this feel like a list of principles, not marketing copy. The final line — "Every wood is chosen before the menu is written. Not after." — is the most important sentence on the page. It tells Rohit this restaurant thinks backwards from the method, not forward from the ingredient.</div>
+          </div>
+          <div class="ann-col">
+            <div class="ann-col-label">What Rohit reads from this</div>
+            <div class="ann-col-text">This is the section that separates Ember &amp; Oak from every other wood-fire restaurant he has encountered. Naming specific woods and their culinary rationale is the kind of specificity that Rohit — a product person — reads as depth of craft. It tells him the kitchen is led by someone who thinks carefully about process. This earns the premium price point before he has even seen the menu.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MENU ── -->
+      <div class="copy-block" style="margin-top:2px;">
+        <div class="copy-block-header">
+          <span class="copy-block-section">Section 04 · The menu — current season</span>
+          <span class="copy-block-note">Third section · Native HTML · No PDF · Seasonal copy updates</span>
+        </div>
+        <div class="copy-live">
+          <div class="live-section-label">The menu · Spring 2026</div>
+          <div class="live-rule"></div>
+
+          <div class="live-menu-item">
+            <div>
+              <div class="live-menu-name">Amuse Bouche</div>
+              <div class="live-menu-desc">Three bites. Changes nightly. Not on the menu.</div>
+            </div>
+            <div class="live-menu-wood"></div>
+          </div>
+
+          <div class="live-menu-item">
+            <div>
+              <div class="live-menu-name">Smoked Beetroot</div>
+              <div class="live-menu-desc">Cold-smoked for four hours · goat's cheese · compressed apple · walnut soil</div>
+            </div>
+            <div class="live-menu-wood">Apple wood</div>
+          </div>
+
+          <div class="live-menu-item">
+            <div>
+              <div class="live-menu-name">Charcoal Bread</div>
+              <div class="live-menu-desc">Baked in the ember oven · cultured butter · smoked salt</div>
+            </div>
+            <div class="live-menu-wood">Oak ember</div>
+          </div>
+
+          <div class="live-menu-item">
+            <div>
+              <div class="live-menu-name">Nilgiri Sea Bass</div>
+              <div class="live-menu-desc">Plank-roasted · coconut broth · finger lime · herb oil</div>
+            </div>
+            <div class="live-menu-wood">Apple wood</div>
+          </div>
+
+          <div class="live-menu-item">
+            <div>
+              <div class="live-menu-name">Deccan Lamb Rack</div>
+              <div class="live-menu-desc">Slow-cooked six hours · black garlic · seasonal greens · jus</div>
+            </div>
+            <div class="live-menu-wood">Hickory</div>
+          </div>
+
+          <div class="live-menu-item">
+            <div>
+              <div class="live-menu-name">Wild Mushroom</div>
+              <div class="live-menu-desc">Cedar-plank roasted · truffle · aged parmesan · brioche crumb</div>
+            </div>
+            <div class="live-menu-wood">Cedar</div>
+          </div>
+
+          <div class="live-menu-item">
+            <div>
+              <div class="live-menu-name">Camphor Panna Cotta</div>
+              <div class="live-menu-desc">Set overnight · camphor smoke · raw honey · seasonal fruit</div>
+            </div>
+            <div class="live-menu-wood">Camphor smoke</div>
+          </div>
+        </div>
+        <div class="copy-annotation">
+          <div class="ann-col">
+            <div class="ann-col-label">Copy decisions</div>
+            <div class="ann-col-text"><strong>Menu label:</strong> "Spring 2026" — makes the seasonal commitment visible. It tells Rohit this menu will be different when he comes back. <strong>Descriptions:</strong> Short, precise, never more than four ingredients listed. The wood type appears as a right-aligned label for every dish — this is the design detail that makes the philosophy visible in the menu. <strong>Amuse bouche:</strong> "Not on the menu" is the best line in the menu — it signals exclusivity and surprise without claiming anything grand. <strong>Ingredients:</strong> "Nilgiri sea bass" and "Deccan lamb" are Indian sourcing references — they localise the menu without making it feel regional or limiting.</div>
+          </div>
+          <div class="ann-col">
+            <div class="ann-col-label">What Rohit reads from this</div>
+            <div class="ann-col-text">This is the first thing he looks at. The wood type on every dish makes the philosophy section above feel earned rather than promotional — it is literally applied to every item. The descriptions are short enough that he reads all of them in under a minute. "Deccan Lamb Rack · slow-cooked six hours · hickory" tells him more about the kitchen's approach than a paragraph of brand copy ever could. "Not on the menu" for the amuse bouche makes him want to come and find out.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EXPERIENCE / SCARCITY ── -->
+      <div class="copy-block" style="margin-top:2px;">
+        <div class="copy-block-header">
+          <span class="copy-block-section">Section 05 · The experience — scarcity signal</span>
+          <span class="copy-block-note">Fourth section · Converts intent to reservation · Key urgency moment</span>
+        </div>
+        <div class="copy-live">
+          <div class="live-section-label">The experience</div>
+          <div class="live-rule"></div>
+          <div class="live-headline" style="font-size:36px;">Twenty-eight seats.<br>One sitting.<br><em>Every evening.</em></div>
+          <div class="live-body" style="margin-top:16px;">
+            There is no second sitting. No walk-ins. The kitchen does not scale. It simply does the same thing, at the same hour, for the same number of people — and it does it very well.
+          </div>
+          <div class="live-scarcity">
+            <div class="live-scarcity-num">28</div>
+            <div class="live-scarcity-text">guests each evening · one chef's table for six · one private dining room for eight · all other tables for two or four · reservations required</div>
+          </div>
+        </div>
+        <div class="copy-annotation">
+          <div class="ann-col">
+            <div class="ann-col-label">Copy decisions</div>
+            <div class="ann-col-text"><strong>Headline:</strong> Three short lines, each a complete statement. The rhythm is deliberate — each line lands separately, like steps. "Every evening" as the italic close creates finality. <strong>Body:</strong> "There is no second sitting. No walk-ins. The kitchen does not scale." — three negations in a row, each removing an expectation of a lesser restaurant. The final sentence — "it simply does the same thing, at the same hour, for the same number of people — and it does it very well" — is the most confident line in the entire document. The understatement ("very well") is more powerful than any superlative. <strong>Scarcity block:</strong> The number 28 rendered large is the design and the copy simultaneously.</div>
+          </div>
+          <div class="ann-col">
+            <div class="ann-col-label">What Rohit reads from this</div>
+            <div class="ann-col-text">This is the section that converts him from browser to booker. The scarcity is not manufactured — it is presented as fact, as operational reality. "The kitchen does not scale" tells him this is not a business decision but a culinary one. For Rohit, who values craft over convenience, this framing is exactly right. The 28 rendered large is the moment he realises this is genuinely hard to get. He opens the reservation form.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RESERVATION ── -->
+      <div class="copy-block" style="margin-top:2px;">
+        <div class="copy-block-header">
+          <span class="copy-block-section">Section 06 · Reserve a Table</span>
+          <span class="copy-block-note">Fifth section · Conversion · On-page form · No redirect</span>
+        </div>
+        <div class="copy-live">
+          <div class="live-section-label">Reserve a table</div>
+          <div class="live-rule"></div>
+          <div class="live-headline" style="font-size:36px;">Your table.<br><em>When you're ready.</em></div>
+          <div class="live-body" style="margin-top:12px;">
+            Reservations open 30 days in advance. Dietary requirements and special occasions can be noted at the time of booking. The kitchen will be informed.
+          </div>
+          <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+            <div style="background:rgba(245,237,216,0.05);border:1px solid rgba(245,237,216,0.08);padding:12px 14px;">
+              <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(200,90,42,0.5);margin-bottom:6px;">Date</div>
+              <div style="font-size:13px;color:rgba(245,237,216,0.4);font-family:'DM Sans',sans-serif;font-weight:300;">Select a date →</div>
+            </div>
+            <div style="background:rgba(245,237,216,0.05);border:1px solid rgba(245,237,216,0.08);padding:12px 14px;">
+              <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(200,90,42,0.5);margin-bottom:6px;">Guests</div>
+              <div style="font-size:13px;color:rgba(245,237,216,0.4);font-family:'DM Sans',sans-serif;font-weight:300;">2 guests</div>
+            </div>
+            <div style="background:rgba(245,237,216,0.05);border:1px solid rgba(245,237,216,0.08);padding:12px 14px;">
+              <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(200,90,42,0.5);margin-bottom:6px;">Name</div>
+              <div style="font-size:13px;color:rgba(245,237,216,0.2);font-family:'DM Sans',sans-serif;font-weight:300;">Your name</div>
+            </div>
+            <div style="background:rgba(245,237,216,0.05);border:1px solid rgba(245,237,216,0.08);padding:12px 14px;">
+              <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(200,90,42,0.5);margin-bottom:6px;">Contact</div>
+              <div style="font-size:13px;color:rgba(245,237,216,0.2);font-family:'DM Sans',sans-serif;font-weight:300;">Phone or email</div>
+            </div>
+          </div>
+          <div class="live-cta" style="margin-top:12px;width:100%;justify-content:center;">Confirm Reservation →</div>
+          <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,237,216,0.18);text-align:center;">Cancellations accepted up to 48 hours before your reservation</div>
+        </div>
+        <div class="copy-annotation">
+          <div class="ann-col">
+            <div class="ann-col-label">Copy decisions</div>
+            <div class="ann-col-text"><strong>Headline:</strong> "Your table. When you're ready." — the possessive "your" is doing important work here. It pre-assigns the table, making the act of booking feel like claiming something rather than requesting it. "When you're ready" is unhurried — no urgency, no scarcity tactic. <strong>Body:</strong> The "dietary requirements" line is considerate and specific. "The kitchen will be informed" — five words that communicate end-to-end care without promising anything ornate. <strong>Form:</strong> Four fields only. Date, guests, name, contact. Nothing more. <strong>CTA:</strong> "Confirm Reservation" rather than "Book" or "Submit." Confirm implies it was already yours — this finalises it.</div>
+          </div>
+          <div class="ann-col">
+            <div class="ann-col-label">What Rohit reads from this</div>
+            <div class="ann-col-text">The headline lands the scarcity established in Section 05 — the table is already implicitly his, he just needs to confirm it. Four fields is the correct number — he fills it in without friction. "Cancellations accepted up to 48 hours" removes risk from the decision, making it easier to commit. The form CTA "Confirm Reservation" is the final copy moment — it closes the loop between "I want to go" and "I am going."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FOOTER ── -->
+      <div class="copy-block" style="margin-top:2px;">
+        <div class="copy-block-header">
+          <span class="copy-block-section">Section 07 · Footer</span>
+          <span class="copy-block-note">Bottom of page · Functional · Location and contact</span>
+        </div>
+        <div class="copy-live">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:0.1em;color:rgba(245,237,216,0.85);margin-bottom:12px;">Ember &amp; Oak</div>
+              <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:11px;color:rgba(245,237,216,0.3);line-height:1.8;">Wood-fired fine dining<br>Bangalore, India<br>Est. 2026</div>
+            </div>
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,90,42,0.5);margin-bottom:10px;">Visit</div>
+              <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:11px;color:rgba(245,237,216,0.3);line-height:1.8;">12, Lavelle Road<br>Bangalore 560 001<br>Valet available</div>
+            </div>
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,90,42,0.5);margin-bottom:10px;">Hours</div>
+              <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:11px;color:rgba(245,237,216,0.3);line-height:1.8;">Tuesday — Sunday<br>Dinner only · 7 pm<br>Monday closed</div>
+            </div>
+          </div>
+          <div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(245,237,216,0.06);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,237,216,0.15);text-align:center;">
+            The fire is lit at four · Dinner begins at seven · Twenty-eight guests each evening
+          </div>
+        </div>
+        <div class="copy-annotation">
+          <div class="ann-col">
+            <div class="ann-col-label">Copy decisions</div>
+            <div class="ann-col-text">The footer repeats the three most important factual signals from the page — the fire timing, the dinner time, and the cover count — as a closing line. This is the last thing Rohit reads. It reinforces everything. The address is on Lavelle Road — Bangalore's premium dining corridor — which signals neighbourhood quality without stating it. "Dinner only · 7 pm" communicates a single-minded focus. "Monday closed" signals a kitchen that rests, not a business that never stops.</div>
+          </div>
+          <div class="ann-col">
+            <div class="ann-col-label">What Rohit reads from this</div>
+            <div class="ann-col-text">The closing line — "The fire is lit at four · Dinner begins at seven · Twenty-eight guests each evening" — is the brand in three phrases. It is both a statement of operations and a statement of identity. If Rohit reads nothing else on this page, he reads this, and he understands what Ember &amp; Oak is. This is the test for any footer: can it carry the whole brand in one line?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: FULL COPY INVENTORY -->
+    <div class="section">
+      <div class="section-label">04 — Full copy inventory</div>
+      <h2 class="section-heading">Every line.<br><em>Ready to build.</em></h2>
+
+      <p class="body-text">The table below is the complete copy inventory for Step 9 — the layout phase. Every string of text that appears on the landing page is listed here in order, tagged by section and type. This is what gets handed to layout. Nothing is missing.</p>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:16px;">
+          <thead>
+            <tr style="background:var(--ink);">
+              <th style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#fff;padding:10px 14px;text-align:left;white-space:nowrap;">Section</th>
+              <th style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#fff;padding:10px 14px;text-align:left;white-space:nowrap;">Type</th>
+              <th style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:#fff;padding:10px 14px;text-align:left;">Copy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Nav</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Logo</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Ember &amp; Oak</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Nav</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Links</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">The fire · The menu · The experience</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Nav</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">CTA</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Reserve a Table</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Hero</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Eyebrow</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Bangalore · Est. 2026 · 28 guests each evening</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Hero</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Headline</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Where fire meets flavour.</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Hero</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Sub-copy</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Wood-fired. Seasonal. Unhurried. The fire is lit at four. Dinner begins at seven.</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Hero</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">CTA primary</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Reserve a Table →</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Hero</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">CTA secondary</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">View the menu</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Hero</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Strip labels</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Hickory for the lamb · Apple for the sea bass · Cedar for the mushrooms · Camphor for the dessert</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Fire</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Headline</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Not every flame cooks the same way.</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Fire</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Body</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Hickory burns slow and dense — it is for proteins that need time. Apple burns clean and sweet — it is for delicate fish that must not be overwhelmed. Cedar carries a resinous depth that belongs only to the mushroom course. Camphor smokes from a distance and never touches the food directly.</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Fire</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Closing line</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Every wood is chosen before the menu is written. Not after.</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Experience</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Headline</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Twenty-eight seats. One sitting. Every evening.</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Experience</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Body</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">There is no second sitting. No walk-ins. The kitchen does not scale. It simply does the same thing, at the same hour, for the same number of people — and it does it very well.</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Reservation</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Headline</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Your table. When you're ready.</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Reservation</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Body</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Reservations open 30 days in advance. Dietary requirements and special occasions can be noted at the time of booking. The kitchen will be informed.</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Reservation</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">CTA</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Confirm Reservation →</td></tr>
+            <tr><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Reservation</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink-muted);font-size:10px;">Fine print</td><td style="padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--ink);">Cancellations accepted up to 48 hours before your reservation</td></tr>
+            <tr style="background:var(--tag-bg);"><td style="padding:9px 14px;color:var(--ink-muted);font-family:'DM Mono',monospace;font-size:9px;white-space:nowrap;">Footer</td><td style="padding:9px 14px;color:var(--ink-muted);font-size:10px;">Closing line</td><td style="padding:9px 14px;color:var(--ink);">The fire is lit at four · Dinner begins at seven · Twenty-eight guests each evening</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 08 — CONTENT &amp; COPYWRITING · EMBER &amp; OAK</div>
+      <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

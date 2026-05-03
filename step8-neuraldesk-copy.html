@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 8: Copywriting · NeuralDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF;--surface:#F7F7F9;--cool:#F0F4F8;--cool-mid:#E2E8F0;
+  --red:#E8000D;--red-soft:#FFD6D8;--red-tint:#FFF0F0;
+  --slate:#64748B;--navy:#0F172A;
+  --ink:#0A0A0F;--ink-mid:#3D3D4A;--ink-muted:#7A7A8C;--ink-faint:#B8B8C8;
+  --rule:#EFEFEF;
+  --good-bg:#F0FBF4;--good-text:#1B6B3A;
+  --warn-bg:#FFFBF0;--warn-text:#8B5E00;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--surface);font-family:'Space Grotesk',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{background:var(--white);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--rule);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.06) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--red);opacity:.5;}
+.cover-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;line-height:.95;color:var(--ink);letter-spacing:-.03em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:var(--red);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--rule);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;line-height:1.1;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--red);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--red-tint);border-left:3px solid var(--red);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── DIRECTION LOCK ── */
+.direction-lock{background:var(--navy);padding:20px 28px;margin-bottom:32px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;}
+.direction-lock::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.dl-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px;}
+.dl-value{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1rem;color:#fff;}
+.dl-div{width:1px;height:40px;background:rgba(255,255,255,.1);}
+
+/* ── VOICE RULES ── */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:20px 0;}
+.voice-card{background:var(--surface);border:1px solid var(--rule);padding:18px 20px;}
+.vc-rule{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.vc-do{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:4px;}
+.vc-dont{font-size:12px;color:var(--ink-muted);text-decoration:line-through;}
+.vc-note{font-size:11.5px;color:var(--ink-muted);margin-top:6px;line-height:1.5;}
+
+/* ── IA TABLE ── */
+.ia-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.ia-table th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--white);padding:11px 14px;text-align:left;}
+.ia-table td{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink-mid);line-height:1.55;vertical-align:top;}
+.ia-table tr:hover td{background:var(--surface);}
+.ia-table td:first-child{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);font-weight:500;white-space:nowrap;}
+.ia-table td:nth-child(2){color:var(--ink);font-weight:500;}
+
+/* ── COPY SECTION BLOCKS ── */
+.copy-block{border:1px solid var(--rule);overflow:hidden;margin-bottom:3px;}
+.cb-header{background:var(--ink);padding:12px 20px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;}
+.cb-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--red);line-height:1;}
+.cb-title{font-size:13px;font-weight:500;color:#fff;}
+.cb-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;}
+.tag-hero{background:rgba(232,0,13,.2);color:var(--red-soft);border:1px solid rgba(232,0,13,.2);}
+.tag-trust{background:rgba(100,116,139,.2);color:#94A3B8;border:1px solid rgba(100,116,139,.2);}
+.tag-feature{background:rgba(27,107,58,.2);color:#4ADE80;border:1px solid rgba(27,107,58,.2);}
+.tag-social{background:rgba(234,179,8,.15);color:#FCD34D;border:1px solid rgba(234,179,8,.15);}
+.tag-pricing{background:rgba(139,92,246,.2);color:#C4B5FD;border:1px solid rgba(139,92,246,.2);}
+.tag-cta{background:rgba(232,0,13,.25);color:var(--red-soft);border:1px solid rgba(232,0,13,.2);}
+
+/* Copy preview */
+.copy-preview{background:var(--cool);padding:24px 24px;border-bottom:1px solid var(--rule);}
+
+/* Arctic/Clarity style copy preview */
+.cp-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.cp-headline{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:1.6rem;color:var(--ink);letter-spacing:.04em;line-height:1.15;margin-bottom:10px;}
+.cp-headline em{font-style:normal;color:var(--red);font-weight:600;}
+.cp-sub{font-size:13px;color:var(--slate);line-height:1.65;max-width:480px;}
+.cp-cta-row{display:flex;gap:10px;margin-top:16px;align-items:center;}
+.cp-cta-primary{background:var(--red);color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.04em;padding:9px 20px;}
+.cp-cta-secondary{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);letter-spacing:.08em;}
+.cp-rule{height:1px;background:var(--red);width:32px;margin:12px 0;}
+.cp-metric{display:flex;gap:24px;margin-top:14px;}
+.cp-metric-item{text-align:left;}
+.cp-metric-num{font-family:'IBM Plex Mono',monospace;font-size:1.4rem;color:var(--red);font-weight:500;line-height:1;}
+.cp-metric-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-top:3px;}
+.cp-logos{display:flex;gap:12px;align-items:center;margin-top:14px;}
+.cp-logo-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);}
+.cp-logo-pill{background:var(--cool-mid);padding:4px 12px;font-size:11px;color:var(--slate);}
+.cp-feature-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px;}
+.cp-feature{background:var(--white);border:1px solid var(--cool-mid);padding:14px 14px;}
+.cp-feature-icon{font-size:18px;margin-bottom:6px;}
+.cp-feature-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.cp-feature-text{font-size:11px;color:var(--slate);line-height:1.5;}
+.cp-testimonial{background:var(--white);border:1px solid var(--cool-mid);padding:16px 18px;}
+.cp-quote{font-size:13px;color:var(--ink-mid);line-height:1.65;margin-bottom:10px;font-style:italic;}
+.cp-quote-attr{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);}
+.cp-pricing-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.cp-plan{background:var(--white);border:1px solid var(--cool-mid);padding:16px 14px;}
+.cp-plan-featured{background:var(--red);padding:16px 14px;}
+.cp-plan-name{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate);margin-bottom:6px;}
+.cp-plan-name-w{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:6px;}
+.cp-plan-price{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;color:var(--ink);line-height:1;margin-bottom:4px;}
+.cp-plan-price-w{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;color:#fff;line-height:1;margin-bottom:4px;}
+.cp-plan-per{font-size:11px;color:var(--slate);}
+.cp-plan-per-w{font-size:11px;color:rgba(255,255,255,.6);}
+
+/* Annotation columns */
+.cb-cols{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.cb-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.cb-col:last-child{border-right:none;}
+.cb-col-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;display:inline-block;margin-bottom:8px;border-radius:2px;}
+.l-decision{background:var(--good-bg);color:var(--good-text);}
+.l-rationale{background:var(--surface);color:var(--ink-muted);}
+.cb-col-text{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.cb-col-text strong{color:var(--ink);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .voice-grid,.cb-cols,.cp-feature-row,.cp-pricing-row{grid-template-columns:1fr;}
+  .cb-header{grid-template-columns:auto 1fr;}
+  .cb-tag{display:none;}
+  .direction-lock{flex-wrap:wrap;}
+  .dl-div{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · NeuralDesk · Brand 04 of 06</div>
+    <h1 class="cover-title">Content &amp;<br><em>Copywriting</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 08 — Copywriting</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">NeuralDesk</div></div>
+    <div class="meta-block"><div class="meta-label">Direction locked</div><div class="meta-value">C — Arctic / Clarity</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- DIRECTION LOCK -->
+  <div class="direction-lock">
+    <div>
+      <div class="dl-label">Direction locked</div>
+      <div class="dl-value">C — Arctic / Clarity</div>
+    </div>
+    <div class="dl-div"></div>
+    <div>
+      <div class="dl-label">Palette</div>
+      <div class="dl-value">White · Cool Grey · Pure Red #E8000D · Slate #64748B · Navy #0F172A</div>
+    </div>
+    <div class="dl-div"></div>
+    <div>
+      <div class="dl-label">Typography</div>
+      <div class="dl-value">Space Grotesk 300 display · IBM Plex Mono labels</div>
+    </div>
+    <div class="dl-div"></div>
+    <div>
+      <div class="dl-label">Register</div>
+      <div class="dl-value">Ultra-minimal · wide-tracked · Linear / Vercel</div>
+    </div>
+  </div>
+
+  <!-- 01 VOICE RULES -->
+  <div class="section">
+    <div class="section-label">01 — Voice rules</div>
+    <h2 class="section-heading">How NeuralDesk<br><em>speaks.</em></h2>
+
+    <p class="body-text">All copy is written before any layout decision. Direction C's Arctic/Clarity register demands copy that matches the visual discipline — short, specific, zero filler. Six rules govern every word on the page.</p>
+
+    <div class="voice-grid">
+      <div class="voice-card">
+        <div class="vc-rule">Rule 01 · Outcome before product</div>
+        <div class="vc-do">Lead with what Marcus gets, not what NeuralDesk does.</div>
+        <div class="vc-dont">AI-powered analytics platform for data-driven teams.</div>
+        <div class="vc-note">Marcus does not want a platform. He wants the answer to a question. Lead with the answer.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-rule">Rule 02 · Specific over vague</div>
+        <div class="vc-do">60 seconds. 98.4% accuracy. 3 hours saved per week.</div>
+        <div class="vc-dont">Fast insights. Powerful AI. Saves you time.</div>
+        <div class="vc-note">Every claim must be verifiable. If a number cannot be defended, it does not appear.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-rule">Rule 03 · No jargon in the first viewport</div>
+        <div class="vc-do">Ask a question. Get a chart. Share it.</div>
+        <div class="vc-dont">Connect your data warehouse and query with natural language.</div>
+        <div class="vc-note">Marcus has a Google Sheet, not a data warehouse. The hero must speak to him, not past him.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-rule">Rule 04 · Short sentences. Full stops.</div>
+        <div class="vc-do">One question. One answer. Now.</div>
+        <div class="vc-dont">NeuralDesk uses advanced AI to help you understand your data faster than ever before.</div>
+        <div class="vc-note">Direction C's wide-tracked, light-weight type reads best in short, declarative sentences. Long sentences fight the aesthetic.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-rule">Rule 05 · Pricing is honest and visible</div>
+        <div class="vc-do">Free. $29/mo. $79/mo. No hidden fees.</div>
+        <div class="vc-dont">Contact us for pricing. Enterprise plans available.</div>
+        <div class="vc-note">Marcus makes the decision in one session. Hiding the price costs the conversion. Visible pricing is a trust signal.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-rule">Rule 06 · Standalone document</div>
+        <div class="vc-do">This document is complete and self-contained.</div>
+        <div class="vc-dont">Unlike other analytics tools, NeuralDesk…</div>
+        <div class="vc-note">No comparative framing in brand copy. NeuralDesk defines itself on its own terms, not against Tableau or ThoughtSpot.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 INFORMATION ARCHITECTURE -->
+  <div class="section">
+    <div class="section-label">02 — Information architecture</div>
+    <h2 class="section-heading">Seven sections.<br><em>Seven questions Marcus has.</em></h2>
+
+    <p class="body-text">The landing page is structured as Marcus's evaluation session — each section answers the specific question he has at that moment in the scroll. The sequence mirrors his actual decision process from Step 5.</p>
+
+    <table class="ia-table">
+      <thead>
+        <tr><th>Section</th><th>Name</th><th>Marcus's question at this point</th><th>Copy objective</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td>Hero</td><td>What does this do and should I keep reading?</td><td>Land the outcome in 5 seconds. Two CTAs — start free or see how it works.</td></tr>
+        <tr><td>02</td><td>Trust strip</td><td>Is this legitimate? Have real companies used it?</td><td>Named company logos. No generic "500+ teams" — actual recognisable logos.</td></tr>
+        <tr><td>03</td><td>How it works</td><td>What do I actually do? How long does it take?</td><td>Three steps. No jargon. First result in under 60 seconds.</td></tr>
+        <tr><td>04</td><td>The product</td><td>What will the output look like? Is it share-ready?</td><td>Animated UI demonstration. Natural language query → chart. One interaction shown.</td></tr>
+        <tr><td>05</td><td>Social proof</td><td>Has someone like me used this? What did they get?</td><td>Three testimonials. Named PM/analyst, named company, specific metric outcome.</td></tr>
+        <tr><td>06</td><td>Pricing</td><td>Can I afford this? Can I approve this without a meeting?</td><td>Three tiers. Free tier first. Pro within solo approval. Team with "justify to manager" button.</td></tr>
+        <tr><td>07</td><td>Final CTA</td><td>OK — how do I start?</td><td>One action. Low friction. No credit card. Answer the last objection.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 ALL COPY -->
+  <div class="section">
+    <div class="section-label">03 — Complete copy · all seven sections</div>
+    <h2 class="section-heading">Every word.<br><em>Before any layout.</em></h2>
+
+    <!-- SECTION 01 — HERO -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">01</div>
+        <div class="cb-title">Hero — the first thing Marcus reads</div>
+        <span class="cb-tag tag-hero">Hero</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">AI data analysis · Self-serve · No SQL required</div>
+        <div class="cp-headline">One question.<br><em>One answer.</em> Now.</div>
+        <div class="cp-rule"></div>
+        <div class="cp-sub">Ask NeuralDesk anything about your data. Get a chart, a table, or a number — in under 60 seconds. No analyst needed. No data warehouse required. Just your spreadsheet and a question.</div>
+        <div class="cp-cta-row">
+          <div class="cp-cta-primary">Start free — no card needed</div>
+          <div class="cp-cta-secondary">→ See how it works</div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"One question. One answer. Now."</strong> — three sentences, nine words, zero jargon. The light-weight Space Grotesk 300 in Direction C requires copy this short to breathe. "Now" is the most important word — it answers Marcus's primary anxiety (how long will this take?) before he has to ask. The red emphasis on "One answer." is the only colour on the page in the first viewport. It earns its weight.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why this structure</span>
+          <div class="cb-col-text">Two CTAs — not one. <strong>"Start free — no card needed"</strong> removes every barrier for the buyer who is ready. <strong>"See how it works"</strong> captures the buyer who needs one more piece of evidence before committing. Research from Step 5 shows Marcus evaluates with three tabs open — the "see how it works" CTA keeps him on the page rather than tabbing to a competitor to verify the claim.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 02 — TRUST STRIP -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">02</div>
+        <div class="cb-title">Trust strip — logos and one line</div>
+        <span class="cb-tag tag-trust">Trust</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-logos">
+          <div class="cp-logo-label">Used by teams at</div>
+          <div class="cp-logo-pill">Stripe</div>
+          <div class="cp-logo-pill">Figma</div>
+          <div class="cp-logo-pill">Notion</div>
+          <div class="cp-logo-pill">Linear</div>
+          <div class="cp-logo-pill">Vercel</div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"Used by teams at"</strong> — not "trusted by 500+ companies." The distinction matters. "500+ companies" is unverifiable. "Teams at Stripe" is specific. Marcus recognises Stripe, Figma, Notion, Linear, and Vercel immediately — these are the tools his team already uses. <strong>The logos do the credibility work. The copy just introduces them.</strong></div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why this placement</span>
+          <div class="cb-col-text">Immediately below the hero fold — before any feature explanation. Marcus's first question after reading the headline is "is this legitimate?" The logo strip answers that question before he has to scroll for proof. In Direction C's minimal aesthetic, the logos sit on a clean white strip with generous spacing — no noise, no animation, no carousel. Static logos read as more confident than animated ones.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 03 — HOW IT WORKS -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">03</div>
+        <div class="cb-title">How it works — three steps, no jargon</div>
+        <span class="cb-tag tag-feature">Feature</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">How it works</div>
+        <div class="cp-headline" style="font-size:1.2rem;margin-bottom:16px;">From your spreadsheet<br>to your first insight<br><em>in under 60 seconds.</em></div>
+        <div class="cp-feature-row">
+          <div class="cp-feature">
+            <div class="cp-feature-icon">01</div>
+            <div class="cp-feature-title">Connect your data</div>
+            <div class="cp-feature-text">Upload a CSV or connect Google Sheets. No SQL. No API keys. No setup call.</div>
+          </div>
+          <div class="cp-feature">
+            <div class="cp-feature-icon">02</div>
+            <div class="cp-feature-title">Ask your question</div>
+            <div class="cp-feature-text">Type what you want to know in plain English. "What was my activation rate last month by channel?"</div>
+          </div>
+          <div class="cp-feature">
+            <div class="cp-feature-icon">03</div>
+            <div class="cp-feature-title">Share the answer</div>
+            <div class="cp-feature-text">Get a chart, a table, or a number. Export to PDF or copy the embed. Share-ready in one click.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"From your spreadsheet to your first insight in under 60 seconds"</strong> — the section headline makes the time-to-value claim specific and prominent. Step 1 copy ("No SQL. No API keys. No setup call.") is entirely written in exclusions — it lists what Marcus does NOT have to do, which is more persuasive than listing what he does. Step 2 includes a verbatim example query because Marcus needs to picture himself typing it.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why three steps only</span>
+          <div class="cb-col-text">Marcus starts his trial before reading documentation (Step 5, Behaviour B03). The "how it works" section must communicate the full process in one viewport. <strong>Three steps is the maximum — four steps reads as complex, five reads as enterprise.</strong> Each step card has one action verb as the title and one sentence of reassurance beneath it. No bullet points inside the cards.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 04 — PRODUCT -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">04</div>
+        <div class="cb-title">The product — what the output looks like</div>
+        <span class="cb-tag tag-feature">Feature</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">The product</div>
+        <div class="cp-headline" style="font-size:1.2rem;margin-bottom:8px;">Ask anything.<br>Get an answer that's<br><em>ready to share.</em></div>
+        <div class="cp-sub" style="margin-bottom:16px;">Type a question in plain English. NeuralDesk reads your data, builds the chart, and labels it for you. The output is designed to go directly into your slide deck — no reformatting, no cleanup.</div>
+        <div style="background:var(--white);border:1px solid var(--cool-mid);padding:16px 18px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--slate);margin-bottom:8px;letter-spacing:.08em;">↳ What was my user activation rate last month by acquisition channel?</div>
+          <div style="height:64px;background:var(--cool);border:1px solid var(--cool-mid);display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);">[ Chart renders here ]</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:10px;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);letter-spacing:.1em;">↓ Export PDF</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--slate);letter-spacing:.1em;">Copy embed</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--slate);letter-spacing:.1em;">Share link</div>
+          </div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"Ready to share"</strong> is the key phrase — it speaks to Marcus's actual workflow (screenshot into Slack, export to deck). The sub-copy phrase <strong>"no reformatting, no cleanup"</strong> names the exact pain he has experienced with every other tool. The query example is real and specific — "What was my user activation rate last month by acquisition channel?" is the exact question a PM would type.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why show the query UI</span>
+          <div class="cb-col-text">Direction C's minimal aesthetic calls for showing the product interface rather than describing it. The query field + chart output is the product's single most persuasive moment — it makes the use case concrete and immediate. <strong>Marcus seeing the query interface is more convincing than any bullet point about "natural language AI."</strong> The export row (PDF · embed · share) answers the "what do I do with this?" question before Marcus has to ask it.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 05 — SOCIAL PROOF -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">05</div>
+        <div class="cb-title">Social proof — named outcomes, not generic praise</div>
+        <span class="cb-tag tag-social">Social proof</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-metric" style="margin-bottom:20px;">
+          <div class="cp-metric-item"><div class="cp-metric-num">3 hrs</div><div class="cp-metric-label">saved per week · avg user</div></div>
+          <div class="cp-metric-item"><div class="cp-metric-num">60s</div><div class="cp-metric-label">avg time to first insight</div></div>
+          <div class="cp-metric-item"><div class="cp-metric-num">98.4%</div><div class="cp-metric-label">query accuracy rate</div></div>
+        </div>
+        <div class="cp-testimonial">
+          <div class="cp-quote">"We went from a 4-day turnaround on campaign reports to getting the answer before my next standup. I sent my first chart to the team in the same session I signed up."</div>
+          <div class="cp-quote-attr">Sarah K. · Senior PM · Stripe · using NeuralDesk since Jan 2026</div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text">The three metrics above the testimonial are the first thing Marcus's eye lands on — large IBM Plex Mono numbers in red against white. <strong>"3 hrs saved per week"</strong> speaks directly to his primary pain from Step 5. The testimonial includes: a specific time comparison ("4-day turnaround" → "before my next standup"), a named action ("sent my first chart"), a named person, a named company, and a specific adoption date. <strong>Every element is verifiable.</strong></div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why metrics before testimonials</span>
+          <div class="cb-col-text">Marcus is skeptical of AI claims (Step 5, Behaviour B06). The metrics land first — before he reads a word of the testimonial — and do the credibility work. By the time he reaches Sarah's quote, he has already accepted that the 3-hour saving is real. <strong>The testimonial then adds the human story on top of a foundation of verified data.</strong> The attribution line includes "using NeuralDesk since Jan 2026" — recency signals the product is actively used, not a legacy case study.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 06 — PRICING -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">06</div>
+        <div class="cb-title">Pricing — visible, honest, three tiers</div>
+        <span class="cb-tag tag-pricing">Pricing</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow" style="margin-bottom:16px;">Pricing — no surprises</div>
+        <div class="cp-pricing-row">
+          <div class="cp-plan">
+            <div class="cp-plan-name">Free</div>
+            <div class="cp-plan-price">$0</div>
+            <div class="cp-plan-per">forever · no card needed</div>
+            <div style="height:1px;background:var(--cool-mid);margin:10px 0;"></div>
+            <div style="font-size:11px;color:var(--slate);line-height:1.7;">50 queries / month<br>CSV &amp; Google Sheets<br>3 chart types<br>NeuralDesk watermark</div>
+          </div>
+          <div class="cp-plan-featured">
+            <div class="cp-plan-name-w">Pro · most popular</div>
+            <div class="cp-plan-price-w">$29</div>
+            <div class="cp-plan-per-w">per month · cancel anytime</div>
+            <div style="height:1px;background:rgba(255,255,255,.2);margin:10px 0;"></div>
+            <div style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.7;">Unlimited queries<br>All data connectors<br>All chart types<br>PDF &amp; embed export<br>No watermark</div>
+          </div>
+          <div class="cp-plan">
+            <div class="cp-plan-name">Team</div>
+            <div class="cp-plan-price">$79</div>
+            <div class="cp-plan-per">per month · up to 10 seats</div>
+            <div style="height:1px;background:var(--cool-mid);margin:10px 0;"></div>
+            <div style="font-size:11px;color:var(--slate);line-height:1.7;">Everything in Pro<br>Shared workspaces<br>Admin controls<br>SOC 2 report on request<br>Priority support</div>
+          </div>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--slate);margin-top:12px;letter-spacing:.06em;">Need to justify this to your manager? → <span style="color:var(--red);">Generate a one-pager →</span></div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"No surprises"</strong> as the section subtitle — not "Flexible plans" or "Simple pricing." It directly names the anxiety Marcus has from every other SaaS pricing page he has visited. The Pro plan is highlighted in red (the only coloured plan card) because it is the one Marcus will choose. <strong>"Cancel anytime"</strong> on the Pro tier removes the last conversion friction. The manager one-pager link is the most important line on the page for Team plan conversion.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why the free tier is first</span>
+          <div class="cb-col-text">Marcus will not enter a credit card before seeing a result (Step 5). The free tier at $0 removes every barrier — he signs up, gets a result, and converts to Pro because the free tier's 50-query limit is the first thing he hits. <strong>The free tier is not a loss — it is the onboarding flow.</strong> The Team tier at $79 with "up to 10 seats" is priced for Marcus to share with his team after he converts individually — the adoption path is free → Pro → Team.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 07 — FINAL CTA -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">07</div>
+        <div class="cb-title">Final CTA — one action, last objection answered</div>
+        <span class="cb-tag tag-cta">CTA</span>
+      </div>
+      <div class="copy-preview">
+        <div style="text-align:center;padding:8px 0;">
+          <div class="cp-eyebrow" style="text-align:center;justify-content:center;">Ready when you are</div>
+          <div class="cp-headline" style="text-align:center;font-size:1.8rem;margin-bottom:12px;">Your first answer<br>is <em>60 seconds away.</em></div>
+          <div class="cp-cta-row" style="justify-content:center;">
+            <div class="cp-cta-primary">Start free — no card needed</div>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--slate);margin-top:14px;letter-spacing:.08em;">SOC 2 Type II certified · GDPR compliant · Cancel anytime</div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"Your first answer is 60 seconds away"</strong> — the final CTA headline is a specific promise, not a generic call to action. It restates the hero's core claim in the second person, making it personal at the moment of decision. The certification line (SOC 2 · GDPR · Cancel anytime) answers the three objections Marcus has at the moment of sign-up: data security, compliance, and commitment risk. <strong>All three in one line, below the button.</strong></div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why only one CTA here</span>
+          <div class="cb-col-text">The hero section has two CTAs because Marcus may not be ready on arrival. The final CTA has one because <strong>if Marcus has scrolled through all seven sections, he is ready.</strong> A second CTA at this point (like "Or book a demo") introduces doubt and dilutes the conversion signal. Direction C's minimal aesthetic reinforces this — one button, centred, full red, maximum weight. The only element on a white page that demands attention.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- NOTE -->
+  <div class="section">
+    <div class="section-label">04 — A note on this document</div>
+    <h2 class="section-heading">Copy first.<br><em>Always.</em></h2>
+    <p class="body-text">Every word above was written before any layout decision was made. The information architecture was designed first — Marcus's seven questions, in sequence. Then the copy was written to answer each question. Then the visual preview was added to show how Direction C's Arctic/Clarity aesthetic frames each copy block.</p>
+    <p class="body-text">This sequence — IA, then copy, then layout — is the non-negotiable process. Copy that is written to fit a layout is always weaker than a layout that is built to serve copy. NeuralDesk's minimal Direction C register makes this especially true: with no visual decoration to distract, every word is exposed. The copy must earn its place.</p>
+    <div class="note-box">
+      <p><strong>Next step:</strong> Step 09 — Landing Page Build. All copy above is final and locked. The landing page will be built to serve this copy, not the other way around. This document is the brief. This is a standalone document for NeuralDesk — no references to any other brands in this series.</p>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 08 — COPYWRITING · NEURALDESK</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

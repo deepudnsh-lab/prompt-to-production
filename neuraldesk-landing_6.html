@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuralDesk — Your answer in 60 seconds</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@200;300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #FFFFFF;
+  --surface: #F7F7F8;
+  --cool: #F0F4F8;
+  --cool-mid: #E2E8F0;
+  --border: #E8ECF0;
+  --red: #E8000D;
+  --red-dim: rgba(232,0,13,.07);
+  --red-soft: #FFD6D8;
+  --slate: #64748B;
+  --slate-light: #94A3B8;
+  --navy: #0F172A;
+  --ink: #0A0A0F;
+  --ink-mid: #3D3D4A;
+  --ink-faint: #C0C5D0;
+  --green: #10B981;
+  --amber: #F59E0B;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--white); font-family: 'DM Sans', sans-serif; color: var(--ink); overflow-x: hidden; cursor: none; }
+
+/* ── CURSOR ── */
+.cursor { width: 7px; height: 7px; background: var(--red); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform .15s; }
+.cursor-ring { width: 28px; height: 28px; border: 1px solid rgba(232,0,13,.25); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); }
+
+/* ── NAV ── */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; background: rgba(255,255,255,.92); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); }
+.nav-logo { display: flex; align-items: center; gap: 7px; text-decoration: none; }
+.nav-dot { width: 7px; height: 7px; background: var(--red); border-radius: 50%; animation: pulse 2.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.5); opacity: .6; } }
+.nav-brand { font-weight: 500; font-size: 14px; color: var(--ink); letter-spacing: -.01em; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--slate); text-decoration: none; transition: color .2s; }
+.nav-links a:hover { color: var(--ink); }
+.nav-cta { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; background: var(--red); color: #fff; padding: 9px 20px; text-decoration: none; cursor: none; transition: background .2s; }
+.nav-cta:hover { background: #C8000B; }
+
+/* ── HERO ── */
+.hero { padding-top: 56px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; background: var(--white); }
+.hero-grid { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(232,0,13,.04) 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; }
+.hero-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 55% 40% at 50% 22%, rgba(232,0,13,.04), transparent 70%); pointer-events: none; }
+
+.hero-copy { position: relative; z-index: 2; padding: 56px 40px 40px; max-width: 780px; width: 100%; }
+.h-eyebrow { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--red); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 12px; opacity: 0; animation: fadeUp .5s ease .05s forwards; }
+.h-eyebrow span { width: 18px; height: 1px; background: var(--red); display: inline-block; }
+.h-h1 { font-weight: 200; font-size: clamp(2.6rem, 5vw, 4rem); line-height: 1.04; letter-spacing: -.02em; color: var(--ink); margin-bottom: 16px; opacity: 0; animation: fadeUp .6s ease .15s forwards; }
+.h-h1 em { font-style: normal; color: var(--red); font-weight: 500; }
+.h-rule { width: 32px; height: 2px; background: var(--red); margin: 0 auto 16px; opacity: 0; animation: fadeUp .5s ease .22s forwards; }
+.h-sub { font-size: 15px; font-weight: 300; color: var(--slate); line-height: 1.7; max-width: 460px; margin: 0 auto 28px; opacity: 0; animation: fadeUp .5s ease .28s forwards; }
+.h-ctas { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 28px; opacity: 0; animation: fadeUp .5s ease .33s forwards; }
+.btn-red { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; background: var(--red); color: #fff; padding: 12px 26px; text-decoration: none; cursor: none; transition: background .2s, transform .15s; display: inline-block; }
+.btn-red:hover { background: #C8000B; transform: translateY(-1px); }
+.btn-ghost { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--slate); text-decoration: none; display: flex; align-items: center; gap: 7px; transition: color .2s; cursor: none; }
+.btn-ghost::after { content: '→'; transition: transform .2s; }
+.btn-ghost:hover { color: var(--ink); }
+.btn-ghost:hover::after { transform: translateX(4px); }
+.h-trust { opacity: 0; animation: fadeUp .5s ease .38s forwards; margin-bottom: 44px; }
+.trust-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+.trust-logos { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+.trust-logo { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .06em; color: var(--ink-faint); transition: color .2s; }
+.trust-logo:hover { color: var(--slate); }
+
+/* ── STACKED SCREENS ── */
+.screens-wrap { width: 100%; max-width: 1040px; margin: 0 auto; position: relative; z-index: 2; opacity: 0; animation: fadeIn .8s ease .42s forwards; padding: 0 40px; }
+
+/* Tab bar */
+.screen-tabs { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 0 0 14px; }
+.stab { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 14px; border: 1px solid var(--border); color: var(--ink-faint); cursor: none; transition: all .2s; user-select: none; }
+.stab.active { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+.stab:hover:not(.active) { border-color: #D0D7E2; color: var(--slate); }
+
+/* Tab panels */
+.screens-panels { width: 100%; }
+.screen { display: none; width: 100%; margin-bottom: 0; }
+.screen.active { display: block; animation: fadeIn .35s ease; box-shadow: 0 20px 56px rgba(0,0,0,.1); margin-bottom: 56px; }
+.screen-inner { background: var(--white); border: 1px solid var(--border); overflow: hidden; width: 100%; }
+
+/* ── UI SYSTEM ── */
+.ui-bar { display: flex; align-items: center; justify-content: space-between; padding: 11px 20px; border-bottom: 1px solid var(--border); background: var(--white); flex-shrink: 0; }
+.ui-dots { display: flex; gap: 5px; }
+.ui-dot { width: 8px; height: 8px; border-radius: 50%; }
+.ui-dot.r { background: var(--red); }
+.ui-dot.a { background: var(--amber); }
+.ui-dot.g { background: var(--green); }
+.ui-title { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .08em; color: var(--ink-faint); }
+.ui-acts { display: flex; gap: 7px; }
+.ui-btn { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .07em; padding: 4px 12px; border: 1px solid var(--border); color: var(--slate-light); cursor: none; }
+.ui-btn.r { background: var(--red); border-color: var(--red); color: #fff; }
+
+.ui-body { display: grid; grid-template-columns: 160px 1fr; flex: 1; overflow: hidden; }
+.ui-sidebar { border-right: 1px solid var(--border); padding: 12px 0; }
+.ui-ni { display: flex; align-items: center; gap: 8px; padding: 8px 18px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .05em; color: var(--slate-light); cursor: none; transition: all .15s; }
+.ui-ni:hover { background: var(--surface); }
+.ui-ni.act { background: var(--red-dim); color: var(--red); border-right: 2px solid var(--red); }
+.ui-nd { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+.ui-main { padding: 18px 20px; overflow: hidden; }
+
+/* Metric cards */
+.metrics-grid { display: grid; gap: 8px; margin-bottom: 14px; }
+.metric { background: var(--surface); border: 1px solid var(--border); padding: 12px 14px; position: relative; overflow: hidden; }
+.metric.hi { background: var(--white); border-color: var(--red); }
+.metric.hi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--red); }
+.m-lbl { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .12em; text-transform: uppercase; color: var(--slate-light); margin-bottom: 5px; }
+.m-val { font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 500; color: var(--ink); line-height: 1; }
+.m-val.r { color: var(--red); }
+.m-delta { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); margin-top: 3px; }
+.m-delta.neg { color: #EF4444; }
+
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.chart-box { background: var(--white); border: 1px solid var(--border); padding: 12px 14px; }
+.chart-box.surface { background: var(--surface); }
+.c-lbl { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: var(--slate-light); margin-bottom: 6px; }
+
+/* Bar chart */
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; }
+.bar-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; }
+.bar-fill { width: 100%; background: var(--cool-mid); border-radius: 1px 1px 0 0; transition: background .2s; }
+.bar-fill.hi, .bar-fill:hover { background: var(--red); }
+.bar-lbl { font-family: 'DM Mono', monospace; font-size: 7px; color: var(--ink-faint); margin-top: 3px; }
+
+/* Query bar */
+.ui-query { border-top: 1px solid var(--border); padding: 10px 18px; display: flex; align-items: center; gap: 8px; background: var(--white); flex-shrink: 0; }
+.q-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+.q-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-mid); flex: 1; letter-spacing: .02em; }
+.q-cursor { display: inline-block; width: 1px; height: 12px; background: var(--red); margin-left: 1px; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 50% { opacity: 0; } }
+.q-send { width: 24px; height: 24px; background: var(--red); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.q-send svg { width: 11px; height: 11px; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── LOGO STRIP ── */
+.logo-strip { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 22px 80px; display: flex; align-items: center; gap: 40px; }
+.ls-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0; }
+.ls-logos { display: flex; align-items: center; gap: 36px; flex: 1; }
+.ls-logo { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .07em; color: var(--ink-faint); transition: color .25s; }
+.ls-logo:hover { color: var(--slate); }
+
+/* ── SECTION BASE ── */
+section { padding: 80px; }
+.s-ey { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.s-ey::before { content: ''; display: block; width: 16px; height: 1px; background: var(--red); }
+.s-h2 { font-weight: 200; font-size: clamp(1.9rem, 3vw, 2.8rem); letter-spacing: -.02em; line-height: 1.08; color: var(--ink); margin-bottom: 12px; }
+.s-h2 em { font-style: normal; color: var(--red); font-weight: 500; }
+.s-sub { font-size: 14px; font-weight: 300; color: var(--slate); line-height: 1.75; max-width: 500px; }
+
+/* ── HOW IT WORKS ── */
+.how { background: var(--surface); padding: 80px; }
+.how-head { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: end; margin-bottom: 48px; }
+.how-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+.step { background: var(--white); padding: 32px 28px; position: relative; overflow: hidden; transition: transform .3s, box-shadow .3s; }
+.step:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,.07); }
+.step-top-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--border); transition: background .3s; }
+.step:hover .step-top-line { background: var(--red); }
+.step-num { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+.step-title { font-size: 16px; font-weight: 500; color: var(--ink); margin-bottom: 8px; letter-spacing: -.01em; }
+.step-text { font-size: 13px; color: var(--slate); line-height: 1.7; font-weight: 300; }
+.step-tag { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin-top: 16px; }
+
+/* ── PRODUCT BENTO ── */
+.product { background: var(--white); padding: 80px; }
+.product-head { max-width: 540px; margin-bottom: 48px; }
+.bento { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; }
+.bc { background: var(--surface); border: 1px solid var(--border); padding: 24px; position: relative; overflow: hidden; transition: border-color .25s; }
+.bc:hover { border-color: #D0D7E2; }
+.bc.s2 { grid-column: span 2; }
+.bc.dk { background: var(--navy); border-color: var(--navy); }
+.bc-ey { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--slate-light); margin-bottom: 8px; }
+.bc-ey.lt { color: rgba(255,255,255,.3); }
+.bc-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 6px; letter-spacing: -.01em; }
+.bc-text { font-size: 12px; color: var(--slate); line-height: 1.65; font-weight: 300; }
+.bc-num { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 500; color: var(--red); line-height: 1; margin-bottom: 4px; }
+.bc-num.lt { color: var(--red-soft); }
+.bc-sub { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--slate-light); }
+.bc-sub.lt { color: rgba(255,255,255,.2); }
+/* Mini query in bento */
+.bq { background: var(--white); border: 1px solid var(--border); padding: 10px 12px; margin-top: 14px; }
+.bq-row { display: flex; align-items: center; gap: 8px; }
+.bq-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--red); }
+.bq-text { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink-mid); flex: 1; }
+.bq-cursor { display: inline-block; width: 1px; height: 10px; background: var(--red); margin-left: 1px; animation: blink 1s step-end infinite; vertical-align: middle; }
+.bq-send { width: 20px; height: 20px; background: var(--red); display: flex; align-items: center; justify-content: center; }
+.bq-send svg { width: 9px; height: 9px; }
+.bq-result { margin-top: 10px; }
+.bq-num { font-family: 'DM Mono', monospace; font-size: 1.4rem; font-weight: 500; color: var(--red); line-height: 1; }
+.bq-delta { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); margin-top: 2px; }
+/* Feature list */
+.feat-list { list-style: none; margin-top: 14px; }
+.feat-list li { font-size: 12px; color: var(--slate); padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 9px; font-weight: 300; line-height: 1.4; }
+.feat-list li:last-child { border-bottom: none; }
+.feat-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
+
+/* ── SOCIAL PROOF ── */
+.proof { background: var(--navy); padding: 80px; }
+.proof .s-ey { color: rgba(232,0,13,.55); }
+.proof .s-ey::before { background: rgba(232,0,13,.4); }
+.proof .s-h2 { color: var(--white); }
+.proof .s-h2 em { color: var(--red-soft); }
+.proof .s-sub { color: rgba(255,255,255,.35); }
+.proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; margin-top: 48px; }
+.metrics-stack { display: flex; flex-direction: column; gap: 2px; }
+.mrow { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; transition: background .2s; }
+.mrow:hover { background: rgba(255,255,255,.07); }
+.mr-num { font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 500; color: var(--red-soft); line-height: 1; }
+.mr-lbl { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.2); margin-top: 4px; }
+.mr-spark { width: 80px; height: 36px; }
+.testi-col { display: flex; flex-direction: column; gap: 2px; }
+.testi { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); padding: 24px; transition: background .25s; }
+.testi:hover { background: rgba(255,255,255,.06); }
+.t-q { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.75; font-weight: 300; font-style: italic; margin-bottom: 16px; }
+.t-attr { display: flex; align-items: center; gap: 10px; }
+.t-av { width: 26px; height: 26px; background: var(--red); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 8px; color: #fff; flex-shrink: 0; }
+.t-name { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .07em; color: rgba(255,255,255,.22); line-height: 1.5; }
+.t-name span { color: rgba(255,255,255,.45); display: block; }
+
+/* ── GRAPHS ── */
+.graphs { background: var(--white); padding: 80px; }
+.graphs-head { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: end; margin-bottom: 48px; }
+.graph-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.gcell { background: var(--surface); border: 1px solid var(--border); padding: 24px; transition: border-color .25s; }
+.gcell:hover { border-color: #D0D7E2; }
+.gcell.wide { grid-column: span 2; }
+.gcell.dk { background: var(--navy); border-color: var(--navy); }
+.gc-lbl { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .12em; text-transform: uppercase; color: var(--slate-light); margin-bottom: 4px; }
+.gc-lbl.lt { color: rgba(255,255,255,.25); }
+.gc-val { font-family: 'DM Mono', monospace; font-size: 1.5rem; font-weight: 500; color: var(--red); line-height: 1; margin-bottom: 3px; }
+.gc-val.lt { color: var(--red-soft); }
+.gc-delta { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--green); margin-bottom: 12px; }
+.donut-wrap { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+.dleg { display: flex; flex-direction: column; gap: 6px; }
+.dli { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 9px; color: var(--slate-light); }
+.dld { width: 6px; height: 6px; border-radius: 50%; }
+
+/* ── PRICING ── */
+.pricing { background: var(--surface); padding: 80px; }
+.pricing-hd { text-align: center; margin-bottom: 48px; }
+.pricing-hd .s-ey { justify-content: center; }
+.pricing-hd .s-ey::before { display: none; }
+.pricing-hd .s-h2 { margin: 0 auto 12px; }
+.pricing-hd .s-sub { margin: 0 auto; text-align: center; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; max-width: 840px; margin: 0 auto; }
+.plan { background: var(--white); border: 1px solid var(--border); padding: 36px 28px; position: relative; transition: transform .3s, box-shadow .3s; }
+.plan:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,.07); }
+.plan.feat { border-color: var(--red); }
+.plan.feat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--red); }
+.plan-tag { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; background: var(--red); color: #fff; padding: 3px 10px; display: inline-block; margin-bottom: 18px; }
+.plan-tag-g { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 18px; display: inline-block; }
+.plan-name { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--slate); margin-bottom: 14px; }
+.plan-price { font-family: 'DM Mono', monospace; font-size: 2.6rem; font-weight: 500; color: var(--ink); line-height: 1; margin-bottom: 3px; }
+.plan-price.r { color: var(--red); }
+.plan-per { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--slate-light); margin-bottom: 22px; }
+.plan-div { height: 1px; background: var(--border); margin-bottom: 20px; }
+.plan-feats { list-style: none; margin-bottom: 28px; }
+.plan-feats li { font-size: 12px; color: var(--slate); padding: 7px 0; border-bottom: 1px solid var(--border); font-weight: 300; display: flex; align-items: center; gap: 8px; line-height: 1.4; }
+.plan-feats li:last-child { border-bottom: none; }
+.plan-feats li::before { content: '·'; color: var(--red); font-weight: 700; flex-shrink: 0; }
+.plan-btn { display: block; width: 100%; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 12px; text-align: center; text-decoration: none; cursor: none; transition: all .2s; border: 1px solid var(--border); color: var(--slate); }
+.plan-btn:hover { border-color: var(--ink); color: var(--ink); }
+.plan-btn.r { background: var(--red); border-color: var(--red); color: #fff; }
+.plan-btn.r:hover { background: #C8000B; }
+.pricing-note { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .07em; color: var(--ink-faint); text-align: center; margin-top: 28px; max-width: 840px; margin-left: auto; margin-right: auto; }
+.pricing-note a { color: var(--red); text-decoration: none; }
+
+/* ── FINAL CTA ── */
+.final { background: var(--white); padding: 100px 80px; text-align: center; border-top: 1px solid var(--border); }
+.final .s-ey { justify-content: center; }
+.final .s-ey::before { display: none; }
+.final .s-h2 { max-width: 540px; margin: 0 auto 12px; }
+.final .s-sub { margin: 0 auto 36px; text-align: center; }
+.final-badges { display: flex; align-items: center; justify-content: center; gap: 28px; margin-top: 28px; flex-wrap: wrap; }
+.fbadge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); display: flex; align-items: center; gap: 6px; }
+.fbadge::before { content: '·'; color: var(--red); }
+
+/* ── FOOTER ── */
+footer { background: var(--navy); padding: 36px 80px; display: flex; align-items: center; justify-content: space-between; }
+.f-logo { display: flex; align-items: center; gap: 7px; }
+.f-dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; }
+.f-brand { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .07em; color: rgba(255,255,255,.35); }
+.f-copy { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .07em; color: rgba(255,255,255,.18); }
+.f-links { display: flex; gap: 24px; list-style: none; }
+.f-links a { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.2); text-decoration: none; transition: color .2s; }
+.f-links a:hover { color: rgba(255,255,255,.5); }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+/* ── TABLET ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+
+  section, .how, .product, .graphs, .pricing, .final { padding: 56px 24px; }
+  .proof { padding: 56px 24px; }
+
+  .logo-strip { padding: 20px 24px; flex-wrap: wrap; gap: 16px; }
+  .ls-logos { gap: 20px; flex-wrap: wrap; }
+
+  .how-head { grid-template-columns: 1fr; gap: 16px; }
+  .how-steps { grid-template-columns: 1fr; }
+
+  .proof-grid { grid-template-columns: 1fr; gap: 24px; }
+  .graphs-head { grid-template-columns: 1fr; gap: 16px; }
+
+  .bento { grid-template-columns: 1fr 1fr; }
+  .bc.s2 { grid-column: span 2; }
+
+  .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+
+  .graph-grid { grid-template-columns: 1fr; }
+  .gcell.wide { grid-column: span 1; }
+
+  footer { flex-direction: column; gap: 18px; text-align: center; padding: 28px 24px; }
+  .f-links { flex-wrap: wrap; justify-content: center; }
+
+  .hero-copy { padding: 56px 24px 36px; }
+  .screens-wrap { padding: 0 16px; }
+
+  /* UI panel — hide sidebar on tablet, more room for charts */
+  .ui-body { grid-template-columns: 1fr; }
+  .ui-sidebar { display: none; }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  /* Nav — minimal */
+  nav { padding: 0 16px; height: 52px; }
+  .nav-links { display: none; }
+  .nav-cta { padding: 8px 14px; font-size: 9px; }
+
+  /* Hero */
+  .hero { min-height: auto; padding-top: 52px; }
+  .hero-copy { padding: 40px 16px 28px; }
+  .h-h1 { font-size: 2.2rem; }
+  .h-sub { font-size: 14px; }
+  .h-ctas { flex-direction: column; align-items: center; gap: 12px; }
+  .btn-red { width: 100%; text-align: center; padding: 14px 20px; font-size: 11px; }
+  .btn-ghost { justify-content: center; }
+  .h-trust { margin-bottom: 32px; }
+  .trust-logos { gap: 16px; }
+
+  /* Screens wrap */
+  .screens-wrap { padding: 0 12px; }
+  .screen-tabs { gap: 3px; flex-wrap: wrap; padding: 0 0 12px; }
+  .stab { font-size: 8px; padding: 5px 10px; letter-spacing: .08em; }
+
+  /* UI panel — compact for mobile */
+  .ui-bar { padding: 8px 12px; }
+  .ui-title { font-size: 9px; }
+  .ui-acts { display: none; }
+  .ui-sidebar { display: none; }
+  .ui-body { grid-template-columns: 1fr; }
+  .ui-main { padding: 10px 12px; }
+  .metrics-grid { gap: 5px; }
+  .metric { padding: 8px 10px; }
+  .m-lbl { font-size: 7px; }
+  .m-val { font-size: .95rem; }
+  .m-delta { font-size: 8px; }
+  .charts-row { grid-template-columns: 1fr; gap: 6px; }
+  .chart-box { padding: 10px 10px; }
+  .c-lbl { font-size: 7px; }
+  .bar-chart { height: 52px !important; }
+  .ui-query { padding: 8px 12px; }
+  .q-text { font-size: 9px; }
+
+  /* Logo strip */
+  .logo-strip { padding: 16px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .ls-logos { gap: 14px; flex-wrap: wrap; }
+  .ls-logo { font-size: 10px; }
+
+  /* Sections */
+  section, .how, .product, .graphs, .pricing, .final, .proof { padding: 48px 16px; }
+
+  .s-h2 { font-size: 1.7rem; }
+  .s-sub { font-size: 13px; }
+
+  /* How it works */
+  .how-head { grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
+  .how-steps { grid-template-columns: 1fr; gap: 2px; }
+  .step { padding: 24px 20px; }
+  .step-title { font-size: 15px; }
+  .step-text { font-size: 12px; }
+
+  /* Bento */
+  .bento { grid-template-columns: 1fr; }
+  .bc.s2 { grid-column: span 1; }
+  .bc { padding: 20px; }
+  .bc-num { font-size: 1.6rem; }
+
+  /* Proof */
+  .proof-grid { grid-template-columns: 1fr; gap: 20px; }
+  .metrics-stack { gap: 2px; }
+  .mrow { padding: 16px 18px; }
+  .mr-num { font-size: 1.4rem; }
+  .mr-spark { display: none; }
+  .testi-col { gap: 2px; }
+  .testi { padding: 18px; }
+  .t-q { font-size: 12px; }
+
+  /* Graphs */
+  .graphs-head { grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
+  .graph-grid { grid-template-columns: 1fr; }
+  .gcell.wide { grid-column: span 1; }
+  .gcell { padding: 18px; }
+  .gc-val { font-size: 1.2rem; }
+
+  /* Pricing */
+  .pricing-grid { grid-template-columns: 1fr; }
+  .plan { padding: 28px 20px; }
+  .plan-price { font-size: 2rem; }
+
+  /* Final */
+  .final { padding: 64px 16px; }
+  .final-badges { gap: 14px; flex-direction: column; align-items: center; }
+  .fbadge { font-size: 8px; }
+
+  /* Footer */
+  footer { flex-direction: column; gap: 16px; text-align: center; padding: 24px 16px; }
+  .f-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+  .f-copy { display: none; }
+
+  /* Hide cursor ring on touch */
+  .cursor, .cursor-ring { display: none; }
+  body { cursor: auto; }
+  a, button, .stab, .step, .plan, .testi, .mrow, .bc, .gcell { cursor: pointer; }
+}
+/* ── BURGER + MOBILE MENU ── */
+.nav-burger { display: none; flex-direction: column; gap: 4px; background: none; border: none; padding: 6px; cursor: pointer; }
+.nav-burger span { display: block; width: 20px; height: 1.5px; background: var(--ink); transition: all .25s; }
+.nav-burger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+.mobile-menu { display: none; position: fixed; top: 52px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--border); z-index: 199; flex-direction: column; padding: 16px; gap: 2px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+.mobile-menu.open { display: flex; }
+.mm-link { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--slate); text-decoration: none; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: color .2s; }
+.mm-link:last-of-type { border-bottom: none; }
+.mm-link:hover { color: var(--ink); }
+.mm-cta { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; background: var(--red); color: #fff; padding: 13px 16px; text-decoration: none; text-align: center; margin-top: 8px; transition: background .2s; }
+.mm-cta:hover { background: #C8000B; }
+
+@media (max-width: 640px) {
+  .nav-burger { display: flex; }
+  nav .nav-cta { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><div class="nav-dot"></div><span class="nav-brand">NeuralDesk</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#product">Product</a></li>
+    <li><a href="#proof">Customers</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="#pricing" class="nav-cta">Start free</a>
+    <button class="nav-burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#how" class="mm-link">How it works</a>
+  <a href="#product" class="mm-link">Product</a>
+  <a href="#proof" class="mm-link">Customers</a>
+  <a href="#pricing" class="mm-link">Pricing</a>
+  <a href="#pricing" class="mm-cta">Start free — no card needed</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-copy">
+    <div class="h-eyebrow"><span></span>AI data analysis · No SQL required<span></span></div>
+    <h1 class="h-h1">One question.<br><em>One answer.</em> Now.</h1>
+    <div class="h-rule"></div>
+    <p class="h-sub">Ask NeuralDesk anything about your data. Get a chart, table, or number in under 60 seconds. No analyst. No warehouse.</p>
+    <div class="h-ctas">
+      <a href="#pricing" class="btn-red">Start free — no card needed</a>
+      <a href="#how" class="btn-ghost">See how it works</a>
+    </div>
+    <div class="h-trust">
+      <div class="trust-lbl">Used by teams at</div>
+      <div class="trust-logos">
+        <span class="trust-logo">Stripe</span>
+        <span class="trust-logo">Figma</span>
+        <span class="trust-logo">Notion</span>
+        <span class="trust-logo">Linear</span>
+        <span class="trust-logo">Vercel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STACKED SCREENS -->
+  <div class="screens-wrap">
+    <div class="screen-tabs">
+      <div class="stab active" data-s="0">Overview</div>
+      <div class="stab" data-s="1">Funnels</div>
+      <div class="stab" data-s="2">Channels</div>
+      <div class="stab" data-s="3">Retention</div>
+    </div>
+
+    <div class="screens-panels">
+
+      <!-- SCREEN 0: OVERVIEW -->
+      <div class="screen" id="sc0" data-i="0">
+        <div class="screen-inner" style="display:flex;flex-direction:column;">
+          <div class="ui-bar">
+            <div class="ui-dots"><div class="ui-dot r"></div><div class="ui-dot a"></div><div class="ui-dot g"></div></div>
+            <div class="ui-title">NeuralDesk · Overview</div>
+            <div class="ui-acts"><div class="ui-btn">Export</div><div class="ui-btn r">+ New query</div></div>
+          </div>
+          <div class="ui-body" style="flex:1;overflow:hidden;">
+            <div class="ui-sidebar">
+              <div class="ui-ni act"><div class="ui-nd"></div>Overview</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Metrics</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Funnels</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Trends</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Users</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Reports</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Alerts</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Settings</div>
+            </div>
+            <div class="ui-main">
+              <div class="metrics-grid" style="grid-template-columns:repeat(4,1fr);">
+                <div class="metric hi"><div class="m-lbl">Activation Rate</div><div class="m-val r">38.6%</div><div class="m-delta">↑ 6.3% MoM</div></div>
+                <div class="metric"><div class="m-lbl">Active Users</div><div class="m-val">24.8K</div><div class="m-delta">↑ 8.1%</div></div>
+                <div class="metric"><div class="m-lbl">Revenue</div><div class="m-val">$152K</div><div class="m-delta">↑ 12.4%</div></div>
+                <div class="metric"><div class="m-lbl">Churn Rate</div><div class="m-val">3.2%</div><div class="m-delta neg">↓ 0.4%</div></div>
+              </div>
+              <div class="charts-row">
+                <div class="chart-box">
+                  <div class="c-lbl">Activation Rate · Apr</div>
+                  <svg width="100%" height="72" viewBox="0 0 240 72" preserveAspectRatio="none">
+                    <defs><linearGradient id="cg0" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8000D" stop-opacity=".12"/><stop offset="100%" stop-color="#E8000D" stop-opacity="0"/></linearGradient></defs>
+                    <line x1="0" y1="18" x2="240" y2="18" stroke="#E8ECF0" stroke-width=".5"/>
+                    <line x1="0" y1="36" x2="240" y2="36" stroke="#E8ECF0" stroke-width=".5"/>
+                    <line x1="0" y1="54" x2="240" y2="54" stroke="#E8ECF0" stroke-width=".5"/>
+                    <path d="M0,64 L40,56 L80,46 L120,36 L160,22 L200,14 L240,16 L240,72 L0,72Z" fill="url(#cg0)"/>
+                    <path d="M0,64 L40,56 L80,46 L120,36 L160,22 L200,14 L240,16" fill="none" stroke="#E8000D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="200" cy="14" r="3.5" fill="#E8000D"/>
+                    <text x="204" y="11" font-family="DM Mono" font-size="8" fill="#E8000D">38.6%</text>
+                    <text x="0" y="70" font-family="DM Mono" font-size="7" fill="#C0C5D0">Apr 1</text>
+                    <text x="196" y="70" font-family="DM Mono" font-size="7" fill="#C0C5D0">Apr 29</text>
+                  </svg>
+                </div>
+                <div class="chart-box">
+                  <div class="c-lbl">Revenue · Monthly</div>
+                  <div class="bar-chart" style="height:72px;align-items:flex-end;margin-top:4px;">
+                    <div class="bar-item"><div class="bar-fill" style="height:28%;"></div><div class="bar-lbl">Jan</div></div>
+                    <div class="bar-item"><div class="bar-fill" style="height:42%;"></div><div class="bar-lbl">Feb</div></div>
+                    <div class="bar-item"><div class="bar-fill" style="height:58%;"></div><div class="bar-lbl">Mar</div></div>
+                    <div class="bar-item"><div class="bar-fill" style="height:70%;"></div><div class="bar-lbl">Apr</div></div>
+                    <div class="bar-item"><div class="bar-fill hi" style="height:88%;"></div><div class="bar-lbl">May</div></div>
+                    <div class="bar-item"><div class="bar-fill" style="height:72%;"></div><div class="bar-lbl">Jun</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-query">
+            <div class="q-dot"></div>
+            <div class="q-text" id="hq">What was my activation rate last month?<span class="q-cursor"></span></div>
+            <div class="q-send"><svg viewBox="0 0 11 11" fill="none"><path d="M1 5.5h9M5.5 1l4.5 4.5L5.5 10" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 1: FUNNELS -->
+      <div class="screen" id="sc1" data-i="1">
+        <div class="screen-inner" style="display:flex;flex-direction:column;">
+          <div class="ui-bar">
+            <div class="ui-dots"><div class="ui-dot r"></div><div class="ui-dot a"></div><div class="ui-dot g"></div></div>
+            <div class="ui-title">NeuralDesk · Funnel Analysis</div>
+            <div class="ui-acts"><div class="ui-btn r">Export PDF</div></div>
+          </div>
+          <div class="ui-body" style="flex:1;overflow:hidden;">
+            <div class="ui-sidebar">
+              <div class="ui-ni"><div class="ui-nd"></div>Overview</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Metrics</div>
+              <div class="ui-ni act"><div class="ui-nd"></div>Funnels</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Trends</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Users</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Reports</div>
+            </div>
+            <div class="ui-main">
+              <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr);">
+                <div class="metric hi"><div class="m-lbl">Signup → Activate</div><div class="m-val r">38.6%</div><div class="m-delta">↑ 4.2% WoW</div></div>
+                <div class="metric"><div class="m-lbl">Activate → Paid</div><div class="m-val">22.1%</div><div class="m-delta">↑ 1.8%</div></div>
+                <div class="metric"><div class="m-lbl">Trial → Convert</div><div class="m-val">67.4%</div><div class="m-delta">↑ 3.1%</div></div>
+              </div>
+              <div class="chart-box" style="margin-top:8px;">
+                <div class="c-lbl">Conversion funnel · May 2026</div>
+                <svg width="100%" height="100" viewBox="0 0 420 100">
+                  <rect x="0" y="10" width="420" height="18" fill="#F0F4F8" rx="2"/>
+                  <rect x="0" y="10" width="420" height="18" fill="#E8000D" rx="2" opacity=".9"/>
+                  <text x="8" y="23" font-family="DM Mono" font-size="8" fill="white">Signups · 100% · 12,400</text>
+                  <rect x="0" y="36" width="420" height="18" fill="#F0F4F8" rx="2"/>
+                  <rect x="0" y="36" width="255" height="18" fill="#E8000D" rx="2" opacity=".62"/>
+                  <text x="8" y="49" font-family="DM Mono" font-size="8" fill="#3D3D4A">Activated · 60.8% · 7,539</text>
+                  <rect x="0" y="62" width="420" height="18" fill="#F0F4F8" rx="2"/>
+                  <rect x="0" y="62" width="162" height="18" fill="#E8000D" rx="2" opacity=".42"/>
+                  <text x="8" y="75" font-family="DM Mono" font-size="8" fill="#3D3D4A">Paid · 38.6% · 4,786</text>
+                  <rect x="0" y="88" width="420" height="8" fill="#F0F4F8" rx="2"/>
+                  <rect x="0" y="88" width="109" height="8" fill="#E8000D" rx="2" opacity=".24"/>
+                  <text x="0" y="100" font-family="DM Mono" font-size="7" fill="#C0C5D0">Trial · 26% · 3,224</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="ui-query">
+            <div class="q-dot"></div>
+            <div class="q-text">Where do users drop off in the activation funnel?<span class="q-cursor"></span></div>
+            <div class="q-send"><svg viewBox="0 0 11 11" fill="none"><path d="M1 5.5h9M5.5 1l4.5 4.5L5.5 10" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: CHANNELS -->
+      <div class="screen" id="sc2" data-i="2">
+        <div class="screen-inner" style="display:flex;flex-direction:column;">
+          <div class="ui-bar">
+            <div class="ui-dots"><div class="ui-dot r"></div><div class="ui-dot a"></div><div class="ui-dot g"></div></div>
+            <div class="ui-title">NeuralDesk · Channel Report</div>
+            <div class="ui-acts"><div class="ui-btn r">Export PDF</div></div>
+          </div>
+          <div class="ui-body" style="flex:1;overflow:hidden;">
+            <div class="ui-sidebar">
+              <div class="ui-ni"><div class="ui-nd"></div>Overview</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Metrics</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Funnels</div>
+              <div class="ui-ni act"><div class="ui-nd"></div>Trends</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Users</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Reports</div>
+            </div>
+            <div class="ui-main">
+              <div class="metrics-grid" style="grid-template-columns:repeat(3,1fr);">
+                <div class="metric hi"><div class="m-lbl">Top Channel</div><div class="m-val r">Organic</div><div class="m-delta">44.2% activation</div></div>
+                <div class="metric"><div class="m-lbl">Referral Rate</div><div class="m-val">36.8%</div><div class="m-delta">↑ 2.4%</div></div>
+                <div class="metric"><div class="m-lbl">Paid CAC</div><div class="m-val">$42</div><div class="m-delta neg">↑ $3.2</div></div>
+              </div>
+              <div class="chart-box" style="margin-top:8px;">
+                <div class="c-lbl">Activation rate by channel · Apr 2026</div>
+                <div class="bar-chart" style="height:88px;align-items:flex-end;margin-top:8px;">
+                  <div class="bar-item"><div class="bar-fill hi" style="height:88%;"></div><div class="bar-lbl">Organic</div></div>
+                  <div class="bar-item"><div class="bar-fill" style="height:70%;"></div><div class="bar-lbl">Referral</div></div>
+                  <div class="bar-item"><div class="bar-fill" style="height:55%;"></div><div class="bar-lbl">Paid</div></div>
+                  <div class="bar-item"><div class="bar-fill" style="height:42%;"></div><div class="bar-lbl">Email</div></div>
+                  <div class="bar-item"><div class="bar-fill" style="height:28%;"></div><div class="bar-lbl">Social</div></div>
+                  <div class="bar-item"><div class="bar-fill" style="height:18%;"></div><div class="bar-lbl">Direct</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-query">
+            <div class="q-dot"></div>
+            <div class="q-text">Which acquisition channel has the highest activation rate?<span class="q-cursor"></span></div>
+            <div class="q-send"><svg viewBox="0 0 11 11" fill="none"><path d="M1 5.5h9M5.5 1l4.5 4.5L5.5 10" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: RETENTION -->
+      <div class="screen" id="sc3" data-i="3">
+        <div class="screen-inner" style="display:flex;flex-direction:column;">
+          <div class="ui-bar">
+            <div class="ui-dots"><div class="ui-dot r"></div><div class="ui-dot a"></div><div class="ui-dot g"></div></div>
+            <div class="ui-title">NeuralDesk · Retention Cohorts</div>
+            <div class="ui-acts"><div class="ui-btn r">Export PDF</div></div>
+          </div>
+          <div class="ui-body" style="flex:1;overflow:hidden;">
+            <div class="ui-sidebar">
+              <div class="ui-ni"><div class="ui-nd"></div>Overview</div>
+              <div class="ui-ni act"><div class="ui-nd"></div>Retention</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Funnels</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Trends</div>
+              <div class="ui-ni"><div class="ui-nd"></div>Users</div>
+            </div>
+            <div class="ui-main">
+              <div class="metrics-grid" style="grid-template-columns:repeat(4,1fr);">
+                <div class="metric hi"><div class="m-lbl">Day 1 Retention</div><div class="m-val r">71.2%</div><div class="m-delta">↑ 3.4%</div></div>
+                <div class="metric"><div class="m-lbl">Day 7</div><div class="m-val">44.8%</div><div class="m-delta">↑ 2.1%</div></div>
+                <div class="metric"><div class="m-lbl">Day 14</div><div class="m-val">36.3%</div><div class="m-delta">↑ 1.6%</div></div>
+                <div class="metric"><div class="m-lbl">Day 30</div><div class="m-val">28.3%</div><div class="m-delta">↑ 1.2%</div></div>
+              </div>
+              <div class="chart-box" style="margin-top:8px;">
+                <div class="c-lbl">Cohort retention heatmap · Feb – Apr 2026</div>
+                <svg width="100%" height="88" viewBox="0 0 420 88">
+                  <text x="72" y="11" font-family="DM Mono" font-size="8" fill="#94A3B8">D0</text>
+                  <text x="122" y="11" font-family="DM Mono" font-size="8" fill="#94A3B8">D1</text>
+                  <text x="172" y="11" font-family="DM Mono" font-size="8" fill="#94A3B8">D7</text>
+                  <text x="222" y="11" font-family="DM Mono" font-size="8" fill="#94A3B8">D14</text>
+                  <text x="272" y="11" font-family="DM Mono" font-size="8" fill="#94A3B8">D21</text>
+                  <text x="322" y="11" font-family="DM Mono" font-size="8" fill="#94A3B8">D30</text>
+                  <!-- Feb row -->
+                  <text x="2" y="28" font-family="DM Mono" font-size="8" fill="#94A3B8">Feb</text>
+                  <rect x="66" y="16" width="42" height="16" fill="#E8000D" opacity="1" rx="2"/><text x="70" y="28" font-family="DM Mono" font-size="8" fill="white">100%</text>
+                  <rect x="116" y="16" width="42" height="16" fill="#E8000D" opacity=".7" rx="2"/><text x="120" y="28" font-family="DM Mono" font-size="8" fill="white">69%</text>
+                  <rect x="166" y="16" width="42" height="16" fill="#E8000D" opacity=".48" rx="2"/><text x="170" y="28" font-family="DM Mono" font-size="8" fill="#3D3D4A">43%</text>
+                  <rect x="216" y="16" width="42" height="16" fill="#E8000D" opacity=".34" rx="2"/><text x="220" y="28" font-family="DM Mono" font-size="8" fill="#3D3D4A">35%</text>
+                  <rect x="266" y="16" width="42" height="16" fill="#E8000D" opacity=".22" rx="2"/><text x="270" y="28" font-family="DM Mono" font-size="8" fill="#3D3D4A">30%</text>
+                  <rect x="316" y="16" width="42" height="16" fill="#E8000D" opacity=".15" rx="2"/><text x="320" y="28" font-family="DM Mono" font-size="8" fill="#3D3D4A">26%</text>
+                  <!-- Mar row -->
+                  <text x="2" y="52" font-family="DM Mono" font-size="8" fill="#94A3B8">Mar</text>
+                  <rect x="66" y="40" width="42" height="16" fill="#E8000D" opacity="1" rx="2"/><text x="70" y="52" font-family="DM Mono" font-size="8" fill="white">100%</text>
+                  <rect x="116" y="40" width="42" height="16" fill="#E8000D" opacity=".74" rx="2"/><text x="120" y="52" font-family="DM Mono" font-size="8" fill="white">71%</text>
+                  <rect x="166" y="40" width="42" height="16" fill="#E8000D" opacity=".52" rx="2"/><text x="170" y="52" font-family="DM Mono" font-size="8" fill="#3D3D4A">45%</text>
+                  <rect x="216" y="40" width="42" height="16" fill="#E8000D" opacity=".36" rx="2"/><text x="220" y="52" font-family="DM Mono" font-size="8" fill="#3D3D4A">36%</text>
+                  <rect x="266" y="40" width="42" height="16" fill="#E8000D" opacity=".24" rx="2"/><text x="270" y="52" font-family="DM Mono" font-size="8" fill="#3D3D4A">31%</text>
+                  <!-- Apr row -->
+                  <text x="2" y="76" font-family="DM Mono" font-size="8" fill="#94A3B8">Apr</text>
+                  <rect x="66" y="64" width="42" height="16" fill="#E8000D" opacity="1" rx="2"/><text x="70" y="76" font-family="DM Mono" font-size="8" fill="white">100%</text>
+                  <rect x="116" y="64" width="42" height="16" fill="#E8000D" opacity=".78" rx="2"/><text x="120" y="76" font-family="DM Mono" font-size="8" fill="white">71%</text>
+                  <rect x="166" y="64" width="42" height="16" fill="#E8000D" opacity=".55" rx="2"/><text x="170" y="76" font-family="DM Mono" font-size="8" fill="#3D3D4A">48%</text>
+                  <rect x="216" y="64" width="42" height="16" fill="#E8000D" opacity=".38" rx="2"/><text x="220" y="76" font-family="DM Mono" font-size="8" fill="#3D3D4A">37%</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="ui-query">
+            <div class="q-dot"></div>
+            <div class="q-text">Show me 30-day retention by cohort.<span class="q-cursor"></span></div>
+            <div class="q-send"><svg viewBox="0 0 11 11" fill="none"><path d="M1 5.5h9M5.5 1l4.5 4.5L5.5 10" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panels -->
+
+  </div>
+</section>
+
+<!-- LOGO STRIP -->
+<div class="logo-strip reveal">
+  <span class="ls-lbl">Trusted by</span>
+  <div class="ls-logos">
+    <span class="ls-logo">Stripe</span>
+    <span class="ls-logo">Figma</span>
+    <span class="ls-logo">Notion</span>
+    <span class="ls-logo">Linear</span>
+    <span class="ls-logo">Vercel</span>
+    <span class="ls-logo">Loom</span>
+    <span class="ls-logo">Airtable</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-head reveal">
+    <div>
+      <div class="s-ey">How it works</div>
+      <h2 class="s-h2">From spreadsheet to insight<br>in <em>under 60 seconds.</em></h2>
+    </div>
+    <p class="s-sub">Three steps. No setup call. No data warehouse. No SQL. Just your data and a question in plain English.</p>
+  </div>
+  <div class="how-steps">
+    <div class="step reveal">
+      <div class="step-top-line"></div>
+      <div class="step-num">01</div>
+      <div class="step-title">Connect your data</div>
+      <div class="step-text">Upload a CSV or connect Google Sheets. No SQL. No API keys. No engineer required. Done in under 2 minutes.</div>
+      <div class="step-tag">CSV · Google Sheets · Excel</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-top-line"></div>
+      <div class="step-num">02</div>
+      <div class="step-title">Ask your question</div>
+      <div class="step-text">Type what you want to know in plain English. "What was my activation rate last month by acquisition channel?"</div>
+      <div class="step-tag">No syntax · No formulas · No training</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-top-line"></div>
+      <div class="step-num">03</div>
+      <div class="step-title">Share the answer</div>
+      <div class="step-text">Get a polished chart, table, or number. Export to PDF or copy the embed link. Drop it directly into your deck.</div>
+      <div class="step-tag">PDF · Embed · Share link</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT BENTO -->
+<section class="product" id="product">
+  <div class="product-head reveal">
+    <div class="s-ey">The product</div>
+    <h2 class="s-h2">Ask anything. Get an answer<br>that's <em>ready to share.</em></h2>
+    <p class="s-sub">The output goes directly into your next meeting — no reformatting, no cleanup, no waiting for the analyst.</p>
+  </div>
+  <div class="bento">
+    <div class="bc s2 reveal">
+      <div class="bc-ey">Natural language query</div>
+      <div class="bc-title">Type a question. Get an answer.</div>
+      <div class="bq">
+        <div class="bq-row">
+          <div class="bq-dot"></div>
+          <div class="bq-text">What was my activation rate last month by channel?<span class="bq-cursor"></span></div>
+          <div class="bq-send"><svg viewBox="0 0 9 9" fill="none"><path d="M1 4.5h7M4.5 1l3.5 3.5L4.5 8" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div class="bq-result">
+        <div class="bq-num">38.6%</div>
+        <div class="bq-delta">↑ 6.3% vs last month · Organic Search leading at 44.2%</div>
+        <svg width="100%" height="40" viewBox="0 0 300 40" preserveAspectRatio="none" style="margin-top:8px;">
+          <path d="M0,34 L60,28 L120,20 L180,14 L240,7 L300,9 L300,40 L0,40Z" fill="rgba(232,0,13,.07)"/>
+          <path d="M0,34 L60,28 L120,20 L180,14 L240,7 L300,9" fill="none" stroke="#E8000D" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="240" cy="7" r="3" fill="#E8000D"/>
+        </svg>
+      </div>
+    </div>
+    <div class="bc dk reveal">
+      <div class="bc-ey lt">Accuracy</div>
+      <div class="bc-num lt">98.4%</div>
+      <div class="bc-sub lt">Query accuracy · Q1 2026</div>
+    </div>
+    <div class="bc reveal">
+      <div class="bc-ey">Time saved</div>
+      <div class="bc-num">3 hrs</div>
+      <div class="bc-sub">Per week · avg user</div>
+    </div>
+    <div class="bc reveal">
+      <div class="bc-ey">Connectors</div>
+      <div class="bc-title">Works with your tools</div>
+      <ul class="feat-list">
+        <li><div class="feat-dot"></div>CSV &amp; Excel upload</li>
+        <li><div class="feat-dot"></div>Google Sheets live sync</li>
+        <li><div class="feat-dot"></div>PDF &amp; embed export</li>
+        <li><div class="feat-dot"></div>SOC 2 Type II · GDPR</li>
+      </ul>
+    </div>
+    <div class="bc dk reveal">
+      <div class="bc-ey lt">Time to first insight</div>
+      <div class="bc-num lt">60s</div>
+      <div class="bc-sub lt">From signup · average</div>
+    </div>
+    <div class="bc reveal">
+      <div class="bc-ey">Output quality</div>
+      <div class="bc-title">Share-ready by default</div>
+      <div class="bc-text">Every chart is formatted, labelled, and export-ready. Drop it directly into a slide deck or Slack without any editing.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof" id="proof">
+  <div class="s-ey reveal">Results</div>
+  <h2 class="s-h2 reveal">Numbers from<br>teams like <em>yours.</em></h2>
+  <p class="s-sub reveal">Real outcomes from product managers who replaced their weekly reporting workflow with NeuralDesk.</p>
+  <div class="proof-grid">
+    <div class="metrics-stack">
+      <div class="mrow reveal">
+        <div><div class="mr-num">3 hrs</div><div class="mr-lbl">Saved per week · avg user</div></div>
+        <svg class="mr-spark" viewBox="0 0 80 36" preserveAspectRatio="none">
+          <path d="M0,30 L20,24 L40,16 L60,8 L80,10 L80,36 L0,36Z" fill="rgba(232,0,13,.1)"/>
+          <path d="M0,30 L20,24 L40,16 L60,8 L80,10" fill="none" stroke="rgba(232,0,13,.5)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="mrow reveal">
+        <div><div class="mr-num">60s</div><div class="mr-lbl">Avg time to first insight</div></div>
+        <svg class="mr-spark" viewBox="0 0 80 36" preserveAspectRatio="none">
+          <path d="M0,28 L20,20 L40,14 L60,6 L80,8 L80,36 L0,36Z" fill="rgba(232,0,13,.1)"/>
+          <path d="M0,28 L20,20 L40,14 L60,6 L80,8" fill="none" stroke="rgba(232,0,13,.5)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="mrow reveal">
+        <div><div class="mr-num">98.4%</div><div class="mr-lbl">Query accuracy rate</div></div>
+        <svg class="mr-spark" viewBox="0 0 80 36" preserveAspectRatio="none">
+          <path d="M0,32 L20,26 L40,18 L60,10 L80,6 L80,36 L0,36Z" fill="rgba(232,0,13,.1)"/>
+          <path d="M0,32 L20,26 L40,18 L60,10 L80,6" fill="none" stroke="rgba(232,0,13,.5)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="testi-col">
+      <div class="testi reveal">
+        <div class="t-q">"We went from a 4-day turnaround on campaign reports to getting the answer before my next standup. I sent my first chart to the team in the same session I signed up."</div>
+        <div class="t-attr"><div class="t-av">SK</div><div class="t-name"><span>Sarah K. · Senior PM</span>Stripe · since Jan 2026</div></div>
+      </div>
+      <div class="testi reveal">
+        <div class="t-q">"I stopped waiting for our analyst. I ask NeuralDesk, I get the chart, I drop it in the deck. It's changed how I prep for every investor update."</div>
+        <div class="t-attr"><div class="t-av">MR</div><div class="t-name"><span>Marcus R. · Founder</span>Linear · since Feb 2026</div></div>
+      </div>
+      <div class="testi reveal">
+        <div class="t-q">"The output is polished enough to put directly in front of our board. I just export the PDF and send it. That was never possible before."</div>
+        <div class="t-attr"><div class="t-av">AJ</div><div class="t-name"><span>Aisha J. · Head of Growth</span>Notion · since Dec 2025</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRAPHS -->
+<section class="graphs" id="graphs">
+  <div class="graphs-head reveal">
+    <div>
+      <div class="s-ey">Analytics suite</div>
+      <h2 class="s-h2">Every chart you need.<br><em>Instantly generated.</em></h2>
+    </div>
+    <p class="s-sub">Line charts, bar charts, funnels, cohort tables, donut charts — all from a single plain-English query. Share-ready output every time.</p>
+  </div>
+  <div class="graph-grid">
+    <!-- Wide line chart -->
+    <div class="gcell wide reveal">
+      <div class="gc-lbl">Activation Rate · 6-month trend</div>
+      <div class="gc-val">38.6%</div>
+      <div class="gc-delta">↑ 6.3% vs last month</div>
+      <svg width="100%" height="80" viewBox="0 0 600 80" preserveAspectRatio="none">
+        <defs><linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8000D" stop-opacity=".1"/><stop offset="100%" stop-color="#E8000D" stop-opacity="0"/></linearGradient></defs>
+        <line x1="0" y1="20" x2="600" y2="20" stroke="#E8ECF0" stroke-width=".5"/>
+        <line x1="0" y1="40" x2="600" y2="40" stroke="#E8ECF0" stroke-width=".5"/>
+        <line x1="0" y1="60" x2="600" y2="60" stroke="#E8ECF0" stroke-width=".5"/>
+        <path d="M0,68 L120,58 L240,46 L360,34 L480,18 L600,20 L600,80 L0,80Z" fill="url(#gl)"/>
+        <path d="M0,68 L120,58 L240,46 L360,34 L480,18 L600,20" fill="none" stroke="#E8000D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="120" cy="58" r="3" fill="#E8000D" opacity=".5"/>
+        <circle cx="240" cy="46" r="3" fill="#E8000D" opacity=".65"/>
+        <circle cx="360" cy="34" r="3" fill="#E8000D" opacity=".8"/>
+        <circle cx="480" cy="18" r="4" fill="#E8000D"/>
+        <text x="484" y="14" font-family="DM Mono" font-size="8" fill="#E8000D">38.6%</text>
+        <text x="0" y="78" font-family="DM Mono" font-size="8" fill="#C0C5D0">Nov</text>
+        <text x="115" y="78" font-family="DM Mono" font-size="8" fill="#C0C5D0">Dec</text>
+        <text x="233" y="78" font-family="DM Mono" font-size="8" fill="#C0C5D0">Jan</text>
+        <text x="352" y="78" font-family="DM Mono" font-size="8" fill="#C0C5D0">Feb</text>
+        <text x="470" y="78" font-family="DM Mono" font-size="8" fill="#C0C5D0">Mar</text>
+        <text x="576" y="78" font-family="DM Mono" font-size="8" fill="#C0C5D0">Apr</text>
+      </svg>
+    </div>
+    <!-- Bar chart -->
+    <div class="gcell reveal">
+      <div class="gc-lbl">Revenue by channel</div>
+      <div class="gc-val">$152K</div>
+      <div class="gc-delta">↑ 12.4% MoM</div>
+      <div class="bar-chart" style="height:80px;align-items:flex-end;margin-top:8px;">
+        <div class="bar-item"><div class="bar-fill hi" style="height:90%;"></div><div class="bar-lbl">Organic</div></div>
+        <div class="bar-item"><div class="bar-fill" style="height:66%;"></div><div class="bar-lbl">Referral</div></div>
+        <div class="bar-item"><div class="bar-fill" style="height:50%;"></div><div class="bar-lbl">Paid</div></div>
+        <div class="bar-item"><div class="bar-fill" style="height:38%;"></div><div class="bar-lbl">Email</div></div>
+        <div class="bar-item"><div class="bar-fill" style="height:22%;"></div><div class="bar-lbl">Social</div></div>
+      </div>
+    </div>
+    <!-- Donut -->
+    <div class="gcell reveal">
+      <div class="gc-lbl">Plan distribution</div>
+      <div class="gc-val">4,786</div>
+      <div class="gc-delta">Paid accounts · May 2026</div>
+      <div class="donut-wrap">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="27" fill="none" stroke="#F0F4F8" stroke-width="10"/>
+          <circle cx="36" cy="36" r="27" fill="none" stroke="#E8000D" stroke-width="10" stroke-dasharray="98.5 71" stroke-dashoffset="42.5"/>
+          <circle cx="36" cy="36" r="27" fill="none" stroke="#E2E8F0" stroke-width="10" stroke-dasharray="47.6 121.9" stroke-dashoffset="-56"/>
+          <circle cx="36" cy="36" r="27" fill="none" stroke="#64748B" stroke-width="10" stroke-dasharray="23.8 145.7" stroke-dashoffset="-103.6"/>
+          <text x="36" y="40" text-anchor="middle" font-family="DM Mono" font-size="10" font-weight="500" fill="#E8000D">58%</text>
+        </svg>
+        <div class="dleg">
+          <div class="dli"><div class="dld" style="background:#E8000D;"></div>Pro · 58%</div>
+          <div class="dli"><div class="dld" style="background:#E2E8F0;"></div>Free · 28%</div>
+          <div class="dli"><div class="dld" style="background:#64748B;"></div>Team · 14%</div>
+        </div>
+      </div>
+    </div>
+    <!-- Dark multi-line retention -->
+    <div class="gcell dk wide reveal">
+      <div class="gc-lbl lt">Retention curves · cohort comparison</div>
+      <div class="gc-val lt">71.2%</div>
+      <div class="gc-delta">Day 1 retention · Apr cohort</div>
+      <svg width="100%" height="80" viewBox="0 0 600 80" preserveAspectRatio="none" style="margin-top:8px;">
+        <line x1="0" y1="20" x2="600" y2="20" stroke="rgba(255,255,255,.05)" stroke-width=".5"/>
+        <line x1="0" y1="40" x2="600" y2="40" stroke="rgba(255,255,255,.05)" stroke-width=".5"/>
+        <line x1="0" y1="60" x2="600" y2="60" stroke="rgba(255,255,255,.05)" stroke-width=".5"/>
+        <path d="M0,8 L120,20 L240,30 L360,38 L480,44 L600,48" fill="none" stroke="#E8000D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M0,12 L120,26 L240,36 L360,46 L480,52 L600,56" fill="none" stroke="rgba(232,0,13,.42)" stroke-width="1.5" stroke-dasharray="5 3" stroke-linecap="round"/>
+        <path d="M0,18 L120,32 L240,42 L360,52 L480,58 L600,62" fill="none" stroke="rgba(232,0,13,.22)" stroke-width="1" stroke-dasharray="3 4" stroke-linecap="round"/>
+        <text x="4" y="7" font-family="DM Mono" font-size="8" fill="rgba(232,0,13,.85)">Apr cohort</text>
+        <text x="4" y="16" font-family="DM Mono" font-size="8" fill="rgba(232,0,13,.42)">Mar cohort</text>
+        <text x="4" y="26" font-family="DM Mono" font-size="8" fill="rgba(232,0,13,.22)">Feb cohort</text>
+        <text x="0" y="76" font-family="DM Mono" font-size="8" fill="rgba(255,255,255,.2)">D0</text>
+        <text x="115" y="76" font-family="DM Mono" font-size="8" fill="rgba(255,255,255,.2)">D1</text>
+        <text x="233" y="76" font-family="DM Mono" font-size="8" fill="rgba(255,255,255,.2)">D7</text>
+        <text x="352" y="76" font-family="DM Mono" font-size="8" fill="rgba(255,255,255,.2)">D14</text>
+        <text x="470" y="76" font-family="DM Mono" font-size="8" fill="rgba(255,255,255,.2)">D21</text>
+        <text x="578" y="76" font-family="DM Mono" font-size="8" fill="rgba(255,255,255,.2)">D30</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-hd reveal">
+    <div class="s-ey">Pricing</div>
+    <h2 class="s-h2">No surprises. No <em>sales call.</em></h2>
+    <p class="s-sub">Start free. Upgrade when you need more. Cancel anytime. The Pro plan is within solo approval for most teams.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="plan reveal">
+      <div class="plan-tag-g">Free forever</div>
+      <div class="plan-name">Free</div>
+      <div class="plan-price">$0</div>
+      <div class="plan-per">no credit card needed</div>
+      <div class="plan-div"></div>
+      <ul class="plan-feats">
+        <li>50 queries per month</li>
+        <li>CSV &amp; Google Sheets</li>
+        <li>3 chart types</li>
+        <li>NeuralDesk watermark</li>
+      </ul>
+      <a href="#" class="plan-btn">Get started free</a>
+    </div>
+    <div class="plan feat reveal">
+      <div class="plan-tag">Most popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price r">$29</div>
+      <div class="plan-per">per month · cancel anytime</div>
+      <div class="plan-div"></div>
+      <ul class="plan-feats">
+        <li>Unlimited queries</li>
+        <li>All data connectors</li>
+        <li>All chart types</li>
+        <li>PDF &amp; embed export</li>
+        <li>No watermark</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="#" class="plan-btn r">Start Pro free · 14 days</a>
+    </div>
+    <div class="plan reveal">
+      <div class="plan-tag-g">For teams</div>
+      <div class="plan-name">Team</div>
+      <div class="plan-price">$79</div>
+      <div class="plan-per">per month · up to 10 seats</div>
+      <div class="plan-div"></div>
+      <ul class="plan-feats">
+        <li>Everything in Pro</li>
+        <li>Shared workspaces</li>
+        <li>Admin controls</li>
+        <li>SOC 2 report on request</li>
+        <li>Dedicated support</li>
+      </ul>
+      <a href="#" class="plan-btn">Start Team trial</a>
+    </div>
+  </div>
+  <div class="pricing-note reveal">Need to justify this to your manager? <a href="#">Generate a one-pager →</a></div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="s-ey reveal">Ready when you are</div>
+  <h2 class="s-h2 reveal">Your first answer<br>is <em>60 seconds away.</em></h2>
+  <p class="s-sub reveal">Start free. No credit card. No setup call. Connect your data and ask your first question in under a minute.</p>
+  <a href="#pricing" class="btn-red reveal">Start free — no card needed</a>
+  <div class="final-badges reveal">
+    <span class="fbadge">SOC 2 Type II</span>
+    <span class="fbadge">GDPR compliant</span>
+    <span class="fbadge">Cancel anytime</span>
+    <span class="fbadge">No credit card</span>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo"><div class="f-dot"></div><span class="f-brand">NeuralDesk</span></div>
+  <span class="f-copy">© 2026 NeuralDesk · All rights reserved</span>
+  <ul class="f-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="#">Security</a></li>
+    <li><a href="#">Docs</a></li>
+    <li><a href="#">Status</a></li>
+  </ul>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx+'px'; cur.style.top = my+'px';
+});
+(function loop() {
+  rx += (mx-rx)*.1; ry += (my-ry)*.1;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,.stab,.step,.plan,.testi,.mrow,.bc,.gcell').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(2.5)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1.5)';
+    ring.style.opacity = '.5';
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.style.transform = 'translate(-50%,-50%) scale(1)';
+    ring.style.transform = 'translate(-50%,-50%) scale(1)';
+    ring.style.opacity = '1';
+  });
+});
+
+// ── TAB SWITCHER ──
+const screens = document.querySelectorAll('.screen');
+const tabs = document.querySelectorAll('.stab');
+
+function showTab(idx) {
+  screens.forEach((s, i) => s.classList.toggle('active', i === idx));
+  tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+tabs.forEach((t, i) => t.addEventListener('click', () => showTab(i)));
+showTab(0);
+
+// ── TYPEWRITER ──
+const queries = [
+  'What was my activation rate last month?',
+  'Which channel has the highest LTV?',
+  'Show me churn trend over 6 months.',
+  'What is my MoM revenue growth?',
+  'Which feature drives most retention?'
+];
+let qi=0, ci=0, typing=true;
+const qEl = document.getElementById('hq');
+function typeQ() {
+  const q = queries[qi];
+  if (typing) {
+    qEl.innerHTML = q.slice(0,ci) + '<span class="q-cursor"></span>';
+    ci++;
+    if (ci > q.length) { typing = false; setTimeout(typeQ, 1800); return; }
+  } else {
+    qEl.innerHTML = q.slice(0,ci) + '<span class="q-cursor"></span>';
+    ci--;
+    if (ci < 0) { typing = true; ci = 0; qi = (qi+1) % queries.length; }
+  }
+  setTimeout(typeQ, typing ? 52 : 24);
+}
+setTimeout(typeQ, 1000);
+
+// ── BURGER MENU ──
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobileMenu');
+if (burger) {
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      burger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+}
+
+// ── METRICS GRID RESPONSIVE ──
+function fixMetricsGrid() {
+  const isMobile = window.innerWidth <= 640;
+  document.querySelectorAll('.metrics-grid').forEach(g => {
+    const cols = g.style.gridTemplateColumns;
+    if (isMobile) {
+      g.style.gridTemplateColumns = '1fr 1fr';
+    } else {
+      // Restore original — set by inline style in HTML
+      g.dataset.orig = g.dataset.orig || cols;
+      g.style.gridTemplateColumns = g.dataset.orig || cols;
+    }
+  });
+}
+fixMetricsGrid();
+window.addEventListener('resize', fixMetricsGrid);
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -28px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

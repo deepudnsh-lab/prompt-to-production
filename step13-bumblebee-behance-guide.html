@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 13: Behance Publish Guide · Bumblebee World</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Nunito+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#FFD000;--sun-deep:#F5A800;--sun-pale:#FFF8D6;
+  --honey:#FF8C00;--honey-light:#FFE0A0;
+  --bee:#1A1200;--bee-dark:#0D0D00;
+  --leaf:#2E7D32;--leaf-light:#E8F5E9;
+  --marigold:#FF6B35;
+  --paper:#FFFEF7;
+  --ink:#1A1200;--ink-mid:#4A3F00;--ink-muted:#8A7A00;--ink-faint:#BFB060;
+  --rule:#F0E890;--tag-bg:#FFF8D6;
+  --good-bg:#E8F5E9;--good-text:#1B5E20;
+  --todo-bg:#FFF3E0;--todo-text:#E65100;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'Nunito Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--sun);margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;
+}
+.cover-band::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 30%,var(--honey) 0%,transparent 55%),
+             radial-gradient(circle at 10% 80%,rgba(255,255,255,.3) 0%,transparent 40%);
+  pointer-events:none;
+}
+.cover-band::after{
+  content:'';position:absolute;inset:0;opacity:.12;
+  background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);
+  background-size:24px 24px;pointer-events:none;
+}
+.cover-emoji{font-size:3.5rem;position:absolute;right:280px;top:44px;z-index:2;animation:wobble 3s ease-in-out infinite;}
+@keyframes wobble{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--bee);opacity:.55;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--bee);opacity:.4;}
+.cover-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:52px;line-height:.95;color:var(--bee);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.15);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--bee);font-weight:700;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:4px;background:linear-gradient(to right,var(--honey),var(--sun),transparent);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--honey);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:2px;background:var(--rule);}
+.section-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:32px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--honey);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:2px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--tag-bg);border-left:4px solid var(--sun-deep);padding:18px 22px;margin:24px 0;border-radius:0 4px 4px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── COPY BLOCK — terminal style ── */
+.copy-block{background:var(--bee);border-radius:4px;overflow:hidden;margin:20px 0;}
+.cb-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,208,0,.35);padding:10px 18px 6px;border-bottom:1px solid rgba(255,255,255,.06);}
+.cb-text{font-family:'DM Mono',monospace;font-size:12px;line-height:1.75;color:rgba(255,248,214,.8);padding:14px 18px;white-space:pre-wrap;word-break:break-word;}
+.cb-text em{font-style:normal;color:var(--sun);}
+.cb-text strong{color:#fff;}
+
+/* ── TAGS ROW ── */
+.tags-row{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0;}
+.tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;background:var(--tag-bg);color:var(--honey);border:1px solid var(--rule);padding:4px 12px;border-radius:20px;}
+.tag-primary{background:var(--sun);color:var(--bee);border-color:var(--sun-deep);font-weight:700;}
+
+/* ── COVER SPEC ── */
+.cover-spec{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:20px 0;}
+.cs-cell{background:var(--tag-bg);padding:18px 20px;border-radius:4px;}
+.cs-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--honey);margin-bottom:8px;}
+.cs-value{font-size:13px;color:var(--ink-mid);line-height:1.6;}
+.cs-value strong{color:var(--ink);}
+.cs-preview{background:var(--bee);padding:18px 20px;border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.cs-preview::after{content:'';position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle,rgba(255,208,0,.8) 1.5px,transparent 1.5px);background-size:18px 18px;pointer-events:none;}
+.cs-preview-text{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.1rem;color:var(--sun);text-align:center;position:relative;z-index:1;line-height:1.3;}
+.cs-preview-sub{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.12em;text-align:center;margin-top:6px;position:relative;z-index:1;}
+
+/* ── ASSET LIST ── */
+.asset-list{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.asset-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:0;border:2px solid var(--rule);border-bottom:none;}
+.asset-row:first-child{border-radius:4px 4px 0 0;}
+.asset-row:last-child{border-bottom:2px solid var(--rule);border-radius:0 0 4px 4px;}
+.asset-num{background:var(--bee);color:var(--sun);font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;display:flex;align-items:center;justify-content:center;padding:16px 8px;align-self:stretch;border-right:2px solid var(--rule);}
+.asset-content{background:#fff;padding:12px 18px;}
+.asset-content:hover{background:var(--tag-bg);}
+.asset-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.asset-desc{font-size:11.5px;color:var(--ink-muted);line-height:1.55;}
+.asset-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;align-self:center;margin-right:16px;}
+.badge-screenshot{background:var(--good-bg);color:var(--good-text);}
+.badge-composite{background:rgba(255,140,0,.15);color:var(--honey);}
+.badge-file{background:var(--tag-bg);color:var(--ink-muted);}
+
+/* ── CHECKLIST ── */
+.checklist{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.check-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;background:#fff;border:2px solid var(--rule);border-bottom:none;padding:12px 18px;}
+.check-row:first-child{border-radius:4px 4px 0 0;}
+.check-row:last-child{border-bottom:2px solid var(--rule);border-radius:0 0 4px 4px;}
+.check-row:hover{background:var(--tag-bg);}
+.check-text{font-size:13px;color:var(--ink-mid);line-height:1.5;}
+.check-text strong{color:var(--ink);}
+.check-status{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.st-done{background:var(--good-bg);color:var(--good-text);}
+.st-todo{background:var(--todo-bg);color:var(--todo-text);}
+.st-behance{background:rgba(255,208,0,.15);color:var(--honey);}
+
+/* ── DELIVERABLES TABLE ── */
+.deliverables-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.deliverables-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--bee);color:var(--sun);padding:11px 14px;text-align:left;}
+.deliverables-table td{padding:12px 14px;border-bottom:2px solid var(--rule);font-size:12.5px;color:var(--ink-mid);vertical-align:top;line-height:1.5;}
+.deliverables-table tr:nth-child(even) td{background:var(--tag-bg);}
+.deliverables-table tr:last-child td{border-bottom:none;}
+.deliverables-table td:first-child{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--honey);}
+.td-ready{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--good-bg);color:var(--good-text);white-space:nowrap;}
+.td-add{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--todo-bg);color:var(--todo-text);white-space:nowrap;}
+
+/* ── SERIES STATUS ── */
+.series-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:24px 0;}
+.series-card{padding:18px 18px;border-radius:4px;}
+.sc-done{background:var(--bee);position:relative;overflow:hidden;}
+.sc-done::after{content:'';position:absolute;inset:0;opacity:.07;background-image:radial-gradient(circle,rgba(255,208,0,.8) 1.5px,transparent 1.5px);background-size:16px 16px;pointer-events:none;}
+.sc-current{background:var(--sun);position:relative;overflow:hidden;}
+.sc-current::after{content:'';position:absolute;inset:0;opacity:.15;background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);background-size:16px 16px;pointer-events:none;}
+.sc-pending{background:var(--tag-bg);}
+.sc-num{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;margin-bottom:6px;position:relative;z-index:1;}
+.sc-num-done{color:rgba(255,208,0,.4);}
+.sc-num-current{color:rgba(26,18,0,.4);}
+.sc-num-pending{color:var(--ink-faint);}
+.sc-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;position:relative;z-index:1;line-height:1.2;margin-bottom:4px;}
+.sc-name-done{color:var(--sun);}
+.sc-name-current{color:var(--bee);}
+.sc-name-pending{color:var(--ink-muted);}
+.sc-industry{font-size:11px;position:relative;z-index:1;}
+.sc-industry-done{color:rgba(255,255,255,.3);}
+.sc-industry-current{color:rgba(26,18,0,.5);}
+.sc-industry-pending{color:var(--ink-faint);}
+.sc-status{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;margin-top:8px;position:relative;z-index:1;}
+.sc-status-done{color:rgba(255,208,0,.5);}
+.sc-status-current{color:rgba(26,18,0,.45);}
+.sc-status-pending{color:var(--ink-faint);}
+
+/* ── PUBLISH BOX ── */
+.publish-box{background:var(--sun);padding:32px 36px;margin-top:32px;position:relative;overflow:hidden;border-radius:4px;}
+.publish-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 90% 50%,var(--honey) 0%,transparent 55%);pointer-events:none;}
+.publish-box::after{content:'';position:absolute;inset:0;opacity:.1;background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);background-size:20px 20px;pointer-events:none;}
+.pb-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:10px;position:relative;z-index:1;}
+.pb-text{font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;color:var(--bee);line-height:1.6;position:relative;z-index:1;}
+.pb-text em{font-style:normal;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.15);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:2px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .cover-emoji{display:none;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .cover-spec{grid-template-columns:1fr;}
+  .cs-preview{display:none;}
+  .asset-row{grid-template-columns:28px 1fr;}
+  .asset-badge{display:none;}
+  .series-grid{grid-template-columns:1fr 1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div class="cover-emoji">🐝</div>
+  <div>
+    <div class="project-series">From Prompt to Production · Bumblebee World · Brand 03 of 06</div>
+    <h1 class="cover-title">Behance<br><em>Publish Guide</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 13 — Behance Publish Guide</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Bumblebee World</div></div>
+    <div class="meta-block"><div class="meta-label">Platform</div><div class="meta-value">Behance · behance.net/deepudinesh</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 WHAT THIS IS FOR -->
+  <div class="section">
+    <div class="section-label">01 — What this document is for</div>
+    <h2 class="section-heading">Everything you need to<br><em>publish this on Behance.</em></h2>
+
+    <p class="body-text">This is the final step for Bumblebee World. The landing page is built, all process documents are complete, and the case study is documented. What remains is the Behance publication — setting up the project page, writing the descriptions, choosing the right assets to feature, and framing the work for the people who will read it.</p>
+
+    <p class="body-text">This document covers: the Behance project title and description (ready to copy and paste), the exact order to present assets, the tags to use for discoverability, the cover image specification, and how to frame Brand 03 within the series.</p>
+
+    <div class="note-box">
+      <p><strong>Who reads your Behance:</strong> Design directors at product companies and agencies, senior designers evaluating a potential peer, and recruiters scanning for signal. The first 5 seconds of your Behance project page follow the same rules as the Bumblebee World landing page itself — specific beats generic, method beats outcome, and the cover image is everything. 80% of click decisions on Behance are made from the thumbnail alone.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 PROJECT SETUP -->
+  <div class="section">
+    <div class="section-label">02 — Behance project setup</div>
+    <h2 class="section-heading">What to write.<br><em>Word for word.</em></h2>
+
+    <p class="body-text">Copy the text below exactly into the Behance project fields. Do not paraphrase — these descriptions are written to be specific, credible, and keyword-searchable.</p>
+
+    <div class="copy-block">
+      <div class="cb-label">Behance project title · copy this exactly</div>
+      <div class="cb-text">From Prompt to Production — Bumblebee World · AI-Directed Web Design · Kids EdTech</div>
+    </div>
+
+    <div class="copy-block">
+      <div class="cb-label">Short description · shown in Behance search results · 2 sentences max</div>
+      <div class="cb-text">A complete, research-led web design process for a hypothetical Indian children's books and toys brand — executed through AI direction across Claude and Gemini. 9 documented steps from industry research and persona development through moodboarding, copywriting, and a production-quality landing page.</div>
+    </div>
+
+    <div class="copy-block">
+      <div class="cb-label">Full project description · paste into Behance project overview</div>
+      <div class="cb-text"><strong>The project</strong>
+Bumblebee World is Brand 03 in From Prompt to Production — a self-initiated case study series demonstrating a complete web design process executed through AI direction. I am the creative director and domain expert. Claude (Anthropic) and Gemini are the execution engines.
+
+<strong>The brief</strong>
+Design a landing page for a hypothetical Indian children's books and toys brand targeting early learners aged 3–6. The buyer is an urban, aspirational Indian mother — not the child. Every design decision must pass two simultaneous tests: the child's engagement test and the parent's Instagram test. The brand must be beautiful AND Indian AND educational — something no competitor in the category achieves simultaneously.
+
+<strong>The process</strong>
+9 steps, each documented as a standalone HTML file. Industry research with sourced statistics (₹4,200 Cr books market, ₹18,500 Cr toys market, 62% gifting purchase rate). A persona built from real demographic data. A competitor visual audit across Usborne, Kiddopia, and Tulika Books. Three AI-generated moodboard directions on Midjourney. Complete copywriting before any layout decision. A multi-tool landing page build — Claude for iterations, Gemini for the forest illustration system and illustrated book covers, Claude again for brand alignment and image embedding.
+
+<strong>The design direction</strong>
+Direction A — Sunny / Bloom. Sunshine #FFD000 as the primary palette signal — the colour of marigolds, school bags, turmeric, ripe mangoes. Nunito 900 for display. DM Mono for labels. Forest parallax illustration system. Illustrated book cover mockups with Indian characters. Base64-embedded images. Dark/light theme toggle. Hero headline: "Every child is a world."
+
+<strong>The multi-tool workflow</strong>
+Brand 03 introduced a new workflow to the series: a Gemini-generated HTML file (forest illustrations, book cover art, dark/light toggle) brought back to Claude for brand alignment, palette correction, and content replacement. Documented in full in Step 10.
+
+<strong>Tools used</strong>
+Claude (Anthropic) · Gemini · Midjourney · Google Fonts · Pure HTML / CSS / JS</div>
+    </div>
+
+    <p class="body-text" style="margin-top:24px;">Behance tags — add all of these for discoverability:</p>
+    <div class="tags-row">
+      <span class="tag tag-primary">UI Design</span>
+      <span class="tag tag-primary">Web Design</span>
+      <span class="tag tag-primary">Brand Identity</span>
+      <span class="tag tag-primary">AI + Design</span>
+      <span class="tag tag-primary">Kids EdTech</span>
+      <span class="tag">UX Design</span>
+      <span class="tag">Prompt Engineering</span>
+      <span class="tag">Case Study</span>
+      <span class="tag">Landing Page</span>
+      <span class="tag">Indian Design</span>
+      <span class="tag">Children's Brand</span>
+      <span class="tag">D2C</span>
+      <span class="tag">Typography</span>
+      <span class="tag">Nunito</span>
+      <span class="tag">HTML CSS</span>
+      <span class="tag">Behance India</span>
+      <span class="tag">Design Process</span>
+      <span class="tag">Moodboard</span>
+      <span class="tag">Copywriting</span>
+      <span class="tag">Multi-tool Workflow</span>
+      <span class="tag">Gemini</span>
+      <span class="tag">Claude Anthropic</span>
+      <span class="tag">Illustration</span>
+      <span class="tag">2026</span>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 COVER IMAGE -->
+  <div class="section">
+    <div class="section-label">03 — Cover image specification</div>
+    <h2 class="section-heading">The thumbnail<br><em>is everything.</em></h2>
+
+    <p class="body-text">On Behance, 80% of click decisions are made from the thumbnail. The cover image must communicate the brand's visual identity, quality level, and category in under two seconds. The wrong cover loses the click before anyone reads a word.</p>
+
+    <div class="cover-spec">
+      <div class="cs-cell">
+        <div class="cs-label">What to screenshot</div>
+        <div class="cs-value">The hero section of <strong>bumblebee-landing.html</strong> — the forest illustration with the "Every child is a world." headline and the trust badge strip at 1400px wide. This is the single strongest visual in the project. It communicates the brand palette, illustration system, Indian identity, and quality level simultaneously.</div>
+      </div>
+      <div class="cs-preview">
+        <div>
+          <div class="cs-preview-text">Every child<br>is a world. 🌻</div>
+          <div class="cs-preview-sub">Sunshine · Leaf · Marigold · Cream</div>
+        </div>
+      </div>
+      <div class="cs-cell">
+        <div class="cs-label">Specification</div>
+        <div class="cs-value"><strong>Size:</strong> 1400 × 900px minimum · <strong>Format:</strong> JPG, quality 90+ · <strong>Crop:</strong> Hero section only, no scrolled content below the fold · <strong>Browser:</strong> Chrome at 1400px viewport width · <strong>Theme:</strong> Light theme (forest illustration is most visible)</div>
+      </div>
+      <div class="cs-cell">
+        <div class="cs-label">Why not a process document</div>
+        <div class="cs-value">Process documents are what you show <em>after</em> someone clicks. The cover earns the click. The forest illustration hero — warm yellow, Indian characters, professional illustration quality — stands out against the dark-mode OrbitX and charcoal Ember &amp; Oak covers in the series. <strong>The series covers should be visually diverse. Bumblebee World's sunshine yellow is the most distinctive thumbnail in the set.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 ASSET ORDER -->
+  <div class="section">
+    <div class="section-label">04 — What to show and in what order</div>
+    <h2 class="section-heading">The exact sequence<br><em>of assets.</em></h2>
+
+    <p class="body-text">Behance projects are read like a scroll — the first image is the most critical, the drop-off after the first scroll is steep. Every asset shown should earn its place. This sequence tells the story in the fastest, clearest way for a design director scanning the page.</p>
+
+    <div class="asset-list">
+      <div class="asset-row">
+        <div class="asset-num">1</div>
+        <div class="asset-content">
+          <div class="asset-title">Cover — landing page hero section</div>
+          <div class="asset-desc">Screenshot bumblebee-landing.html hero at 1400px wide · crop to 1400×900 · the forest illustration with headline and trust badges · light theme · this is the Behance cover image</div>
+        </div>
+        <span class="asset-badge badge-screenshot">Screenshot</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">2</div>
+        <div class="asset-content">
+          <div class="asset-title">Full landing page — desktop scroll</div>
+          <div class="asset-desc">Screenshot full page at 1400px wide using GoFullPage · stitch sections vertically in Figma · shows the complete scroll experience from hero to footer including dark mode toggle</div>
+        </div>
+        <span class="asset-badge badge-screenshot">Screenshot</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">3</div>
+        <div class="asset-content">
+          <div class="asset-title">Landing page — dark theme version</div>
+          <div class="asset-desc">Toggle to dark theme, screenshot the hero and books section at 1400px · place side by side with light theme in Figma · shows the working theme toggle and brand's versatility</div>
+        </div>
+        <span class="asset-badge badge-composite">Composite</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">4</div>
+        <div class="asset-content">
+          <div class="asset-title">Landing page — mobile view</div>
+          <div class="asset-desc">Screenshot at 390px (iPhone 14 width) · hero + books + gift sections · place 3 screens side by side in Figma on a warm cream background · shows responsive quality</div>
+        </div>
+        <span class="asset-badge badge-composite">Composite</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">5</div>
+        <div class="asset-content">
+          <div class="asset-title">Three moodboards — all directions on one slide</div>
+          <div class="asset-desc">DIRECTION_A.png · DIRECTION_B.png · DIRECTION_C.png · arrange side by side in Figma at equal width · add direction labels below each (A — Sunny/Bloom · B — Wild/Lush · C — Sweet/Petal)</div>
+        </div>
+        <span class="asset-badge badge-composite">Composite</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">6</div>
+        <div class="asset-content">
+          <div class="asset-title">Selected direction — Direction A Sunny/Bloom full size</div>
+          <div class="asset-desc">DIRECTION_A.png at full resolution · the complete visual identity system in one image · add padding around it on a cream #FFF8D6 background · let it breathe</div>
+        </div>
+        <span class="asset-badge badge-file">Moodboard image</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">7</div>
+        <div class="asset-content">
+          <div class="asset-title">Competitor visual audit — annotated screenshots</div>
+          <div class="asset-desc">Your annotated Usborne + Kiddopia + Tulika screenshots from step6-bumblebee-audit.html · the three annotated images embedded · shows research rigour and the gap analysis that drove every design decision</div>
+        </div>
+        <span class="asset-badge badge-screenshot">Screenshot</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">8</div>
+        <div class="asset-content">
+          <div class="asset-title">Before &amp; After — the transformation</div>
+          <div class="asset-desc">Screenshot the before/after split comparison from step11-bumblebee-before-after.html · Decision 01 (hero headline) and Decision 09 (visual system) side by side · one of the most legible "what changed" visuals in the project</div>
+        </div>
+        <span class="asset-badge badge-screenshot">Screenshot</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">9</div>
+        <div class="asset-content">
+          <div class="asset-title">Multi-tool workflow diagram — from Step 10</div>
+          <div class="asset-desc">Screenshot the workflow diagram from step10-bumblebee-prompt-diary.html showing Claude → Gemini → Claude · this is unique to Brand 03 and is the most differentiated process asset in the entire series · great conversation starter in interviews</div>
+        </div>
+        <span class="asset-badge badge-screenshot">Screenshot</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">10</div>
+        <div class="asset-content">
+          <div class="asset-title">Prompt diary — the cloud dive pivot entry</div>
+          <div class="asset-desc">Screenshot Prompt 07 (cloud dive experiment) or Prompt 08 (the reset) from step10-bumblebee-prompt-diary.html · the moment where seven iterations failed and the decision was made to switch tools · shows honest process documentation, not just successful outcomes</div>
+        </div>
+        <span class="asset-badge badge-screenshot">Screenshot</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 CHECKLIST -->
+  <div class="section">
+    <div class="section-label">05 — Pre-publish checklist</div>
+    <h2 class="section-heading">Before you<br><em>hit publish.</em></h2>
+
+    <div class="checklist">
+      <div class="check-row"><div class="check-text"><strong>Industry research complete</strong> with named sources and years — ₹4,200 Cr, ₹18,500 Cr, 62% gifting, all sourced</div><span class="check-status st-done">Done · Step 04</span></div>
+      <div class="check-row"><div class="check-text"><strong>Persona built from real demographic data</strong> — Priya Sharma, all behavioural attributes cited</div><span class="check-status st-done">Done · Step 05</span></div>
+      <div class="check-row"><div class="check-text"><strong>Three annotated competitor screenshots embedded</strong> — Usborne, Kiddopia, Tulika Books in Step 6</div><span class="check-status st-done">Done · Step 06</span></div>
+      <div class="check-row"><div class="check-text"><strong>Three moodboard images generated on Midjourney</strong> and embedded — Directions A, B, C</div><span class="check-status st-done">Done · Step 07</span></div>
+      <div class="check-row"><div class="check-text"><strong>All landing page copy written before layout</strong> — seven sections, six voice rules, dual CTA system</div><span class="check-status st-done">Done · Step 08</span></div>
+      <div class="check-row"><div class="check-text"><strong>Multi-tool workflow documented</strong> — Claude strategy, Gemini build, Claude correction, verbatim prompts</div><span class="check-status st-done">Done · Step 10</span></div>
+      <div class="check-row"><div class="check-text"><strong>All five images base64-embedded</strong> in landing page — hero, 3 book covers, lifestyle (no CDN dependency)</div><span class="check-status st-done">Done · Landing page</span></div>
+      <div class="check-row"><div class="check-text"><strong>Dark/light theme toggle tested</strong> — both themes, hero text stays white in light mode</div><span class="check-status st-done">Done · Landing page</span></div>
+      <div class="check-row"><div class="check-text"><strong>Landing page works on mobile</strong> — test at 390px before publishing, check hamburger menu</div><span class="check-status st-done">Done · Landing page</span></div>
+      <div class="check-row"><div class="check-text"><strong>Screenshot landing page hero at 1400px wide</strong> for Behance cover — light theme, crop to 1400×900</div><span class="check-status st-todo">To do · Manual</span></div>
+      <div class="check-row"><div class="check-text"><strong>Screenshot full landing page</strong> with GoFullPage and stitch in Figma — desktop and mobile views</div><span class="check-status st-todo">To do · Manual</span></div>
+      <div class="check-row"><div class="check-text"><strong>Create three-moodboard composite</strong> — all directions side by side in Figma with direction labels</div><span class="check-status st-todo">To do · Manual</span></div>
+      <div class="check-row"><div class="check-text"><strong>Screenshot multi-tool workflow diagram</strong> from Step 10 — the Claude → Gemini → Claude flow</div><span class="check-status st-todo">To do · Manual</span></div>
+      <div class="check-row"><div class="check-text"><strong>Create Behance project</strong> — paste title and description from Section 02 of this document exactly</div><span class="check-status st-behance">To do · Behance</span></div>
+      <div class="check-row"><div class="check-text"><strong>Upload assets in the order specified in Section 04</strong> — cover image first, always</div><span class="check-status st-behance">To do · Behance</span></div>
+      <div class="check-row"><div class="check-text"><strong>Add all tags from Section 02</strong> — all 24 tags for maximum discoverability</div><span class="check-status st-behance">To do · Behance</span></div>
+      <div class="check-row"><div class="check-text"><strong>Cross-link to Ember &amp; Oak and OrbitX projects</strong> in the description — "Part of the From Prompt to Production series"</div><span class="check-status st-behance">To do · Behance</span></div>
+      <div class="check-row"><div class="check-text"><strong>Set project visibility to Public</strong> and add to your Featured work</div><span class="check-status st-behance">To do · Behance</span></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 06 DELIVERABLES -->
+  <div class="section">
+    <div class="section-label">06 — Complete deliverables · Bumblebee World</div>
+    <h2 class="section-heading">Every file.<br><em>What it is.</em></h2>
+
+    <table class="deliverables-table">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>What it is</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>step1-project-brief.html</td>
+          <td>Series manifesto — big idea, 14-step process, tools, scope, ethical constraints. Produced once for all 6 brands.</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step2-industry-scoring.html</td>
+          <td>16 industries scored against 4 criteria — top 6 selected including Kids EdTech. Produced once for all 6 brands.</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step3-brand-naming.html</td>
+          <td>4 naming candidates × 6 brands. Bumblebee World selected at 14/15 — compound strategy, double-B sound, dual-audience name.</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step4-bumblebee-research.html</td>
+          <td>Industry research · market data (₹4,200 Cr + ₹18,500 Cr) · 6 competitor analyses · 6 visual design trends · design opportunity statement</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step5-bumblebee-persona.html</td>
+          <td>Priya Sharma ICP · 32 · Bangalore · demographics · 6 behaviours · 5-stage purchase journey · trust signals vs friction points · 6 design implications</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step6-bumblebee-audit.html</td>
+          <td>Competitor visual audit · Usborne (19/25) · Kiddopia (15/25) · Tulika Books (13/25) · 5 scoring dimensions · gap table · 3 annotated screenshots embedded</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step7-bumblebee-moodboard.html</td>
+          <td>3 moodboard directions with AI-generated Midjourney images embedded · direction comparison · Direction A selected with full rationale</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step8-bumblebee-copy.html</td>
+          <td>All landing page copy · 6 voice rules · 7 sections · IA table · live copy previews · annotation of every word choice</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step10-bumblebee-prompt-diary.html</td>
+          <td>12 actual prompts verbatim · multi-tool workflow diagram · Gemini section · 4 key lessons · cloud dive pivot documented honestly</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step11-bumblebee-before-after.html</td>
+          <td>Category average vs Bumblebee World · 9 design decisions compared · every decision traced to a specific research step</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>step12-bumblebee-case-study.html</td>
+          <td>Full case study · brief · 9-step process timeline · 4 key decisions · visual identity system · what this demonstrates · output summary</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>bumblebee-landing.html</td>
+          <td>Final landing page · 7 sections · 5 base64 images · forest parallax illustration · illustrated book cards · dark/light toggle · mobile-first · works offline</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>DIRECTION_A.png · B.png · C.png</td>
+          <td>Three AI-generated moodboard images from Midjourney · Bloom · Lush · Petal · embedded in Step 7</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+        <tr>
+          <td>Hero Banner image.png + 4 product images</td>
+          <td>Forest illustration hero + 3 book cover illustrations + lifestyle image · all base64-embedded in landing page</td>
+          <td><span class="td-ready">Ready</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 07 SERIES STATUS -->
+  <div class="section">
+    <div class="section-label">07 — What comes next · the series so far</div>
+    <h2 class="section-heading">Three complete.<br><em>Three to go.</em></h2>
+
+    <p class="body-text">Bumblebee World is Brand 03 of 06. Three brands are now complete and ready to publish. The same 14-step process repeats for each of the three remaining brands — each one a completely different industry, aesthetic register, and design challenge.</p>
+
+    <div class="series-grid">
+      <div class="series-card sc-done">
+        <div class="sc-num sc-num-done">Brand 01 · Complete</div>
+        <div class="sc-name sc-name-done">Ember &amp; Oak</div>
+        <div class="sc-industry sc-industry-done">Fine dining · Bangalore</div>
+        <div class="sc-status sc-status-done">✓ Ready to publish</div>
+      </div>
+      <div class="series-card sc-done">
+        <div class="sc-num sc-num-done">Brand 02 · Complete</div>
+        <div class="sc-name sc-name-done">OrbitX</div>
+        <div class="sc-industry sc-industry-done">Space tourism · Aspirational</div>
+        <div class="sc-status sc-status-done">✓ Ready to publish</div>
+      </div>
+      <div class="series-card sc-current">
+        <div class="sc-num sc-num-current">Brand 03 · Complete 🐝</div>
+        <div class="sc-name sc-name-current">Bumblebee World</div>
+        <div class="sc-industry sc-industry-current">Kids EdTech · Joyful</div>
+        <div class="sc-status sc-status-current">→ Publish now</div>
+      </div>
+      <div class="series-card sc-pending">
+        <div class="sc-num sc-num-pending">Brand 04 · Pending</div>
+        <div class="sc-name sc-name-pending">NeuralDesk</div>
+        <div class="sc-industry sc-industry-pending">AI SaaS · B2B tech</div>
+        <div class="sc-status sc-status-pending">Up next</div>
+      </div>
+      <div class="series-card sc-pending">
+        <div class="sc-num sc-num-pending">Brand 05 · Pending</div>
+        <div class="sc-name sc-name-pending">Verdana</div>
+        <div class="sc-industry sc-industry-pending">Luxury skincare · Beauty</div>
+        <div class="sc-status sc-status-pending">Pending</div>
+      </div>
+      <div class="series-card sc-pending">
+        <div class="sc-num sc-num-pending">Brand 06 · Pending</div>
+        <div class="sc-name sc-name-pending">Pawside</div>
+        <div class="sc-industry sc-industry-pending">Pet care · D2C</div>
+        <div class="sc-status sc-status-pending">Pending</div>
+      </div>
+    </div>
+
+    <div class="note-box" style="margin-top:24px;">
+      <p><strong>How to frame the series on Behance:</strong> Each brand is a separate Behance project. All six share the "From Prompt to Production" series name and the same document design system — so a recruiter who clicks one project immediately recognises it as part of a larger body of work. Cross-link all published projects to each other in the description. The series framing is what turns three individual projects into a portfolio statement. When all six are live, it becomes a complete demonstration of design range across six industries, six visual registers, and six completely different design problems.</p>
+    </div>
+  </div>
+
+  <div class="publish-box">
+    <div class="pb-label">The series thesis — what all six brands together demonstrate</div>
+    <div class="pb-text">A design lead who can direct AI across six industries, six visual registers, and six completely different design problems — with the same rigour, the same process, and the same standard of documentation each time. Not "I used AI to make things faster." Rather: <em>"I used AI to demonstrate a level of process rigour and design range that would take a team of five to produce manually — and I directed every decision."</em></div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 13 — BEHANCE PUBLISH GUIDE · BUMBLEBEE WORLD</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

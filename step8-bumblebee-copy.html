@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 8: Content & Copywriting · Bumblebee World</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#FFD000;--sun-deep:#F5A800;--sun-pale:#FFF8D6;
+  --honey:#FF8C00;--honey-light:#FFE0A0;
+  --bee:#1A1200;--bee-dark:#0D0D00;
+  --leaf:#2E7D32;--leaf-light:#E8F5E9;
+  --marigold:#FF6B35;
+  --paper:#FFFEF7;
+  --ink:#1A1200;--ink-mid:#4A3F00;--ink-muted:#8A7A00;--ink-faint:#BFB060;
+  --rule:#F0E890;--tag-bg:#FFF8D6;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'Nunito Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* COVER */
+.cover-band{background:var(--sun);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 30%,var(--honey) 0%,transparent 55%),radial-gradient(circle at 10% 80%,rgba(255,255,255,.3) 0%,transparent 40%);pointer-events:none;}
+.cover-band::after{content:'';position:absolute;inset:0;opacity:.12;background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);background-size:24px 24px;pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--bee);opacity:.55;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--bee);opacity:.4;}
+.cover-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:52px;line-height:.95;color:var(--bee);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.15);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--bee);font-weight:700;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:4px;background:linear-gradient(to right,var(--honey),var(--sun),transparent);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--honey);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:2px;background:var(--rule);}
+.section-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:32px;line-height:1.1;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--honey);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:2px;background:var(--rule);margin:56px -80px;}
+
+/* VOICE RULES */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:20px 0;}
+.voice-card{background:var(--tag-bg);padding:18px 18px;border-left:4px solid var(--sun-deep);}
+.vc-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--honey);margin-bottom:6px;}
+.vc-rule{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--ink);margin-bottom:4px;}
+.vc-example{font-size:11.5px;color:var(--ink-mid);line-height:1.6;}
+.vc-not{font-size:11px;color:var(--ink-faint);text-decoration:line-through;margin-top:4px;}
+
+/* IA TABLE */
+.ia-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.ia-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--bee);color:var(--sun);padding:11px 14px;text-align:left;}
+.ia-table td{padding:13px 14px;border-bottom:2px solid var(--rule);font-size:13px;color:var(--ink-mid);vertical-align:top;line-height:1.55;}
+.ia-table tr:nth-child(even) td{background:var(--tag-bg);}
+.ia-table tr:last-child td{border-bottom:none;}
+.ia-table td:first-child{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--honey);white-space:nowrap;width:100px;}
+.ia-table td:nth-child(2){font-weight:700;color:var(--ink);width:160px;}
+
+/* COPY SECTIONS */
+.copy-section{border:2px solid var(--rule);overflow:hidden;margin-bottom:4px;}
+.cs-header{background:var(--bee);padding:14px 20px;display:flex;align-items:center;gap:14px;}
+.cs-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.3rem;color:var(--sun);line-height:1;}
+.cs-name{font-size:14px;font-weight:700;color:#fff;}
+.cs-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:rgba(255,208,0,.35);}
+.cs-body{padding:22px 20px;background:#fff;}
+.copy-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--honey);margin-bottom:6px;margin-top:14px;}
+.copy-label:first-child{margin-top:0;}
+.copy-text{font-size:15px;line-height:1.85;color:var(--ink);font-weight:600;}
+.copy-body-text{font-size:14px;line-height:1.85;color:var(--ink-mid);}
+.copy-note{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--ink-faint);margin-top:6px;font-style:italic;}
+
+/* PREVIEW BLOCK */
+.preview{background:var(--sun-pale);border-top:2px solid var(--rule);padding:20px 20px;}
+.prev-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--honey);margin-bottom:10px;}
+.prev-content{background:#fff;border:1px solid var(--rule);padding:18px 20px;border-radius:4px;}
+
+/* THESIS BOX */
+.thesis{background:var(--sun);padding:32px 36px;margin:28px 0;border-radius:4px;position:relative;overflow:hidden;}
+.thesis::before{content:'🐝';position:absolute;right:28px;top:20px;font-size:2rem;opacity:.2;}
+.thesis-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(26,18,0,.45);margin-bottom:10px;}
+.thesis-text{font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;color:var(--bee);line-height:1.4;}
+.thesis-text em{font-style:normal;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.15);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:2px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:24px;}
+  .voice-grid{grid-template-columns:1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Bumblebee World · Brand 03 of 06</div>
+    <h1 class="cover-title">Content &amp;<br><em>Copywriting</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 08 — Copy &amp; IA</div></div>
+    <div class="meta-block"><div class="meta-label">Direction</div><div class="meta-value">A — Sunny / Bloom · locked</div></div>
+    <div class="meta-block"><div class="meta-label">Persona</div><div class="meta-value">Priya Sharma · 32 · Bangalore</div></div>
+  </div>
+</div>
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 APPROACH -->
+  <div class="section">
+    <div class="section-label">01 — The copywriting approach</div>
+    <h2 class="section-heading">Copy before layout.<br><em>Always.</em></h2>
+
+    <p class="body-text">All copy is written before any layout or design decisions. The words determine the structure. The structure determines the layout. This is the correct order — a layout built around placeholder copy produces a page that looks designed but does not communicate.</p>
+
+    <p class="body-text">Bumblebee World's copy has one primary reader: Priya. She has 20 minutes and two questions. <strong>First: is this good enough for Aarav?</strong> Second: is this beautiful enough to give as a gift? Every line of copy answers one of those two questions. Nothing else earns its place on the page.</p>
+
+    <div class="thesis">
+      <div class="thesis-label">The Bumblebee World copy thesis</div>
+      <div class="thesis-text">Priya does not buy toys. She buys what kind of mother she is. <em>Every word on this page must make her feel proud of that choice.</em></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 VOICE RULES -->
+  <div class="section">
+    <div class="section-label">02 — Voice rules · six principles</div>
+    <h2 class="section-heading">How Bumblebee World<br><em>speaks.</em></h2>
+
+    <div class="voice-grid">
+      <div class="voice-card">
+        <div class="vc-label">Rule 01</div>
+        <div class="vc-rule">Warm and specific — never gushing</div>
+        <div class="vc-example">Name the developmental benefit precisely. "Builds fine motor skills through threading and stacking" — not "Great for learning!"</div>
+        <div class="vc-not">Great for learning! Develops amazing skills!</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-label">Rule 02</div>
+        <div class="vc-rule">The child is always the subject</div>
+        <div class="vc-example">"Aarav will find the bee on every page" — not "Our books feature hidden characters." The child does things. The brand enables.</div>
+        <div class="vc-not">Our books are designed to engage children.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-label">Rule 03</div>
+        <div class="vc-rule">Indian without explaining it</div>
+        <div class="vc-example">Name the marigold. Name the mango tree. Name the festival. Do not say "India-inspired" — just be Indian. Priya knows what she is seeing.</div>
+        <div class="vc-not">India-inspired characters and settings.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-label">Rule 04</div>
+        <div class="vc-rule">Gift language at every touchpoint</div>
+        <div class="vc-example">"The complete gift" not "buy two." "Ready to wrap" not "gift option available." The gifting occasion is always present in the language.</div>
+        <div class="vc-not">Gift wrapping available at checkout.</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-label">Rule 05</div>
+        <div class="vc-rule">Short sentences. Full stops.</div>
+        <div class="vc-example">Priya reads on a phone during Aarav's nap. Sentences that end are sentences that land. No trailing commas into sub-clauses that lose her.</div>
+        <div class="vc-not">A beautifully crafted collection that combines...</div>
+      </div>
+      <div class="voice-card">
+        <div class="vc-label">Rule 06</div>
+        <div class="vc-rule">Pride, not persuasion</div>
+        <div class="vc-example">Never say "you should" or "don't miss out." Make her feel that choosing Bumblebee World is already the right decision — confirm it, don't pitch it.</div>
+        <div class="vc-not">Don't miss out! Limited stock available!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 IA -->
+  <div class="section">
+    <div class="section-label">03 — Information architecture · seven sections</div>
+    <h2 class="section-heading">The page structure.<br><em>Each section earns its place.</em></h2>
+
+    <p class="body-text">The page is not structured like a typical e-commerce site. It is structured around Priya's questions — in the order she asks them during her 20-minute research window on a Saturday morning.</p>
+
+    <table class="ia-table">
+      <thead><tr><th>Section</th><th>Name</th><th>Priya's question it answers</th><th>Primary emotion</th></tr></thead>
+      <tbody>
+        <tr><td>01</td><td>Hero</td><td>What is this? Is it for us?</td><td>Recognition — she sees herself and Aarav</td></tr>
+        <tr><td>02</td><td>The Books</td><td>What stories will my child hear?</td><td>Pride — Indian stories, beautifully made</td></tr>
+        <tr><td>03</td><td>The Toys</td><td>What will he play with? Is it safe?</td><td>Trust — quality, safety, developmental value</td></tr>
+        <tr><td>04</td><td>The Gift</td><td>Can I give this at the birthday party?</td><td>Delight — the complete, beautiful gift</td></tr>
+        <tr><td>05</td><td>Why Bumblebee World</td><td>Who made this and why should I trust them?</td><td>Connection — founder story, values, mission</td></tr>
+        <tr><td>06</td><td>What parents say</td><td>Has anyone like me bought this?</td><td>Validation — real parents, real photographs</td></tr>
+        <tr><td>07</td><td>Start the collection</td><td>How do I begin?</td><td>Ease — clear entry point, no overwhelm</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 COPY INVENTORY -->
+  <div class="section">
+    <div class="section-label">04 — Complete copy inventory · all seven sections</div>
+    <h2 class="section-heading">Every word.<br><em>Before the design.</em></h2>
+
+    <!-- SECTION 01 — HERO -->
+    <div class="copy-section">
+      <div class="cs-header">
+        <div class="cs-num">01</div>
+        <div>
+          <div class="cs-name">Hero</div>
+          <div class="cs-sub">First impression · above the fold · 8 seconds to earn attention</div>
+        </div>
+      </div>
+      <div class="cs-body">
+        <div class="copy-label">Eyebrow</div>
+        <div class="copy-text">Books &amp; toys for curious little minds · Ages 3–6 · Made in India 🌻</div>
+
+        <div class="copy-label">Hero headline</div>
+        <div class="copy-text" style="font-family:'Nunito',sans-serif;font-size:2rem;line-height:1.1;">Every child<br>is a world.</div>
+
+        <div class="copy-label">Sub-headline</div>
+        <div class="copy-body-text">Indian stories and handcrafted toys that grow with your child — beautiful enough to gift, meaningful enough to keep.</div>
+
+        <div class="copy-label">Primary CTA</div>
+        <div class="copy-text">Start the collection →</div>
+
+        <div class="copy-label">Secondary CTA</div>
+        <div class="copy-text">Find the perfect gift</div>
+
+        <div class="copy-note">Note: Two CTAs — one for the everyday buyer building a collection, one for the gifting buyer who has an occasion in mind. Never collapse these into one.</div>
+      </div>
+      <div class="preview">
+        <div class="prev-label">Live copy preview</div>
+        <div class="prev-content">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--honey);margin-bottom:10px;">Books &amp; toys for curious little minds · Ages 3–6 · Made in India 🌻</div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;line-height:1.1;color:var(--bee);margin-bottom:10px;">Every child<br>is a world.</div>
+          <div style="font-size:.95rem;color:var(--ink-mid);margin-bottom:16px;">Indian stories and handcrafted toys that grow with your child — beautiful enough to gift, meaningful enough to keep.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <span style="background:var(--bee);color:var(--sun);font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:10px 20px;">Start the collection →</span>
+            <span style="border:2px solid var(--rule);color:var(--honey);font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:9px 18px;">Find the perfect gift</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 02 — THE BOOKS -->
+    <div class="copy-section">
+      <div class="cs-header">
+        <div class="cs-num">02</div>
+        <div>
+          <div class="cs-name">The Books</div>
+          <div class="cs-sub">Stories from India · illustrated · bilingual option</div>
+        </div>
+      </div>
+      <div class="cs-body">
+        <div class="copy-label">Section headline</div>
+        <div class="copy-text">Stories from the world<br>your child already loves.</div>
+
+        <div class="copy-label">Section body</div>
+        <div class="copy-body-text">Marigolds and mango trees. Monsoon and festivals. Characters who look like your child, in worlds that feel like home. Each Bumblebee World book is illustrated by Indian artists and written to be read aloud — at bedtime, at naptime, or whenever your child finds you and says "read me one more."</div>
+
+        <div class="copy-label">Feature pill 01</div>
+        <div class="copy-text">Indian characters and settings</div>
+
+        <div class="copy-label">Feature pill 02</div>
+        <div class="copy-text">Bilingual — English &amp; Hindi</div>
+
+        <div class="copy-label">Feature pill 03</div>
+        <div class="copy-text">Age 3–6 · read-aloud designed</div>
+
+        <div class="copy-label">Feature pill 04</div>
+        <div class="copy-text">Illustrated by Indian artists</div>
+
+        <div class="copy-label">CTA</div>
+        <div class="copy-text">Browse the book collection →</div>
+      </div>
+    </div>
+
+    <!-- SECTION 03 — THE TOYS -->
+    <div class="copy-section">
+      <div class="cs-header">
+        <div class="cs-num">03</div>
+        <div>
+          <div class="cs-name">The Toys</div>
+          <div class="cs-sub">Handcrafted · developmental · safety certified</div>
+        </div>
+      </div>
+      <div class="cs-body">
+        <div class="copy-label">Section headline</div>
+        <div class="copy-text">Toys that do<br>something.</div>
+
+        <div class="copy-label">Section body</div>
+        <div class="copy-body-text">Not screen time. Not passive. Each Bumblebee World toy is designed with a specific developmental purpose — fine motor skills, colour recognition, spatial reasoning, imaginative play. They are handcrafted from natural materials and finished to a standard that makes them as beautiful on a shelf as they are in small hands.</div>
+
+        <div class="copy-label">Developmental tags (shown on each toy)</div>
+        <div class="copy-body-text">Fine motor skills · Colour recognition · Sorting &amp; sequencing · Imaginative play · Language development · Problem solving</div>
+
+        <div class="copy-label">Trust line</div>
+        <div class="copy-text">BIS certified · Non-toxic finish · Age 3+ safe</div>
+
+        <div class="copy-label">CTA</div>
+        <div class="copy-text">Explore the toy range →</div>
+      </div>
+    </div>
+
+    <!-- SECTION 04 — THE GIFT -->
+    <div class="copy-section">
+      <div class="cs-header">
+        <div class="cs-num">04</div>
+        <div>
+          <div class="cs-name">The Gift</div>
+          <div class="cs-sub">The gifting section · birthday · baby shower · Diwali</div>
+        </div>
+      </div>
+      <div class="cs-body">
+        <div class="copy-label">Section headline</div>
+        <div class="copy-text">The gift they'll<br>still remember.</div>
+
+        <div class="copy-label">Section body</div>
+        <div class="copy-body-text">A Bumblebee World gift arrives ready. Yellow box, kraft ribbon, tissue paper, and a handwritten gift card. Inside: a book they will ask for again and a toy they will not put down. Add a name on the cover and it becomes theirs forever. The kind of gift that gets photographed before it is opened.</div>
+
+        <div class="copy-label">Gift options (shown as selectable cards)</div>
+        <div class="copy-body-text">
+          The Starter Gift · 1 book + 1 toy · ₹999<br>
+          The Birthday Box · 2 books + 1 toy + gift card · ₹1,499<br>
+          The Diwali Set · 3 books + 2 toys + personalised card · ₹2,299
+        </div>
+
+        <div class="copy-label">Personalisation line</div>
+        <div class="copy-text">Add their name to the cover. Free with every order.</div>
+
+        <div class="copy-label">CTA</div>
+        <div class="copy-text">Build the perfect gift →</div>
+      </div>
+    </div>
+
+    <!-- SECTION 05 — WHY BUMBLEBEE WORLD -->
+    <div class="copy-section">
+      <div class="cs-header">
+        <div class="cs-num">05</div>
+        <div>
+          <div class="cs-name">Why Bumblebee World</div>
+          <div class="cs-sub">Founder story · values · mission · the why</div>
+        </div>
+      </div>
+      <div class="cs-body">
+        <div class="copy-label">Section headline</div>
+        <div class="copy-text">Made by a parent.<br>For every parent.</div>
+
+        <div class="copy-label">Founder note (written in first person)</div>
+        <div class="copy-body-text">When my daughter was three, she asked me why none of the children in her books looked like her. I didn't have a good answer. So I made one. Bumblebee World started in our living room — stories about marigolds and mango trees, characters with oil in their hair and mud on their feet. Books that feel like India. Toys that feel like childhood. I hope they find a place on your shelf.</div>
+
+        <div class="copy-label">Founder signature line</div>
+        <div class="copy-text">— Meera, founder &amp; mother of two</div>
+
+        <div class="copy-label">Values (shown as three simple statements)</div>
+        <div class="copy-body-text">
+          Every child should see themselves in a story.<br>
+          Every toy should do something worth doing.<br>
+          Every gift should be worth giving.
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 06 — WHAT PARENTS SAY -->
+    <div class="copy-section">
+      <div class="cs-header">
+        <div class="cs-num">06</div>
+        <div>
+          <div class="cs-name">What parents say</div>
+          <div class="cs-sub">Real reviews · photographs · Indian parents</div>
+        </div>
+      </div>
+      <div class="cs-body">
+        <div class="copy-label">Section headline</div>
+        <div class="copy-text">From parents<br>who know.</div>
+
+        <div class="copy-label">Review 01</div>
+        <div class="copy-body-text">"Aryan asks for the bee book every single night. He recognises the marigolds from our pooja room. That moment — I didn't expect it." — Sunita R., Mumbai · mother of Aryan, 4</div>
+
+        <div class="copy-label">Review 02</div>
+        <div class="copy-body-text">"I ordered the Birthday Box for my niece. It arrived looking like it was from a luxury brand. She cried when she saw her name on the cover. Worth every rupee." — Kavitha M., Bangalore · gifting for Ananya, 3</div>
+
+        <div class="copy-label">Review 03</div>
+        <div class="copy-body-text">"My son has been threading the wooden bead toy for 20 minutes straight. Longest screen-free stretch in months. Thank you." — Preethi N., Chennai · mother of Rohan, 5</div>
+
+        <div class="copy-label">Review count line</div>
+        <div class="copy-text">4.9 stars · 1,240 parent reviews</div>
+      </div>
+    </div>
+
+    <!-- SECTION 07 — START THE COLLECTION -->
+    <div class="copy-section">
+      <div class="cs-header">
+        <div class="cs-num">07</div>
+        <div>
+          <div class="cs-name">Start the collection</div>
+          <div class="cs-sub">Conversion section · low friction · clear entry point</div>
+        </div>
+      </div>
+      <div class="cs-body">
+        <div class="copy-label">Section headline</div>
+        <div class="copy-text">Every collection<br>starts with one.</div>
+
+        <div class="copy-label">Section body</div>
+        <div class="copy-body-text">Choose a book. Choose a toy. Or let us choose for you — tell us your child's age and we will suggest the right starting point. Free delivery on orders above ₹699. Returns accepted within 15 days, no questions asked.</div>
+
+        <div class="copy-label">Reassurance line</div>
+        <div class="copy-text">Free delivery above ₹699 · Easy 15-day returns · Ships in 2 days</div>
+
+        <div class="copy-label">Primary CTA</div>
+        <div class="copy-text">Start the collection →</div>
+
+        <div class="copy-label">Secondary CTA</div>
+        <div class="copy-text">Help me choose</div>
+
+        <div class="copy-note">Note: "Help me choose" opens a short quiz — child's age, interests, occasion. Reduces decision fatigue for first-time buyers. Most important conversion tool for new visitors.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 08 — CONTENT &amp; COPYWRITING · BUMBLEBEE WORLD</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

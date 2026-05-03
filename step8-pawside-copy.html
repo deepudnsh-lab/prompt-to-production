@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 8: Copywriting · Pawside</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF8F0;--cream2:#FEF3E8;--tan:#E8D5C4;--coral:#FF6B6B;--teal:#4ECDC4;--yellow:#FFE66D;
+  --rust:#8B5A3C;--ink:#2B1810;--ink-mid:#4A3628;--ink-faint:#8B7563;--white:#FFFFFF;--border:#E0D4C8;--rule:#EBE0D8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+.cover-band{background:var(--cream);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--coral),var(--teal),var(--yellow));}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--coral);opacity:.8;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';width:28px;height:1px;background:var(--coral);}
+.cover-title{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:56px;line-height:.95;color:var(--ink);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--coral);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:18px;}
+.accent-rule{height:1px;background:var(--border);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--coral);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--coral);}
+.body-text{font-size:16px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+.rule-box{background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(254,243,232,.4));border:1px solid rgba(255,107,107,.2);border-radius:12px;padding:24px;margin:24px 0;}
+.rule-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral);margin-bottom:8px;}
+.rule-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ink);margin-bottom:8px;}
+.rule-text{font-size:14px;line-height:1.7;color:var(--ink-mid);}
+
+.copy-section{background:var(--cream2);border:1px solid var(--border);padding:28px;margin:24px 0;border-radius:8px;}
+.copy-section h4{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);margin-bottom:12px;}
+.copy-section p{font-size:15px;line-height:1.8;color:var(--ink-mid);margin-bottom:12px;}
+.copy-section p:last-child{margin-bottom:0;}
+.copy-section strong{color:var(--ink);}
+.copy-section em{color:var(--coral);font-style:italic;}
+
+.ia-section{margin:28px 0;}
+.ia-item{padding:20px;background:var(--cream2);border-left:4px solid var(--coral);margin-bottom:16px;border-radius:4px;}
+.ia-num{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--coral);font-weight:300;margin-bottom:4px;}
+.ia-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--coral);margin-bottom:8px;font-weight:600;}
+.ia-question{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:8px;}
+.ia-answer{font-size:14px;color:var(--ink-mid);line-height:1.7;}
+
+.note-box{background:linear-gradient(135deg,var(--yellow),rgba(255,230,109,.2));border-left:3px solid var(--rust);padding:18px 22px;margin:24px 0;border-radius:4px;}
+.note-box p{font-size:14px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Pawside · Brand 06 of 06</div>
+    <h1 class="cover-title">Copy & <em>Voice</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div>
+    <div class="meta-label">Document</div><div class="meta-value">Step 8 — Copywriting</div>
+    <div class="meta-label">Brand</div><div class="meta-value">Pawside</div>
+    <div class="meta-label">Direction</div><div class="meta-value">Playful</div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — Voice rules</div>
+    <h2 class="section-heading">Six rules for<br><em>every word.</em></h2>
+
+    <p class="body-text">Pawside's voice is playful and authentic, never apologetic or overly cutesy. The tone is confident, humorous, and irreverent — like talking to a dog-obsessed friend who actually knows their stuff. These six rules guide every word on every page.</p>
+
+    <div class="rule-box">
+      <div class="rule-label">Rule 01</div>
+      <div class="rule-title">Celebrate the dog, not the owner.</div>
+      <div class="rule-text">The dog is the star. The owner is the supporting cast. Never: "Treat yourself to premium grooming." Always: "Your dog deserves ingredients you can actually pronounce."</div>
+    </div>
+
+    <div class="rule-box">
+      <div class="rule-label">Rule 02</div>
+      <div class="rule-title">Humor over hype. Always.</div>
+      <div class="rule-text">Be funny first, sell second. A joke about dog breath is more memorable than a list of benefits. If the copy doesn't make us smile, it doesn't ship. Your dog sheds. We get it. Let's make that part easier.</div>
+    </div>
+
+    <div class="rule-box">
+      <div class="rule-label">Rule 03</div>
+      <div class="rule-title">Specific beats vague. Every time.</div>
+      <div class="rule-text">Not: "Premium oat blend." Yes: "5% Oat Extract from Minnesota farmers who talk to their crops." Specificity is funny. Vagueness is marketing. We are not doing marketing.</div>
+    </div>
+
+    <div class="rule-box">
+      <div class="rule-label">Rule 04</div>
+      <div class="rule-title">Own the awkwardness. Don't hide from it.</div>
+      <div class="rule-text">Dogs are weird. Dog ownership is weird. We celebrate that. Never pretend grooming is elegant or meditative — it's messy, it's chaotic, it's joyful. Lean into that reality.</div>
+    </div>
+
+    <div class="rule-box">
+      <div class="rule-label">Rule 05</div>
+      <div class="rule-title">Short sentences. Period. New thought.</div>
+      <div class="rule-text">No rambling. No fluff. One idea per sentence. If a sentence is longer than one line on mobile, cut it. Readers have the attention span of dogs (ironic, we know).</div>
+    </div>
+
+    <div class="rule-box">
+      <div class="rule-label">Rule 06</div>
+      <div class="rule-title">This is a standalone document. No references to other brands.</div>
+      <div class="rule-text">Define Pawside on Pawside's terms. Don't explain what we're not. Don't compare ourselves. We are exactly what the page says we are — nothing more, nothing less.</div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — Information architecture</div>
+    <h2 class="section-heading">Seven sections.<br><em>Seven questions.</em></h2>
+
+    <p class="body-text">The landing page structure follows Maya's purchase journey from Step 5. Each section answers one question she has, in the order she asks it. No fluff. No upsells. Just answers.</p>
+
+    <div class="ia-section">
+      <div class="ia-item">
+        <div class="ia-num">1</div>
+        <div class="ia-title">Hero Section</div>
+        <div class="ia-question">Is this brand for MY dog, or for Instagram dogs?</div>
+        <div class="ia-answer">Headline: "Happy dog. Happy you." Subheading: "Grooming products that don't pretend to understand your dog better than you do." Visual: Dog mid-play, genuine joy, not posed. No filters. No fakeness.</div>
+      </div>
+
+      <div class="ia-item">
+        <div class="ia-num">2</div>
+        <div class="ia-title">What's Actually In It</div>
+        <div class="ia-question">What ingredients are we talking about, specifically?</div>
+        <div class="ia-answer">Full ingredient breakdown with percentages. "5% Oat Extract. Soothes & hydrates." That's it. No flowery descriptions. No mystery blend. The formula does the talking.</div>
+      </div>
+
+      <div class="ia-item">
+        <div class="ia-num">3</div>
+        <div class="ia-title">Where It Comes From</div>
+        <div class="ia-question">Should I trust this? Where does this stuff actually come from?</div>
+        <div class="ia-answer">Sourcing transparency map. "Oat Extract — Minnesota. Shea Butter — Ghana. Aloe Vera — Texas." Coordinates included. We are not hiding anything because we have nothing to hide.</div>
+      </div>
+
+      <div class="ia-item">
+        <div class="ia-num">4</div>
+        <div class="ia-title">The Product Lineup</div>
+        <div class="ia-question">What do you actually make? Do you have enough for a full routine?</div>
+        <div class="ia-answer">Three core products. Shampoo. Conditioner. Detangling Spray. Each with honest descriptions. "This conditioner won't make your dog smell like a tropical resort. It will make their coat not suck."</div>
+      </div>
+
+      <div class="ia-item">
+        <div class="ia-num">5</div>
+        <div class="ia-title">Real Dogs. Real Results.</div>
+        <div class="ia-question">Has anyone like me actually used this? Did it work?</div>
+        <div class="ia-answer">Three testimonials. Not from professional "brand ambassadors." From dog owners in dog groups. Before/after photos of actual dogs. Real captions. "My dog's coat went from dull to shiny. Also she sheds less now, which means less vacuuming, which means I have more time to scroll TikTok."</div>
+      </div>
+
+      <div class="ia-item">
+        <div class="ia-num">6</div>
+        <div class="ia-title">Join the Pack</div>
+        <div class="ia-question">Is there a community here? Or am I just buying shampoo?</div>
+        <div class="ia-answer">Instagram community callout. "Tag us in your grooming wins. We repost the chaos." User-generated content takes over. The community is the product. The shampoo just makes it all possible.</div>
+      </div>
+
+      <div class="ia-item">
+        <div class="ia-num">7</div>
+        <div class="ia-title">Just Order It</div>
+        <div class="ia-question">What's the friction? Can I just buy this now?</div>
+        <div class="ia-answer">One CTA. "Start the glow-up." Three reassurance signals: "Ships in 24 hours. 30-day glow-up guarantee. Join 10K+ happy dogs." No hidden costs. No fake scarcity. No pressure.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — Copy by section</div>
+    <h2 class="section-heading">The words<br><em>that ship.</em></h2>
+
+    <!-- HERO -->
+    <div class="copy-section">
+      <h4>Section 01 — Hero Headline</h4>
+      <p><strong>Headline:</strong> <em>"Happy dog. Happy you."</em></p>
+      <p><strong>Subheadline:</strong> <em>"Grooming products that don't pretend to understand your dog better than you do."</em></p>
+      <p><strong>Body copy:</strong> "Your dog doesn't need Instagram. They need ingredients that work. We make that happen."</p>
+    </div>
+
+    <!-- INGREDIENTS -->
+    <div class="copy-section">
+      <h4>Section 02 — Ingredients & Transparency</h4>
+      <p><strong>Section headline:</strong> <em>"The Good Stuff. Nothing Else."</em></p>
+      <p><strong>Ingredient callout example:</strong></p>
+      <p>"<strong>5% Oat Extract.</strong> Soothes & hydrates. From Minnesota farmers who actually care."</p>
+      <p>"<strong>3% Shea Butter.</strong> Nourishes & softens. From Ghana. Fair trade. Real sourcing."</p>
+      <p>"<strong>2% Aloe Vera.</strong> Calms & protects. From Texas. Because local matters."</p>
+      <p><strong>Subtext:</strong> "We list percentages because we're not hiding anything. Vague ingredient lists are for brands that have something to hide."</p>
+    </div>
+
+    <!-- SOURCING -->
+    <div class="copy-section">
+      <h4>Section 03 — Sourcing & Trust</h4>
+      <p><strong>Section headline:</strong> <em>"Know Where It Comes From."</em></p>
+      <p><strong>Copy:</strong> "Every ingredient has a story. A place. A farmer who cares. We list the coordinates because transparency isn't a marketing gimmick — it's how we work."</p>
+      <p><strong>Map callout:</strong> "Oat Extract from 59.3297° N, 18.0686° E (Sweden). Shea Butter from 7.9465° N, 1.0232° W (Ghana). Aloe Vera from 29.7604° N, 95.3698° W (Texas)."</p>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="copy-section">
+      <h4>Section 04 — Product Lineup</h4>
+      <p><strong>Product 01 — Gentle Shampoo ($24)</strong></p>
+      <p>"Cleans without stripping. Your dog will smell like they got a professional grooming, not a chemical bath. Also: way cheaper than the actual groomer."</p>
+      <p><strong>Product 02 — Nourishing Conditioner ($22)</strong></p>
+      <p>"Makes tangles disappear. Seriously. Also your dog's coat will look so shiny you'll start taking photos that aren't for the 'gram. Okay fine, take them for the 'gram. We'll repost them."</p>
+      <p><strong>Product 03 — Detangling Spray ($18)</strong></p>
+      <p>"For the moments when your dog has somehow created a wool sweater from their own fur in 48 hours. It happens. We understand. This fixes it."</p>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="copy-section">
+      <h4>Section 05 — Real Results</h4>
+      <p><strong>Testimonial format (not owner faces, dog results):</strong></p>
+      <p><strong>Before/After:</strong> [Dog coat comparison photo]</p>
+      <p>"Used Pawside for 6 weeks. Coat went from matte to glossy. Also stopped itching. My vet asked what I changed. I showed her the bottle. She ordered it for her own dog."</p>
+      <p>— Maya Chen, Austin TX</p>
+      <p><strong>Testimonial 2:</strong> "My dog hates baths. HATES them. But the detangling spray made her grooming sessions 40% shorter because no tangles meant no tugging. She's still grumpy, but less grumpy. I'll take it."</p>
+      <p>— Sarah M., Denver CO</p>
+      <p><strong>Testimonial 3:</strong> "Stopped using the fancy brand everyone on Instagram recommends. Switched to Pawside. Saved $200 a year. Dog is happier. I am richer. Everyone wins."</p>
+      <p>— James K., Portland OR</p>
+    </div>
+
+    <!-- COMMUNITY -->
+    <div class="copy-section">
+      <h4>Section 06 — Join the Pack</h4>
+      <p><strong>Headline:</strong> <em>"Tag us in your glow-up."</em></p>
+      <p><strong>Copy:</strong> "Show us your dog's transformation. Post it to Instagram. Tag @pawsidepets. We repost the best ones. Your dog becomes part of the pack. You become part of the community."</p>
+      <p><strong>Social proof:</strong> "10K+ dogs are already in the pack. Join them."</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="copy-section">
+      <h4>Section 07 — Final CTA</h4>
+      <p><strong>Button headline:</strong> <em>"Start the Glow-Up"</em></p>
+      <p><strong>Reassurance copy (below button):</strong></p>
+      <p>"Ships in 24 hours. 30-day glow-up guarantee. If your dog's coat isn't happier, we'll refund you. (They will be. It always happens.)"</p>
+      <p><strong>Trust badges:</strong></p>
+      <p>✓ Veterinarian approved (Dr. Emily Harper, DVM)</p>
+      <p>✓ Dermatologist tested (Safe for sensitive skin)</p>
+      <p>✓ Dog-approved (See the proof above)</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">04 — Brand thesis</div>
+    <h2 class="section-heading">Pawside is<br><em>for real dogs.</em></h2>
+
+    <div class="note-box">
+      <p><strong>Thesis Statement:</strong> "Pawside makes grooming products for real dogs. Not Instagram dogs. Not perfect dogs. Real dogs — chaotic, messy, joyful, weird dogs. We celebrate that chaos because that's where the love lives. Our formula works. Our community gets it. Your dog wins."</p>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 08 — COPYWRITING · PAWSIDE</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 12: Case Study · Ember & Oak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+    --void: #0E0A06;
+    --cream: #F5EDD8;
+    --ember: #C85A2A;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--paper); font-family:'DM Sans',sans-serif; color:var(--ink); font-size:15px; line-height:1.7; }
+  .document { max-width:960px; margin:0 auto; padding:80px; background:#fff; }
+
+  /* COVER */
+  .cover-band { background:var(--ink); margin:-80px -80px 0; padding:56px 80px 48px; display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px; }
+  .project-series { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.25em; text-transform:uppercase; color:var(--accent-light); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .project-series::before { content:''; display:inline-block; width:28px; height:1px; background:var(--accent); }
+  .cover-title { font-family:'DM Serif Display',serif; font-size:44px; line-height:1.05; color:#fff; letter-spacing:-.02em; }
+  .cover-title em { font-style:italic; color:var(--accent-light); }
+  .cover-meta { text-align:right; }
+  .meta-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px; }
+  .meta-value { font-size:13px; color:#fff; font-weight:300; }
+  .meta-block { margin-bottom:20px; }
+  .meta-block:last-child { margin-bottom:0; }
+  .accent-rule { height:3px; background:linear-gradient(to right,var(--accent),var(--accent-light),transparent); margin:0 -80px; }
+
+  .doc-body { padding-top:64px; }
+  .section { margin-bottom:56px; }
+  .section-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--rule); }
+  .section-heading { font-family:'DM Serif Display',serif; font-size:32px; line-height:1.15; letter-spacing:-.01em; color:var(--ink); margin-bottom:20px; }
+  .section-heading em { font-style:italic; color:var(--accent); }
+  .body-text { font-size:15px; line-height:1.85; color:var(--ink-mid); margin-bottom:16px; }
+  .page-rule { height:1px; background:var(--rule); margin:56px -80px; }
+  .note-box { background:var(--tag-bg); border-left:3px solid var(--accent); padding:18px 22px; margin:24px 0; }
+  .note-box p { font-size:13px; color:var(--ink-mid); line-height:1.7; }
+  .note-box strong { color:var(--ink); }
+
+  /* ── HERO CARD ── */
+  .case-hero {
+    background: var(--void);
+    margin: 0 -80px;
+    padding: 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .case-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 80% 50%, rgba(200,90,42,.12), transparent 60%),
+      radial-gradient(ellipse 40% 50% at 10% 80%, rgba(201,168,76,.07), transparent 50%);
+    pointer-events: none;
+  }
+
+  .case-hero-inner {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .case-brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 72px;
+    line-height: .9;
+    letter-spacing: -.03em;
+    color: var(--cream);
+    margin-bottom: 16px;
+  }
+
+  .case-brand-name em { font-style: italic; color: rgba(200,90,42,.8); }
+
+  .case-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(200,90,42,.6);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .case-tagline::before { content: ''; width: 20px; height: 1px; background: var(--ember); flex-shrink: 0; }
+
+  .case-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: right;
+  }
+
+  .case-stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--ember);
+    line-height: 1;
+    display: block;
+  }
+
+  .case-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(245,237,216,.3);
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* ── PROCESS TIMELINE ── */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px; top: 24px; bottom: 24px;
+    width: 1px;
+    background: var(--rule);
+  }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 0;
+    align-items: start;
+    position: relative;
+  }
+
+  .tl-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 500;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    margin-top: 12px;
+  }
+
+  .tl-dot.done {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .tl-content {
+    padding: 12px 0 24px 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tl-item:last-child .tl-content { border-bottom: none; }
+
+  .tl-step {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+
+  .tl-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .tl-desc {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+  }
+
+  /* ── DECISION CARDS ── */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 24px 0;
+  }
+
+  .decision-card {
+    border: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
+  .decision-card-top {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .decision-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .decision-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .decision-body {
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.65;
+  }
+
+  .decision-body strong { color: var(--ink); font-weight: 500; }
+
+  /* ── COLOUR + TYPE SPECIMEN ── */
+  .identity-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin: 24px 0;
+  }
+
+  .identity-col {
+    border: 1px solid var(--rule);
+    padding: 22px;
+  }
+
+  .id-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+  }
+
+  .swatch-row { display: flex; gap: 4px; margin-bottom: 10px; }
+  .swatch-block { flex: 1; text-align: center; }
+  .swatch { height: 30px; border-radius: 2px; border: 1px solid rgba(0,0,0,.06); }
+  .swatch-name { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--ink-faint); margin-top: 4px; }
+
+  .type-line { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+  .type-line:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .type-role { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 5px; }
+  .type-font-name { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--ink-faint); margin-top: 3px; }
+
+  /* ── RESULTS BOX ── */
+  .results-box {
+    background: var(--ink);
+    padding: 40px 48px;
+    margin-top: 32px;
+  }
+
+  .results-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 14px;
+  }
+
+  .results-headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    line-height: 1.3;
+    margin-bottom: 28px;
+  }
+
+  .results-headline em { font-style: italic; color: var(--accent-light); }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .result-item {
+    padding: 18px 20px;
+    border: 1px solid rgba(245,237,216,.07);
+  }
+
+  .result-item-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 8px;
+  }
+
+  .result-item-text {
+    font-size: 13px;
+    color: rgba(245,237,216,.65);
+    line-height: 1.6;
+  }
+
+  /* ── LEARNINGS ── */
+  .learning-row {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .learning-row:last-child { border-bottom: none; }
+
+  .learning-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--accent-light);
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .learning-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .learning-body {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  /* FOOTER */
+  .doc-footer { margin-top:80px; padding-top:24px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; }
+  .footer-left { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; }
+  .footer-right { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; text-align:right; }
+
+  /* RESPONSIVE */
+  @media (max-width:640px) {
+    .document { padding:24px 20px; }
+    .cover-band { margin:-24px -20px 0; padding:40px 24px 32px; grid-template-columns:1fr; gap:20px; }
+    .cover-title { font-size:30px; }
+    .cover-meta { text-align:left; }
+    .accent-rule { margin:0 -20px; }
+    .page-rule { margin:40px -20px; }
+    .section-heading { font-size:24px; }
+    .case-hero { margin:0 -20px; padding:40px 20px; }
+    .case-hero-inner { grid-template-columns:1fr; gap:28px; }
+    .case-brand-name { font-size:48px; }
+    .case-stats { flex-direction:row; text-align:left; }
+    .decision-grid { grid-template-columns:1fr; }
+    .identity-grid { grid-template-columns:1fr; }
+    .results-grid { grid-template-columns:1fr; }
+    .results-box { padding:28px 20px; }
+    .results-headline { font-size:22px; }
+    .tl-content { padding-left:14px; }
+    .doc-footer { flex-direction:column; gap:8px; align-items:flex-start; }
+    .footer-right { text-align:left; }
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Brand 01 of 06</div>
+      <h1 class="cover-title">Case Study<br><em>Documentation</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+      <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 12 — Case Study</div></div>
+      <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Ember &amp; Oak</div></div>
+      <div class="meta-block"><div class="meta-label">Industry</div><div class="meta-value">Fine dining · Bangalore</div></div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- BRAND HERO -->
+    <div class="case-hero">
+      <div class="case-hero-inner">
+        <div>
+          <div class="case-brand-name">Ember<br>&amp; <em>Oak</em></div>
+          <div class="case-tagline">Wood-fired fine dining · Bangalore · Est. 2026</div>
+        </div>
+        <div class="case-stats">
+          <div>
+            <span class="case-stat-num">28</span>
+            <span class="case-stat-label">Covers nightly</span>
+          </div>
+          <div>
+            <span class="case-stat-num">11</span>
+            <span class="case-stat-label">Steps to the final build</span>
+          </div>
+          <div>
+            <span class="case-stat-num">01</span>
+            <span class="case-stat-label">Brand of 06 in the series</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 1: THE BRIEF -->
+    <div class="section">
+      <div class="section-label">01 — The brief</div>
+      <h2 class="section-heading">What this project<br>set out to <em>prove.</em></h2>
+
+      <p class="body-text">Ember &amp; Oak is the first of six hypothetical brands built as part of <em>From Prompt to Production</em> — a self-initiated portfolio series by Deepu Dinesh, Graphic Design Lead with 13 years of experience. The project demonstrates a complete, research-led web design process executed through AI direction: Claude (Anthropic) as the execution engine, the designer as the creative director and domain expert.</p>
+
+      <p class="body-text">The brief for this brand: design a complete landing page for a premium wood-fire fine dining restaurant in Bangalore targeting urban professionals aged 35–45. The design must close the gap identified in the competitor audit — warm within dark mode, cooking method visible at hero level, scarcity explicit, reservation friction-free.</p>
+
+      <div class="note-box">
+        <p><strong>What makes this case study credible:</strong> Every research statistic cites a named source and year. Every design decision traces back to a specific research finding or persona insight. The landing page is a single, fully functional HTML file — no framework, no backend, no tooling beyond a browser. It works offline.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: THE PROCESS -->
+    <div class="section">
+      <div class="section-label">02 — The process</div>
+      <h2 class="section-heading">11 steps.<br>Each one <em>documented.</em></h2>
+
+      <p class="body-text">The full project followed a 14-step framework. Steps 1–3 were strategy-level work completed once for the entire series. Steps 4–12 were executed specifically for Ember &amp; Oak. Every step produced a document — each of which appears in this portfolio as a separate, downloadable HTML file.</p>
+
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot done">1</div>
+          <div class="tl-content">
+            <div class="tl-step">Series level · once</div>
+            <div class="tl-title">Project Brief</div>
+            <div class="tl-desc">The big idea, the 14-step framework, the tools, the scope. Establishes the creative and ethical constraints for the entire series — including the rule that nothing unverifiable may be claimed.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">2</div>
+          <div class="tl-content">
+            <div class="tl-step">Series level · once</div>
+            <div class="tl-title">Industry Scoring Matrix</div>
+            <div class="tl-desc">16 industries scored against 4 designer-chosen criteria: Visual diversity, Persona clarity, Design challenge, Emotional range. Top 6 selected. 10 set aside with specific rationale — not generic rejection.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">3</div>
+          <div class="tl-content">
+            <div class="tl-step">Series level · once</div>
+            <div class="tl-title">Brand Naming Exercise</div>
+            <div class="tl-desc">4 real naming candidates per brand · 6 brands · 24 names total. Each candidate used a different naming strategy. Each scored against Memorability, Brand fit, and Typographic strength. Ember &amp; Oak won on compound naming with a 14/15 score.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">4</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Deep Industry Research</div>
+            <div class="tl-desc">Global fine dining market ($191B, 7.2% CAGR — TechSci Research 2025), India full-service restaurant market ($37.9B — Mordor Intelligence 2026), diner website behaviour (77% visit before deciding — UpMenu 2025), and 8 visual design trends tagged by status.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">5</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Ideal Customer Profile</div>
+            <div class="tl-desc">Rohit Kapoor, 38, VP of Product, Bangalore. ₹45–70L household income. Dines fine 2–3x monthly. First encounters the site on mobile during a commute. Makes his trust decision in 5 seconds. Books days in advance. Values specificity over superlatives.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">6</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Competitor Visual Audit</div>
+            <div class="tl-desc">Canlis, Eleven Madison Park, and the India category average audited against 5 criteria. The universal gap found across all three: no site makes the cooking method visible, and none communicate scarcity as a design element. That gap became Ember &amp; Oak's design territory.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">7</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Moodboard — 3 Directions</div>
+            <div class="tl-desc">Three AI-generated moodboards via Midjourney: Direction A (Noir — near-black, ember orange, Cormorant Garamond), Direction B (Ritual — gold, Libre Baskerville), Direction C (Smoke — warm grey monochrome, Playfair Display). Direction A selected. B rejected for risk of reading as generic Indian luxury; C rejected for loss of warmth on mobile.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">8</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Content &amp; Copywriting</div>
+            <div class="tl-desc">All landing page copy written before any layout decisions. Voice rules: specific not superlative, sensory not descriptive, unhurried not urgent, short sentences with full stops. The word "best" never appears. The scarcity signal "28 guests each evening" appears twice. Navigation labels: The fire / The menu / The experience.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">9</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Layout Concept — Immersive Scroll</div>
+            <div class="tl-desc">Three layout concepts proposed. Concept 3 (Immersive Scroll — five full-viewport sections, each its own world) selected. Layout structured as a narrative: hero → fire philosophy → menu → scarcity → reservation. No section is decorative; each advances the conversion.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">10</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Prompt Diary</div>
+            <div class="tl-desc">11 actual prompts documented in full — exact words typed, including typos. What each produced, what needed refinement, and what it teaches about directing AI. The shortest effective prompt: "remove the icon in the dates section in the reservation form" — 9 words, perfect output.</div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot done">11</div>
+          <div class="tl-content">
+            <div class="tl-step">Brand level · Ember &amp; Oak</div>
+            <div class="tl-title">Before &amp; After Comparison</div>
+            <div class="tl-desc">The category-average fine dining site vs. Ember &amp; Oak — 9 specific design decisions compared. Generic beige to near-black Noir. "Book Now" to "Reserve a Table". PDF menu to native HTML. Infinite availability to "28 guests each evening" at the first viewport.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: KEY DESIGN DECISIONS -->
+    <div class="section">
+      <div class="section-label">03 — Key design decisions</div>
+      <h2 class="section-heading">The choices that<br><em>define</em> the brand.</h2>
+
+      <p class="body-text">Every design decision in this project traces back to a specific research finding, persona insight, or competitor gap. The four most consequential decisions are documented below — each with the step where it was made and the evidence that justified it.</p>
+
+      <div class="decision-grid">
+
+        <div class="decision-card">
+          <div class="decision-card-top">
+            <div class="decision-num">Decision 01 · Step 06 — Competitor Audit</div>
+            <div class="decision-title">Dark mode with ember orange as the only accent — not gold, not white</div>
+          </div>
+          <div class="decision-body">
+            The competitor audit found that all benchmark dark-mode fine dining sites used either cool blue (EMP's indigo) or no accent at all. Orange is the colour of actual fire. It is physically warm in a way that gold is not — gold reads as decorative, orange reads as heat. The decision was made at the audit stage, reinforced by the moodboard exercise, and carried through to every CTA, label, and rule in the final build. <strong>Source: Step 6 competitor audit gap analysis.</strong>
+          </div>
+        </div>
+
+        <div class="decision-card">
+          <div class="decision-card-top">
+            <div class="decision-num">Decision 02 · Step 05 — Persona</div>
+            <div class="decision-title">"Reserve a Table" — not "Book Now" · unhurried over urgent</div>
+          </div>
+          <div class="decision-body">
+            Rohit is a product person. He values considered language over e-commerce urgency. "Book Now" signals pressure and availability anxiety — neither of which Ember &amp; Oak wants to project. "Reserve a Table" is quieter and more possessive — it implies the table is waiting, not disappearing. This single CTA decision changes the emotional register of every conversion moment on the page. <strong>Source: Step 5 persona — trust triggers and pain points.</strong>
+          </div>
+        </div>
+
+        <div class="decision-card">
+          <div class="decision-card-top">
+            <div class="decision-num">Decision 03 · Step 04 — Research</div>
+            <div class="decision-title">Named wood per dish — at hero level, not in the menu footnote</div>
+          </div>
+          <div class="decision-body">
+            Industry research showed that fine dining websites focus on the output (the plated dish) rather than the method (the heat source, the wood, the time). Noma is the only exception — their foraging philosophy is structurally central. The decision to name Hickory, Apple, Cedar, and Camphor at the hero strip was made at the research stage. It was then carried into every section: the philosophy copy, each menu item's wood tag, and the footer closing line. <strong>Source: Step 4 research — Key Design Insight 03.</strong>
+          </div>
+        </div>
+
+        <div class="decision-card">
+          <div class="decision-card-top">
+            <div class="decision-num">Decision 04 · Step 04 &amp; 05 — Research &amp; Persona</div>
+            <div class="decision-title">"28 guests each evening" — explicit scarcity at the first viewport</div>
+          </div>
+          <div class="decision-body">
+            OpenTable data (2025) shows an 11% increase in group dining bookings — evidence of growing demand for curated, bookable experiences. Rohit specifically responds to scarcity signals that feel factual rather than manufactured. The decision to place "28 guests each evening" in the hero eyebrow — not below the fold, not in the footer — was deliberate. It converts browsers into bookers by introducing genuine urgency without pressure language. <strong>Source: Step 4 research + Step 5 persona motivation analysis.</strong>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: VISUAL IDENTITY -->
+    <div class="section">
+      <div class="section-label">04 — Visual identity system</div>
+      <h2 class="section-heading">The Noir direction.<br><em>Applied.</em></h2>
+
+      <p class="body-text">Direction A — Noir — was selected in Step 7. The identity system it established was applied consistently across every subsequent document and the final landing page. No element in the build exists outside these rules.</p>
+
+      <div class="identity-grid">
+
+        <div class="identity-col">
+          <div class="id-label">Colour palette</div>
+          <div class="swatch-row">
+            <div class="swatch-block"><div class="swatch" style="background:#0E0A06;"></div><div class="swatch-name">Void<br>#0E0A06</div></div>
+            <div class="swatch-block"><div class="swatch" style="background:#2C1A0E;"></div><div class="swatch-name">Coal<br>#2C1A0E</div></div>
+            <div class="swatch-block"><div class="swatch" style="background:#C85A2A;"></div><div class="swatch-name">Ember<br>#C85A2A</div></div>
+            <div class="swatch-block"><div class="swatch" style="background:#C9A84C;"></div><div class="swatch-name">Gold<br>#C9A84C</div></div>
+            <div class="swatch-block"><div class="swatch" style="background:#F5EDD8;"></div><div class="swatch-name">Cream<br>#F5EDD8</div></div>
+          </div>
+          <p style="font-size:13px;color:var(--ink-mid);line-height:1.65;margin-top:14px;">Near-black base (#0E0A06 — warmer than pure black, references ash). Single ember-orange accent used only for CTAs, rules, and key moments. Gold used once or twice for warmth. Cream for all text — never white.</p>
+        </div>
+
+        <div class="identity-col">
+          <div class="id-label">Typography system</div>
+          <div class="type-line">
+            <div class="type-role">Display · all headlines</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--ink);letter-spacing:-.02em;line-height:1.05;">Where fire<br><em style="font-style:italic;">meets flavour.</em></div>
+            <div class="type-font-name">Cormorant Garamond · Light 300 + Italic</div>
+          </div>
+          <div class="type-line">
+            <div class="type-role">Labels · navigation · metadata</div>
+            <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-muted);">Reserve a table · Hickory · 28 guests</div>
+            <div class="type-font-name">DM Mono · Regular · Wide tracking · Uppercase</div>
+          </div>
+          <div class="type-line">
+            <div class="type-role">Body · descriptions · sub-copy</div>
+            <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;color:var(--ink-mid);line-height:1.7;">Wood-fired. Seasonal. Unhurried.</div>
+            <div class="type-font-name">DM Sans · Light 300</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 5: WHAT THE PROJECT DEMONSTRATES -->
+    <div class="section">
+      <div class="section-label">05 — What this demonstrates</div>
+      <h2 class="section-heading">The skill being<br><em>shown.</em></h2>
+
+      <div class="learning-row">
+        <div class="learning-num">01</div>
+        <div>
+          <div class="learning-title">Research-led design — every decision has a source</div>
+          <div class="learning-body">Nothing in this project was decided by taste alone. The dark palette came from the competitor audit. The scarcity signal came from OpenTable data. The wood-naming convention came from the research insight that cooking method is the primary visual gap in the category. A designer who can read research and translate it into specific design decisions is more valuable than one who produces beautiful work without knowing why.</div>
+        </div>
+      </div>
+
+      <div class="learning-row">
+        <div class="learning-num">02</div>
+        <div>
+          <div class="learning-title">AI as a design tool — direction is the skill, execution is the output</div>
+          <div class="learning-body">Claude executed 11 documents, hundreds of lines of CSS, a complete copywriting system, and a production-quality landing page. The designer chose the industries, selected the brand name, chose Direction A over B and C, approved or rejected every word of copy, and caught the process integrity errors that would have made the case study indefensible. The prompts in Step 10 are the portfolio — they show a designer thinking, not a tool performing.</div>
+        </div>
+      </div>
+
+      <div class="learning-row">
+        <div class="learning-num">03</div>
+        <div>
+          <div class="learning-title">Cross-discipline fluency — strategy, copy, visual, and code in one process</div>
+          <div class="learning-body">This project moves from market research to brand naming to moodboarding to copywriting to layout to a functioning HTML page. Each discipline informed the next. The copy rules were set before the layout was designed. The layout was chosen to serve the copy. The visual identity was established before either. A design lead who can hold all of these in sequence — without losing the thread between them — produces more coherent work than one who operates in a single discipline.</div>
+        </div>
+      </div>
+
+      <div class="learning-row">
+        <div class="learning-num">04</div>
+        <div>
+          <div class="learning-title">Hypothetical but defensible — every claim can be answered in an interview</div>
+          <div class="learning-body">Ember &amp; Oak does not exist. But the market it sits in does. The persona it targets does. The competitor landscape it navigates does. Every statistic has a named source. Every design decision has a documented rationale. If a hiring manager asks why the CTA says "Reserve a Table" and not "Book Now," the answer is in Step 5. If they ask why the wood type is named per dish, the answer is in Step 4. The case study is bulletproof because the process was honest.</div>
+        </div>
+      </div>
+
+      <div class="results-box">
+        <div class="results-label">The output · what was built</div>
+        <div class="results-headline">One brand. Eleven documents.<br>One <em>production-quality landing page.</em></div>
+        <div class="results-grid">
+          <div class="result-item">
+            <div class="result-item-label">The landing page</div>
+            <div class="result-item-text">Single HTML file · 35KB · no framework · five full-viewport sections · custom fire cursor · scroll-reveal animations · mobile hamburger menu · working reservation form with inline confirmation · Unsplash images with onerror fallbacks</div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">The process documents</div>
+            <div class="result-item-text">11 individual HTML documents · project brief · scoring matrix · naming exercise · industry research · persona · visual audit · moodboard · copywriting · prompt diary · before/after comparison · this case study</div>
+          </div>
+          <div class="result-item">
+            <div class="result-item-label">The tools used</div>
+            <div class="result-item-text">Claude (Anthropic) for all document generation, copywriting, and code · Midjourney for moodboard image generation · Google Fonts for typography · Unsplash for photography · Pure HTML / CSS / JS — no build tooling</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 12 — CASE STUDY · EMBER &amp; OAK</div>
+      <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

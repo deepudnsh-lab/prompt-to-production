@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 04: Industry Research · OrbitX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0E0E0E;
+    --ink-mid:    #3D3D3D;
+    --ink-muted:  #7A7A7A;
+    --ink-faint:  #B8B8B8;
+    --paper:      #FAF8F4;
+    --accent:     #2563C8;
+    --accent-light: #C8DAF7;
+    --rule:       #E0DCD5;
+    --tag-bg:     #F0EDE8;
+    --space-bg:   #020916;
+    --space-mid:  #0A1E3D;
+    --star-white: #E8F0FF;
+  }
+
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{font-size:16px;}
+  body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+  .document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+  /* COVER */
+  .cover-band{background:var(--space-bg);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+  .cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(37,99,200,.25),transparent 65%),radial-gradient(ellipse 40% 50% at 10% 70%,rgba(37,99,200,.1),transparent 55%);pointer-events:none;}
+  /* star dots */
+  .cover-band::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 10%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 30% 60%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 60% 50%,rgba(255,255,255,.3),transparent),radial-gradient(1px 1px at 85% 65%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 20% 80%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+
+  .project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+  .project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent);}
+  .cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+  .cover-title em{font-style:italic;color:var(--accent-light);}
+  .cover-meta{text-align:right;position:relative;z-index:1;}
+  .meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+  .meta-value{font-size:13px;color:#fff;font-weight:300;}
+  .meta-block{margin-bottom:20px;}
+  .meta-block:last-child{margin-bottom:0;}
+  .accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--accent-light),transparent);margin:0 -80px;}
+
+  .doc-body{padding-top:64px;}
+  .section{margin-bottom:56px;}
+  .section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+  .section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+  .section-heading em{font-style:italic;color:var(--accent);}
+  .body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+  .page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+  .note-box{background:var(--tag-bg);border-left:3px solid var(--accent);padding:18px 22px;margin:24px 0;}
+  .note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+  .note-box strong{color:var(--ink);}
+  .source-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--ink-faint);margin-top:4px;}
+
+  /* STAT GRID */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:24px 0;}
+  .stat-card{background:var(--space-bg);padding:22px 18px;position:relative;overflow:hidden;}
+  .stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(37,99,200,.2),transparent);}
+  .stat-num{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--accent-light);line-height:1;margin-bottom:6px;position:relative;z-index:1;}
+  .stat-label{font-size:12px;color:rgba(255,255,255,.5);line-height:1.4;font-weight:300;position:relative;z-index:1;}
+  .stat-source{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);margin-top:8px;letter-spacing:.08em;position:relative;z-index:1;}
+
+  /* TREND CARDS */
+  .trend-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:24px 0;}
+  .trend-card{border:1px solid var(--rule);padding:20px;position:relative;}
+  .trend-status{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:2px;display:inline-block;margin-bottom:10px;}
+  .status-now{background:#E8F5EE;color:#1A6B3A;}
+  .status-emerging{background:#EEF0FF;color:#3D4AB7;}
+  .status-watch{background:#FFF4E6;color:#8B4A1C;}
+  .trend-title{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.3;}
+  .trend-body{font-size:13px;color:var(--ink-mid);line-height:1.65;}
+
+  /* COMPETITOR TABLE */
+  .comp-table{width:100%;border-collapse:collapse;font-size:13px;margin:20px 0;}
+  .comp-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:#fff;padding:10px 14px;text-align:left;}
+  .comp-table td{padding:12px 14px;border-bottom:1px solid var(--rule);color:var(--ink-mid);vertical-align:top;line-height:1.55;}
+  .comp-table td:first-child{font-weight:500;color:var(--ink);}
+  .comp-table tr:last-child td{border-bottom:none;}
+  .comp-table tr:nth-child(even) td{background:var(--tag-bg);}
+
+  /* INSIGHT ROWS */
+  .insight-row{display:grid;grid-template-columns:48px 1fr;gap:20px;align-items:start;padding:20px 0;border-bottom:1px solid var(--rule);}
+  .insight-row:last-child{border-bottom:none;}
+  .insight-num{font-family:'DM Serif Display',serif;font-size:28px;color:var(--accent-light);line-height:1;opacity:.6;}
+  .insight-title{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:5px;}
+  .insight-body{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+
+  /* OPPORTUNITY BOX */
+  .opportunity-box{background:var(--space-bg);padding:40px;margin-top:32px;position:relative;overflow:hidden;}
+  .opportunity-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(37,99,200,.18),transparent 60%);pointer-events:none;}
+  .opp-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent-light);margin-bottom:14px;position:relative;z-index:1;}
+  .opp-text{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;line-height:1.45;position:relative;z-index:1;}
+  .opp-text em{font-style:italic;color:var(--accent-light);}
+
+  /* FOOTER */
+  .doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+  .footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+  .footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+  /* RESPONSIVE */
+  @media(max-width:640px){
+    .document{padding:24px 20px;}
+    .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+    .cover-title{font-size:30px;}
+    .accent-rule{margin:0 -20px;}
+    .page-rule{margin:40px -20px;}
+    .section-heading{font-size:24px;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .trend-grid{grid-template-columns:1fr;}
+    .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · OrbitX · Brand 02 of 06</div>
+      <h1 class="cover-title">Industry<br><em>Research</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+      <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 04 — Research</div></div>
+      <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">OrbitX</div></div>
+      <div class="meta-block"><div class="meta-label">Industry</div><div class="meta-value">Space tourism</div></div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1: MARKET SIZE -->
+    <div class="section">
+      <div class="section-label">01 — Market size &amp; growth</div>
+      <h2 class="section-heading">A $1.84B market<br>expanding at <em>warp speed.</em></h2>
+
+      <p class="body-text">Space tourism is no longer science fiction. It is a commercially active, rapidly expanding industry with three operating suborbital providers, a functioning orbital tourism market, and a forecast trajectory that puts it at $62.1 billion by 2036. The design challenge for OrbitX is not to make space feel real — it already is. The challenge is to make the aspiration feel personal and accessible to the person who can actually afford a seat.</p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-num">$1.84B</div>
+          <div class="stat-label">Global space tourism market value in 2025</div>
+          <div class="stat-source">Polaris Market Research, 2026</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">21.8%</div>
+          <div class="stat-label">CAGR projected 2026–2036</div>
+          <div class="stat-source">Future Market Insights, Jan 2026</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">$62.1B</div>
+          <div class="stat-label">Projected market size by 2036</div>
+          <div class="stat-source">Future Market Insights, Jan 2026</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">58.4%</div>
+          <div class="stat-label">Market share held by suborbital flights in 2026</div>
+          <div class="stat-source">Future Market Insights, Jan 2026</div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <p><strong>Why suborbital dominates:</strong> Suborbital flights — brief trips to the edge of space lasting 10–15 minutes — represent the largest segment because they require less training, less technical risk, and significantly lower ticket prices than orbital missions. Blue Origin's New Shepard and Virgin Galactic's Delta spacecraft both operate in this segment. OrbitX is positioned as a suborbital operator targeting the high-net-worth civilian market.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: TICKET PRICING -->
+    <div class="section">
+      <div class="section-label">02 — Ticket pricing landscape</div>
+      <h2 class="section-heading">What a seat to space<br>actually <em>costs.</em></h2>
+
+      <p class="body-text">Pricing in space tourism spans five orders of magnitude depending on the mission type. The suborbital segment — where OrbitX competes — sits between $200,000 and $600,000 per seat. These are not arbitrary numbers: they reflect the actual operational costs of reusable rockets, safety protocols, training programmes, and the extreme scarcity of available seats.</p>
+
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Operator</th>
+            <th>Mission type</th>
+            <th>Duration</th>
+            <th>Price per seat</th>
+            <th>Seats per flight</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Space Perspective</td>
+            <td>High-altitude balloon</td>
+            <td>6 hours</td>
+            <td>~$125,000</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>Blue Origin (New Shepard)</td>
+            <td>Suborbital</td>
+            <td>11 minutes</td>
+            <td>$200,000–$300,000</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <td>Virgin Galactic (Delta)</td>
+            <td>Suborbital</td>
+            <td>~90 minutes total</td>
+            <td>$600,000+</td>
+            <td>6</td>
+          </tr>
+          <tr>
+            <td>Axiom Space / SpaceX</td>
+            <td>Orbital (ISS)</td>
+            <td>10–14 days</td>
+            <td>~$70M</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td>SpaceX Crew Dragon (private)</td>
+            <td>Orbital</td>
+            <td>3–5 days</td>
+            <td>$55M–$200M</td>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="source-tag">Sources: PatentPC 2026 · Space.com Nov 2024 · Qazinform Oct 2025 · SpaceVoyageVentures Feb 2026</div>
+
+      <p class="body-text" style="margin-top:16px;">The suborbital price range is expected to decline to $200,000–$300,000 by 2030 as reusable vehicle technology matures and flight cadence increases (Mordor Intelligence, Jan 2026). This creates a window of opportunity for OrbitX to position itself as the premium suborbital experience before pricing democratises the segment further.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: VISUAL & DESIGN TRENDS -->
+    <div class="section">
+      <div class="section-label">03 — Visual &amp; design trends · tagged by status</div>
+      <h2 class="section-heading">How space tourism<br><em>looks</em> right now.</h2>
+
+      <div class="trend-grid">
+        <div class="trend-card">
+          <span class="trend-status status-now">Dominant now</span>
+          <div class="trend-title">Deep space dark mode</div>
+          <div class="trend-body">Near-black backgrounds with blue or white accent palettes are universal across Blue Origin, SpaceX, and Virgin Galactic. The visual language of actual space — darkness, stars, Earth from above — has become the design default for the category. OrbitX must find a way to be premium within this convention, not generic.</div>
+        </div>
+        <div class="trend-card">
+          <span class="trend-status status-now">Dominant now</span>
+          <div class="trend-title">Full-viewport hero photography</div>
+          <div class="trend-body">All three major operators lead with full-screen Earth-from-space imagery. The curvature of the Earth, the thin blue line of the atmosphere, the darkness of space behind it — this is the universal hero visual. Powerful but becoming expected. OrbitX's opportunity is to make the human inside the craft as prominent as the view outside.</div>
+        </div>
+        <div class="trend-card">
+          <span class="trend-status status-emerging">Emerging</span>
+          <div class="trend-title">Human-scale storytelling</div>
+          <div class="trend-body">Blue Origin's recent all-female crew mission (including Katy Perry, April 2025) generated significantly more media coverage than previous technical missions. The industry is learning that the traveller's story — who they are, why they went, what they saw — is more compelling than the spacecraft's specifications. Design is beginning to follow this shift.</div>
+        </div>
+        <div class="trend-card">
+          <span class="trend-status status-emerging">Emerging</span>
+          <div class="trend-title">Countdown culture</div>
+          <div class="trend-body">Mission countdown timers, launch windows, reservation queues — the temporal language of space missions is being adopted as a conversion mechanic in web design. The scarcity signal is real: Virgin Galactic has a 700+ person waitlist for its Delta vehicle. "Your seat is waiting" framing is beginning to appear across competitor sites.</div>
+        </div>
+        <div class="trend-card">
+          <span class="trend-status status-watch">Worth watching</span>
+          <div class="trend-title">Environmental narrative tension</div>
+          <div class="trend-body">Carbon emissions from rocket launches are drawing increasing scrutiny. Some potential customers are pausing purchases on environmental grounds. Balloon-based operators (Space Perspective, Eos X Space) are positioning against this. Rocket-based operators have not yet addressed it directly in their web design or marketing. A gap that will need to close.</div>
+        </div>
+        <div class="trend-card">
+          <span class="trend-status status-watch">Worth watching</span>
+          <div class="trend-title">Spaceport as destination</div>
+          <div class="trend-body">Spaceport America in New Mexico, Mojave in California, and planned locations in Italy and the UAE are being designed as luxury hospitality experiences in their own right. The pre-launch experience — training, medical checks, overnight stays — is becoming a product. Web design for space tourism is beginning to incorporate destination content alongside mission content.</div>
+        </div>
+        <div class="trend-card">
+          <span class="trend-status status-now">Dominant now</span>
+          <div class="trend-title">Technical credibility signals</div>
+          <div class="trend-body">Safety data, vehicle specifications, flight history, mission success rates — all major operators display this information prominently. Unlike luxury hospitality where credentials are implied, space tourism requires explicit proof. The customer needs to trust the rocket before they trust the brand. OrbitX's design must earn technical credibility first.</div>
+        </div>
+        <div class="trend-card">
+          <span class="trend-status status-emerging">Emerging</span>
+          <div class="trend-title">Asia-Pacific market awakening</div>
+          <div class="trend-body">China's Deep Blue Aerospace sold suborbital tickets for 2027 at approximately $211,000 USD (Oct 2024). India's space tourism infrastructure is expanding with ISRO's Gaganyaan human spaceflight programme targeting 2025–2026. Japan's $6.4B Space Strategy Fund signals government commitment. The customer base is globalising — design must speak to cultures beyond the US luxury traveller archetype.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: KEY DESIGN INSIGHTS -->
+    <div class="section">
+      <div class="section-label">04 — Key design insights for OrbitX</div>
+      <h2 class="section-heading">What the research<br><em>tells</em> the design.</h2>
+
+      <div class="insight-row">
+        <div class="insight-num">01</div>
+        <div>
+          <div class="insight-title">The view is not the product — the person who saw it is</div>
+          <div class="insight-body">Every competitor shows the same Earth-from-space imagery. The differentiation opportunity is not better space photography — it is better human storytelling. OrbitX's design should foreground the traveller: who goes, what they bring back, what changes when you see the Earth from outside it. The spacecraft is the vehicle; the transformation is the product.</div>
+        </div>
+      </div>
+
+      <div class="insight-row">
+        <div class="insight-num">02</div>
+        <div>
+          <div class="insight-title">Scarcity is real — it must be stated, not manufactured</div>
+          <div class="insight-body">Virgin Galactic has a 700+ person waitlist. Blue Origin has flown only 58 passengers since 2021. These numbers are not marketing tactics — they are operational facts. OrbitX should communicate seat availability explicitly, as a factual signal rather than urgency language. "12 seats remain on the Q3 2027 manifest" is more powerful than "Limited seats available."</div>
+        </div>
+      </div>
+
+      <div class="insight-row">
+        <div class="insight-num">03</div>
+        <div>
+          <div class="insight-title">The customer is buying credibility before they are buying an experience</div>
+          <div class="insight-body">At $200,000–$600,000 per seat, the first question any prospect asks is: is this safe? Before they engage with the experience, they need to believe in the vehicle, the team, and the track record. OrbitX's design must answer the safety question before it asks for a reservation. Technical content — vehicle specs, flight history, safety certifications — must appear high on the page, not buried in a dedicated section.</div>
+        </div>
+      </div>
+
+      <div class="insight-row">
+        <div class="insight-num">04</div>
+        <div>
+          <div class="insight-title">The pricing curve is moving — OrbitX sits in a premium window</div>
+          <div class="insight-body">Suborbital seat prices are expected to decline from $450,000–$600,000 today to $200,000–$300,000 by 2030 as technology matures (Mordor Intelligence, 2026). OrbitX is positioned in the market before that democratisation happens. This is the moment to establish a premium brand identity that will survive lower prices — just as early commercial aviation established airline brand identities that outlasted the era of elite-only travel.</div>
+        </div>
+      </div>
+
+      <div class="opportunity-box">
+        <div class="opp-label">Design opportunity statement · OrbitX</div>
+        <div class="opp-text">Every competitor in space tourism shows you the view from outside. <em>OrbitX shows you the person who went.</em> The design territory is human transformation — what changes in a person who has seen the Earth from 100km above it — expressed through a visual language that is as technically credible as it is emotionally compelling. Dark, vast, luminous — and unmistakably human.</div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 04 — INDUSTRY RESEARCH · ORBITX</div>
+      <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

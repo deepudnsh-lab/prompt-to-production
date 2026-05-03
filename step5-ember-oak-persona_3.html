@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 05: Persona · Ember & Oak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --accent-dark: #8B3A18;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .document {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 80px;
+    background: #fff;
+  }
+
+  /* COVER */
+  .cover-band {
+    background: var(--ink);
+    margin: -80px -80px 0;
+    padding: 56px 80px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .project-series {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-series::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .cover-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 44px;
+    line-height: 1.05;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .cover-title em { font-style: italic; color: var(--accent-light); }
+
+  .cover-meta { text-align: right; }
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .meta-value { font-size: 13px; color: #fff; font-weight: 300; }
+  .meta-block { margin-bottom: 20px; }
+  .meta-block:last-child { margin-bottom: 0; }
+
+  .accent-rule {
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light), transparent);
+    margin: 0 -80px;
+  }
+
+  .doc-body { padding-top: 64px; }
+  .section { margin-bottom: 56px; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .section-heading em { font-style: italic; color: var(--accent); }
+
+  .body-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--ink-mid);
+    margin-bottom: 16px;
+  }
+
+  .page-rule {
+    height: 1px;
+    background: var(--rule);
+    margin: 56px -80px;
+  }
+
+  .note-box {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--accent);
+    padding: 18px 22px;
+    margin: 24px 0;
+  }
+
+  .note-box p {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  .note-box strong { color: var(--ink); }
+
+  /* ── PERSONA HERO CARD ── */
+  .persona-hero {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin-bottom: 2px;
+    overflow: hidden;
+  }
+
+  .persona-avatar {
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 16px;
+  }
+
+  .avatar-initials {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .avatar-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .avatar-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    text-align: center;
+  }
+
+  .persona-summary {
+    padding: 32px 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-content: start;
+  }
+
+  .persona-field {}
+
+  .persona-field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .persona-field-value {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+
+  .persona-field-value strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ── BEHAVIOUR GRID ── */
+  .behaviour-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 24px;
+  }
+
+  .behaviour-card {
+    background: var(--tag-bg);
+    padding: 22px 20px;
+  }
+
+  .behaviour-icon {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+
+  .behaviour-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .behaviour-desc {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  /* ── PAIN / MOTIVATION SPLIT ── */
+  .split-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 24px;
+  }
+
+  .split-card {
+    border: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
+  .split-card-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .split-card-header.pains { background: #FEF0F0; }
+  .split-card-header.motivations { background: #E8F5EE; }
+
+  .split-header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .split-card-header.pains .split-header-label { color: #A02020; }
+  .split-card-header.motivations .split-header-label { color: #1A6B3A; }
+
+  .split-items {
+    list-style: none;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .split-item {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.55;
+    align-items: flex-start;
+  }
+
+  .split-item-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .pains .split-item-dot { background: #E24B4A; }
+  .motivations .split-item-dot { background: #1D9E75; }
+
+  /* ── DEVICE TABLE ── */
+  .device-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    font-size: 13px;
+  }
+
+  .device-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--ink);
+    padding: 10px 16px;
+    text-align: left;
+  }
+
+  .device-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-mid);
+    vertical-align: top;
+  }
+
+  .device-table tr:last-child td { border-bottom: none; }
+  .device-table tr:nth-child(even) td { background: var(--tag-bg); }
+
+  .device-table td:first-child {
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ── TRUST MOMENT ── */
+  .trust-box {
+    background: var(--ink);
+    padding: 36px 44px;
+    margin-top: 32px;
+  }
+
+  .trust-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 14px;
+  }
+
+  .trust-statement {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 24px;
+    color: #fff;
+    line-height: 1.45;
+    margin-bottom: 20px;
+  }
+
+  .trust-breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 20px;
+  }
+
+  .trust-item {
+    padding: 16px 18px;
+    border: 1px solid rgba(200,118,58,0.2);
+  }
+
+  .trust-item-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 6px;
+  }
+
+  .trust-item-value {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+  }
+
+  /* ── DESIGN IMPLICATIONS ── */
+  .implications-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 24px;
+  }
+
+  .implication-card {
+    border: 1px solid var(--rule);
+    padding: 22px 24px;
+    background: #fff;
+  }
+
+  .implication-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .implication-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .implication-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .implication-desc {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  /* SOURCE NOTE */
+  .source-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    margin-top: 20px;
+    line-height: 1.8;
+  }
+
+  /* FOOTER */
+  .doc-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  /* ── RESPONSIVE · MOBILE FIRST ──────────────────────────── */
+  @media (max-width: 640px) {
+
+    /* Core document spacing */
+    .document { padding: 24px 20px !important; }
+
+    /* Cover band — remove negative margins, restack */
+    .cover-band {
+      margin: -24px -20px 0 !important;
+      padding: 40px 24px 32px !important;
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+
+    .cover-title { font-size: 32px !important; }
+    .cover-meta  { text-align: left !important; }
+
+    /* Accent rule full bleed */
+    .accent-rule { margin: 0 -20px !important; }
+
+    /* Page rule full bleed */
+    .page-rule { margin: 40px -20px !important; }
+
+    /* Section headings */
+    .section-heading { font-size: 26px !important; }
+
+    /* ── Grids → single column ── */
+    .two-col,
+    .stat-grid,
+    .trend-grid,
+    .split-grid,
+    .behaviour-grid,
+    .criteria-grid,
+    .criteria-row,
+    .candidates-grid,
+    .selected-grid,
+    .rejected-grid,
+    .implications-grid,
+    .deliverables-grid,
+    .trust-breakdown,
+    .opp-three-col,
+    .gap-grid,
+    .brand-card-body,
+    .comp-attr,
+    .audit-body,
+    .persona-summary,
+    .insight-block,
+    .process-steps,
+    .timeline,
+    .tools-row,
+    .score-row,
+    .reveal-voice
+    { grid-template-columns: 1fr !important; }
+
+    /* Rejected grid needs more breathing room */
+    .rejected-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Cover band meta stacking ── */
+    .meta-block { margin-bottom: 12px !important; }
+
+    /* ── Stat/criteria pills ── */
+    .stat-grid { grid-template-columns: 1fr 1fr !important; }
+    .criteria-row { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Persona hero ── */
+    .persona-hero { grid-template-columns: 1fr !important; }
+    .persona-avatar { padding: 28px 20px !important; }
+    .persona-summary {
+      grid-template-columns: 1fr 1fr !important;
+      padding: 20px !important;
+    }
+
+    /* ── Insight block ── */
+    .insight-block { grid-template-columns: 1fr !important; }
+    .insight-num {
+      padding: 16px !important;
+      font-size: 24px !important;
+    }
+
+    /* ── Brand card ── */
+    .brand-card-header {
+      grid-template-columns: 1fr !important;
+      flex-direction: column !important;
+    }
+    .brand-wordmark-preview {
+      border-left: none !important;
+      border-top: 1px solid var(--rule) !important;
+      padding: 16px 20px !important;
+      text-align: left !important;
+    }
+    .brand-num { display: none !important; }
+
+    /* ── Audit cards ── */
+    .audit-header {
+      grid-template-columns: 1fr !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .audit-scores {
+      padding: 12px 16px !important;
+      flex-wrap: wrap !important;
+      border-left: none !important;
+      border-top: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    .audit-title-block { padding: 14px 16px !important; }
+
+    /* ── Annotation grid → stack ── */
+    .annotation-grid,
+    .competitor-body,
+    .visual-zone
+    { grid-template-columns: 1fr !important; }
+
+    .annotation-col,
+    .comp-attr,
+    .audit-col
+    { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    .annotation-col:last-child,
+    .comp-attr:last-child,
+    .audit-col:last-child
+    { border-bottom: none !important; }
+
+    /* ── Tables → scrollable ── */
+    .scoring-wrap,
+    .gap-table,
+    .compare-table,
+    .device-table,
+    .summary-table,
+    .website-table
+    { overflow-x: auto !important; display: block !important; }
+
+    /* ── Process steps ── */
+    .process-step { grid-template-columns: 40px 1fr !important; }
+
+    /* ── Timeline ── */
+    .timeline-row { grid-template-columns: 60px 1fr !important; gap: 12px !important; }
+
+    /* ── Opportunity / gap / hypothesis boxes ── */
+    .opportunity-box,
+    .hypothesis,
+    .gap-box,
+    .trust-box
+    { padding: 28px 20px !important; }
+
+    .opportunity-statement,
+    .hypothesis-text,
+    .gap-text,
+    .trust-statement
+    { font-size: 20px !important; }
+
+    /* ── Name cards (Step 3) ── */
+    .name-card-top { flex-direction: column !important; gap: 8px !important; }
+    .naming-strategy { align-self: flex-start !important; }
+
+    /* ── Selected reveal ── */
+    .selected-reveal {
+      grid-template-columns: 1fr !important;
+      padding: 20px !important;
+      gap: 16px !important;
+    }
+    .reveal-name { font-size: 24px !important; }
+
+    /* ── Industry header ── */
+    .industry-header { flex-wrap: wrap !important; gap: 8px !important; }
+    .industry-category { margin-left: 0 !important; }
+
+    /* ── Score chips in audit header ── */
+    .score-chip-val { width: 26px !important; height: 26px !important; font-size: 11px !important; }
+
+    /* ── Drop zones ── */
+    .drop-zone { height: auto !important; min-height: 200px !important; padding: 24px 16px !important; }
+    .drop-steps { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; }
+    .drop-legend { position: static !important; margin-top: 16px !important; flex-wrap: wrap !important; }
+
+    /* ── Competitor block ── */
+    .competitor-header { grid-template-columns: 1fr !important; }
+    .comp-tags { justify-content: flex-start !important; border-left: none !important; border-top: 1px solid var(--rule) !important; }
+    .comp-num { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    /* ── Hero / section headings ── */
+    .section-heading { font-size: 24px !important; line-height: 1.2 !important; }
+    .body-text { font-size: 14px !important; }
+
+    /* ── Note box ── */
+    .note-box { padding: 14px 16px !important; }
+    .note-box p { font-size: 12px !important; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      flex-direction: column !important;
+      gap: 10px !important;
+      align-items: flex-start !important;
+    }
+    .footer-right { text-align: left !important; }
+
+    /* ── Step 1 specific ── */
+    .manifesto { padding: 16px 18px !important; }
+    .manifesto-text { font-size: 18px !important; }
+    .card { padding: 16px !important; }
+    .deliverables-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Step 2 specific ── */
+    .selected-card { padding: 20px !important; }
+    .selected-card-num { font-size: 36px !important; top: 16px !important; right: 16px !important; }
+
+    /* ── Step 4 specific ── */
+    .stat-num { font-size: 28px !important; }
+    .insight-block { display: flex !important; flex-direction: column !important; }
+    .opp-three-col { grid-template-columns: 1fr !important; }
+
+    /* ── Step 5 specific ── */
+    .trust-breakdown { grid-template-columns: 1fr !important; }
+    .behaviour-grid { grid-template-columns: 1fr !important; }
+
+    /* ── Step 6 specific ── */
+    .gap-grid { grid-template-columns: 1fr !important; }
+    .criteria-bar { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  @media (max-width: 400px) {
+    .cover-title { font-size: 26px !important; }
+    .section-heading { font-size: 22px !important; }
+    .stat-grid { grid-template-columns: 1fr !important; }
+    .persona-summary { grid-template-columns: 1fr !important; }
+    .deliverables-grid { grid-template-columns: 1fr !important; }
+    .rejected-grid { grid-template-columns: 1fr !important; }
+  }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Ember &amp; Oak · Brand 01 of 06</div>
+      <h1 class="cover-title">Ideal Customer<br><em>Profile</em><br>Who we are designing for</h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block">
+        <div class="meta-label">Designer</div>
+        <div class="meta-value">Deepu Dinesh</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Document</div>
+        <div class="meta-value">Step 05 — Persona</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Brand</div>
+        <div class="meta-value">Ember &amp; Oak</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1: CONTEXT -->
+    <div class="section">
+      <div class="section-label">01 — Why this persona exists</div>
+      <h2 class="section-heading">Every design decision<br>needs a <em>person</em><br>to answer to.</h2>
+
+      <p class="body-text">A fine dining landing page is not designed for everyone. It is designed for a specific person with a specific relationship to food, money, experience, and digital behaviour. Without a clear persona, design decisions default to personal taste or generic best practices — neither of which produces work that converts browsers into reservation holders.</p>
+
+      <p class="body-text">The persona below is constructed from real data about the primary demographic driving India's fine dining growth, cross-referenced with global research on upscale diner behaviour. The fictional name and narrative details are a device for making the profile usable in practice — every demographic and behavioural attribute is grounded in cited research.</p>
+
+      <div class="note-box">
+        <p><strong>Data foundation:</strong> 70% of frequent fine dining guests are aged 35–54 (Restroworks / IMARC, 2025). A growing base of affluent millennials and urban professionals is choosing premium dining as a lifestyle expression rather than an occasional indulgence (Restaurant India, 2026). Urban Indians now dine out around 5 times a month, expected to reach 7–8 times by 2030, with Gen Z driving 40% of consumption (Restroworks, 2025). The persona draws on these patterns and sits at their intersection.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: PERSONA PROFILE -->
+    <div class="section">
+      <div class="section-label">02 — The persona</div>
+      <h2 class="section-heading">Meet <em>Rohit.</em></h2>
+
+      <div class="persona-hero">
+        <div class="persona-avatar">
+          <div class="avatar-initials">RK</div>
+          <div class="avatar-name">Rohit Kapoor</div>
+          <div class="avatar-role">Primary persona</div>
+        </div>
+        <div class="persona-summary">
+          <div class="persona-field">
+            <div class="persona-field-label">Age</div>
+            <div class="persona-field-value"><strong>38 years old</strong></div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">Location</div>
+            <div class="persona-field-value"><strong>Bangalore, India</strong> — Indiranagar / Koramangala</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">Profession</div>
+            <div class="persona-field-value"><strong>VP of Product</strong> at a Series B SaaS company</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">Annual household income</div>
+            <div class="persona-field-value"><strong>₹45–70 lakh</strong> (dual income household)</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">Education</div>
+            <div class="persona-field-value"><strong>MBA, IIM Bangalore</strong> · Engineering undergrad</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">Household</div>
+            <div class="persona-field-value"><strong>Married, one child (6 years)</strong> — family dining is separate from fine dining occasions</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">Fine dining frequency</div>
+            <div class="persona-field-value"><strong>2–3 times per month</strong> for business or special occasions; 4–6 casual dining visits monthly</div>
+          </div>
+          <div class="persona-field">
+            <div class="persona-field-label">Average per-person spend</div>
+            <div class="persona-field-value"><strong>₹3,000–6,000 per person</strong> at fine dining; higher for wine pairing or chef's table</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: NARRATIVE -->
+    <div class="section">
+      <div class="section-label">03 — Who Rohit actually is</div>
+      <h2 class="section-heading">The person behind<br>the <em>profile.</em></h2>
+
+      <p class="body-text">Rohit grew up in a middle-class family in Delhi. He moved to Bangalore for his first job, did his MBA, and has spent the last decade building a career in product leadership. He earns well now — more than he ever expected to — and food has become one of the primary ways he and his wife Priya celebrate, unwind, and signal that they have arrived somewhere in life.</p>
+
+      <p class="body-text">He is not a food snob in the Instagram influencer sense. He doesn't post every meal. But he pays attention — he notices when a restaurant uses the wrong glass for a red wine, when the pacing between courses is off, when a server doesn't know the provenance of the ingredients. These are the details that make him feel a restaurant is taking the experience seriously, and he is willing to pay a meaningful premium for a place that gets it right.</p>
+
+      <p class="body-text">Rohit uses fine dining for three distinct occasions: client entertainment (he needs a place that will impress a visiting stakeholder), date nights with Priya (a ritual they protect fiercely despite their schedules), and personal milestone celebrations. He plans ahead for all three. He is not a spontaneous fine dining visitor — he books days, sometimes weeks, in advance. The website is where he makes his first assessment of whether a place is worth his time.</p>
+
+      <p class="body-text">He has been to restaurants in London, Tokyo, and New York. He knows what a well-designed fine dining website looks like. A site that feels generic, slow, or visually cheap immediately registers as a signal that the food and service might not be held to a higher standard either. Conversely, a site that feels premium, unhurried, and specific — that gives him a real sense of the philosophy behind the food — creates immediate credibility and a genuine desire to book.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: BEHAVIOURS -->
+    <div class="section">
+      <div class="section-label">04 — Digital & dining behaviours</div>
+      <h2 class="section-heading">How Rohit actually<br>finds and <em>books</em><br>a restaurant.</h2>
+
+      <div class="behaviour-grid">
+
+        <div class="behaviour-card">
+          <div class="behaviour-icon">01</div>
+          <div class="behaviour-title">Discovery starts with a recommendation, not a search</div>
+          <div class="behaviour-desc">Rohit typically hears about a restaurant from a colleague, a food writer he follows on Instagram, or a review in a publication like Condé Nast Traveller India. He rarely discovers restaurants through Google Search — he uses Google to verify a recommendation, not to initiate one.</div>
+        </div>
+
+        <div class="behaviour-card">
+          <div class="behaviour-icon">02</div>
+          <div class="behaviour-title">The website is the final assessment before booking</div>
+          <div class="behaviour-desc">Once he has a recommendation, the website is where the decision is made. He spends 2–4 minutes on average. He looks at: photography quality (signals how seriously they take presentation), the menu (does it have a point of view?), and the reservation system (friction here is a deal-breaker). If the site doesn't load well on mobile, he moves on.</div>
+        </div>
+
+        <div class="behaviour-card">
+          <div class="behaviour-icon">03</div>
+          <div class="behaviour-title">Mobile-first browsing, desktop for booking decisions</div>
+          <div class="behaviour-desc">He typically encounters the website first on his phone — during a commute or between meetings. But he often revisits on a desktop or laptop before making the actual reservation, especially if the occasion is important or the spend is significant. The mobile experience must impress; the desktop experience must convert.</div>
+        </div>
+
+        <div class="behaviour-card">
+          <div class="behaviour-icon">04</div>
+          <div class="behaviour-title">He reads the menu before anything else</div>
+          <div class="behaviour-desc">The menu is the first thing he looks for. Not to check prices — to assess whether the restaurant has a culinary philosophy. A menu that reads like a generic Indian fine dining template (paneer tikka with truffle, standard grilled options) tells him the kitchen is not thinking hard enough. A menu that references specific techniques, wood types, or seasonal sourcing creates immediate credibility.</div>
+        </div>
+
+        <div class="behaviour-card">
+          <div class="behaviour-icon">05</div>
+          <div class="behaviour-title">He books in advance and plans around it</div>
+          <div class="behaviour-desc">Rohit does not make spontaneous fine dining bookings. For date nights, he plans 1–2 weeks ahead. For client dinners, 2–3 weeks. For special occasions, sometimes a month in advance. He respects a restaurant that is hard to book — scarcity signals quality in his mental model. A reservation form that communicates "limited availability" performs better than one that implies instant access.</div>
+        </div>
+
+        <div class="behaviour-card">
+          <div class="behaviour-icon">06</div>
+          <div class="behaviour-title">He shares experiences, but selectively</div>
+          <div class="behaviour-desc">He is not an influencer. He shares an exceptional meal with a small circle — a photo to a friends WhatsApp group, a recommendation in a Slack channel, a mention to a colleague. This is the word-of-mouth chain that fine dining depends on. A memorable website and experience makes him more likely to share the recommendation; a generic one makes him less likely to feel it is worth sharing.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 5: PAINS & MOTIVATIONS -->
+    <div class="section">
+      <div class="section-label">05 — Pains & motivations</div>
+      <h2 class="section-heading">What frustrates him.<br>What <em>moves</em> him.</h2>
+
+      <div class="split-grid">
+        <div class="split-card">
+          <div class="split-card-header pains">
+            <div class="split-header-label">Pain points when visiting fine dining websites</div>
+          </div>
+          <ul class="split-items pains">
+            <li><div class="split-item-dot"></div><div>Websites that look like generic restaurant templates — dark background, italicised quote, hero image of steak. No personality, no differentiation.</div></li>
+            <li><div class="split-item-dot"></div><div>PDF menus. Having to download a file to see what's on the menu feels like a step backwards from every other considered digital experience in his life.</div></li>
+            <li><div class="split-item-dot"></div><div>Reservation systems that ask for too much information upfront, or redirect to a third-party platform (Zomato, Dineout) for a premium restaurant — it breaks the premium experience immediately.</div></li>
+            <li><div class="split-item-dot"></div><div>Slow-loading sites. He has a fast phone and fast internet. A site that takes more than 3 seconds registers as unprofessional and raises questions about operational attention to detail.</div></li>
+            <li><div class="split-item-dot"></div><div>Copy that tells him the restaurant is "the best" or "unparalleled" without showing him why. He is a product person — he values specifics over superlatives.</div></li>
+          </ul>
+        </div>
+
+        <div class="split-card">
+          <div class="split-card-header motivations">
+            <div class="split-header-label">What motivates a booking decision</div>
+          </div>
+          <ul class="split-items motivations">
+            <li><div class="split-item-dot"></div><div>A specific, named philosophy behind the food. Not "seasonal ingredients" — "hickory-fired lamb, apple-smoked sea bass." The specificity signals a kitchen that makes deliberate decisions.</div></li>
+            <li><div class="split-item-dot"></div><div>Visible scarcity — knowing that only 28 covers are served each evening makes him feel the experience is curated, not mass-produced. He wants to feel that getting a table is an achievement.</div></li>
+            <li><div class="split-item-dot"></div><div>A site that communicates the experience before the food — the atmosphere, the pacing, the ritual. He is buying an evening, not just a meal.</div></li>
+            <li><div class="split-item-dot"></div><div>A chef with a visible point of view. He wants to know who is responsible for the food and what they believe in — even on a hypothetical brand, the chef's philosophy should be legible from the website.</div></li>
+            <li><div class="split-item-dot"></div><div>A reservation process that feels effortless and immediate. He has limited time and a low tolerance for friction. A clean, simple form that confirms quickly moves him from intent to booking faster than anything else.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="source-note">
+        Behaviour and motivation patterns informed by: Restroworks Fine Dining Statistics (2025) · Restaurant India / Jakhar Hospitality (2026) · BusinessDojo Upscale Restaurant Industry Statistics (2025) · National Restaurant Association research cited in Restroworks (2025) · Mordor Intelligence India Full Service Restaurants Report (2026)
+      </p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 6: DEVICE BEHAVIOUR -->
+    <div class="section">
+      <div class="section-label">06 — Device & context behaviour</div>
+      <h2 class="section-heading">When and where<br>Rohit <em>encounters</em><br>the website.</h2>
+
+      <table class="device-table">
+        <thead>
+          <tr>
+            <th>Context</th>
+            <th>Device</th>
+            <th>Goal</th>
+            <th>Design implication</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>First encounter — recommendation received</td>
+            <td>iPhone · commute or lunch break</td>
+            <td>Quick impression check — is this worth a proper look?</td>
+            <td>Hero section must load fast and communicate the brand's identity within 5 seconds. No auto-playing video (data cost). Typography and photography must be compelling at mobile viewport.</td>
+          </tr>
+          <tr>
+            <td>Serious consideration — planning a booking</td>
+            <td>Laptop · evening, at home or in the office</td>
+            <td>Read the menu, assess the philosophy, find the reservation form</td>
+            <td>Desktop layout must support comfortable reading of the menu and the chef's philosophy. Reservation form should be accessible in one scroll from any section.</td>
+          </tr>
+          <tr>
+            <td>Client dinner research — making a business case</td>
+            <td>Laptop · office hours</td>
+            <td>Confirm the restaurant is impressive enough to bring a client — checks wine list, private dining, ambiance signals</td>
+            <td>The experience section (Chef's Table, wine pairing, private dining) must be clearly visible and credibly detailed. Press mentions or awards, if present, should be easy to find.</td>
+          </tr>
+          <tr>
+            <td>Day of reservation — confirming details</td>
+            <td>iPhone · on the way to the restaurant</td>
+            <td>Check address, opening time, parking or access details</td>
+            <td>Contact, location, and hours must be immediately accessible — ideally in the footer and a tap away from the nav. Not buried in a sub-page.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 7: TRUST MOMENT -->
+    <div class="section">
+      <div class="section-label">07 — The single most important question</div>
+      <h2 class="section-heading">What would make<br>Rohit trust Ember &amp;<br>Oak <em>instantly?</em></h2>
+
+      <p class="body-text">This is the defining question for the entire design. Every heading, every image decision, every section of copy should be answerable by asking whether it contributes to this moment.</p>
+
+      <div class="trust-box">
+        <div class="trust-label">The trust moment · Ember &amp; Oak</div>
+        <div class="trust-statement">"A site that shows me, in the first ten seconds, that someone made deliberate decisions about every detail — the wood, the fire, the cover count, the pacing — earns my trust before I've read a single word of copy."</div>
+
+        <div class="trust-breakdown">
+          <div class="trust-item">
+            <div class="trust-item-label">Visual signal</div>
+            <div class="trust-item-value">A dark, atmospheric hero that feels composed rather than assembled. The quality of the typography and the warmth of the ember tones communicates premium intent before any text is read.</div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-item-label">Narrative signal</div>
+            <div class="trust-item-value">Specific language about the method — "hickory for the lamb, apple for the duck" — tells Rohit immediately that the kitchen makes intentional decisions. Specificity earns trust where superlatives do not.</div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-item-label">Functional signal</div>
+            <div class="trust-item-value">A reservation system that is visible, clean, and immediate. The ability to book without leaving the page or being redirected to a third-party platform signals that the restaurant controls its own experience end to end.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 8: DESIGN IMPLICATIONS -->
+    <div class="section">
+      <div class="section-label">08 — Design implications</div>
+      <h2 class="section-heading">What this persona<br>means for <em>every</em><br>design decision.</h2>
+
+      <p class="body-text">The following implications are derived directly from Rohit's profile, behaviours, and trust triggers. Each one will be applied in the moodboard, copy, and layout concept stages that follow.</p>
+
+      <div class="implications-grid">
+
+        <div class="implication-card">
+          <div class="implication-header">
+            <span class="implication-num">01</span>
+            <span class="implication-title">The hero must communicate philosophy, not just atmosphere</span>
+          </div>
+          <div class="implication-desc">Rohit's trust is earned by specificity, not beauty. The hero section cannot be a beautiful dark image and a vague headline. It needs to tell him something precise about what Ember & Oak is — the fire, the wood, the ritual — within the first viewport.</div>
+        </div>
+
+        <div class="implication-card">
+          <div class="implication-header">
+            <span class="implication-num">02</span>
+            <span class="implication-title">The menu section must read as a designed document, not a list</span>
+          </div>
+          <div class="implication-desc">Rohit reads the menu before everything else. It needs to feel considered and visually structured — not a bulleted list or a grid of prices. The wood type used for each dish, the seasonal sourcing note, the pairing suggestion — these details signal a kitchen that thinks.</div>
+        </div>
+
+        <div class="implication-card">
+          <div class="implication-header">
+            <span class="implication-num">03</span>
+            <span class="implication-title">Scarcity must be made explicit and visual</span>
+          </div>
+          <div class="implication-desc">"Only 28 guests each evening" should appear prominently — in the hero strip, in the reservation section, or both. For Rohit, this is not a deterrent. It is a confirmation that the experience is curated and that getting a table means something.</div>
+        </div>
+
+        <div class="implication-card">
+          <div class="implication-header">
+            <span class="implication-num">04</span>
+            <span class="implication-title">Mobile performance is non-negotiable</span>
+          </div>
+          <div class="implication-desc">Rohit's first encounter with the site is almost always on his phone. A site that is slow, poorly scaled, or loses its visual quality at mobile viewport will lose him before he ever opens a laptop to make the booking. The design must be tested at mobile first.</div>
+        </div>
+
+        <div class="implication-card">
+          <div class="implication-header">
+            <span class="implication-num">05</span>
+            <span class="implication-title">Copy must be specific, not superlative</span>
+          </div>
+          <div class="implication-desc">Rohit is a product person. He processes specifics faster and trusts them more than claims. "The best fine dining experience in Bangalore" tells him nothing. "Fire lit at four. Hickory for the lamb. Only 28 guests." tells him everything. Every headline in the copy phase must be tested against this principle.</div>
+        </div>
+
+        <div class="implication-card">
+          <div class="implication-header">
+            <span class="implication-num">06</span>
+            <span class="implication-title">The reservation form must be clean and on-page</span>
+          </div>
+          <div class="implication-desc">No third-party redirects. No multi-step form that asks for dietary requirements before he has even confirmed he wants to book. A simple, elegant form — party size, date, seating preference, contact — that confirms immediately and lives on the page. Friction here is the single biggest conversion killer for this persona.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">
+        FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>
+        STEP 05 — IDEAL CUSTOMER PROFILE · EMBER &amp; OAK
+      </div>
+      <div class="footer-right">
+        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef8b8a8a9f9a8b819c87af88828e8683c18c

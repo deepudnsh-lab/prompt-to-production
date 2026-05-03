@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 11: Before & After · Bumblebee World</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Nunito+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#FFD000;--sun-deep:#F5A800;--sun-pale:#FFF8D6;
+  --honey:#FF8C00;--honey-light:#FFE0A0;
+  --bee:#1A1200;--bee-dark:#0D0D00;
+  --leaf:#2E7D32;--leaf-light:#E8F5E9;
+  --marigold:#FF6B35;
+  --paper:#FFFEF7;
+  --ink:#1A1200;--ink-mid:#4A3F00;--ink-muted:#8A7A00;--ink-faint:#BFB060;
+  --rule:#F0E890;--tag-bg:#FFF8D6;
+  --before-bg:#F5F0EB;--before-border:#C8B89A;
+  --after-bg:#FFFACC;--after-border:#F5A800;
+  --good-bg:#E8F5E9;--good-text:#1B5E20;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'Nunito Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--sun);
+  margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;
+}
+.cover-band::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 30%,var(--honey) 0%,transparent 55%),
+             radial-gradient(circle at 10% 80%,rgba(255,255,255,.3) 0%,transparent 40%);
+  pointer-events:none;
+}
+.cover-band::after{
+  content:'';position:absolute;inset:0;opacity:.12;
+  background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);
+  background-size:24px 24px;pointer-events:none;
+}
+.cover-emoji{
+  font-size:3.5rem;position:absolute;right:280px;top:44px;z-index:2;
+  animation:wobble 3s ease-in-out infinite;
+}
+@keyframes wobble{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+.project-series{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--bee);opacity:.55;
+  margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;
+}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--bee);opacity:.4;}
+.cover-title{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:52px;
+  line-height:.95;color:var(--bee);letter-spacing:-.02em;position:relative;z-index:1;
+}
+.cover-title em{font-style:normal;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.15);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--bee);font-weight:700;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:4px;background:linear-gradient(to right,var(--honey),var(--sun),transparent);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--honey);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:2px;background:var(--rule);}
+.section-heading{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:32px;
+  line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;
+}
+.section-heading em{font-style:normal;color:var(--honey);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:2px;background:var(--rule);margin:56px -80px;}
+
+/* ── STATS ── */
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:28px 0;}
+.sum-card{background:var(--sun);padding:22px 18px;border-radius:4px;position:relative;overflow:hidden;}
+.sum-card::before{content:'';position:absolute;bottom:-10px;right:-10px;width:60px;height:60px;background:rgba(255,255,255,.2);border-radius:50%;}
+.sum-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:2.2rem;color:var(--bee);line-height:1;margin-bottom:5px;position:relative;z-index:1;}
+.sum-label{font-size:11px;color:rgba(26,18,0,.55);line-height:1.4;font-weight:600;position:relative;z-index:1;}
+
+/* ── COLUMN HEADERS ── */
+.ba-header{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:3px;}
+.ba-col-head{padding:12px 20px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;}
+.col-before{background:var(--before-bg);color:#6B5840;border-left:3px solid var(--before-border);}
+.col-after{background:var(--after-bg);color:#7A4A00;border-left:3px solid var(--after-border);}
+
+/* ── COMPARISON ROWS ── */
+.ba-row{margin-bottom:3px;}
+.ba-row-label{
+  background:var(--bee);padding:10px 20px;
+  display:flex;align-items:center;gap:12px;border-radius:4px 4px 0 0;
+}
+.ba-row-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;color:var(--sun);}
+.ba-row-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55);}
+.ba-cols{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+.ba-cell{padding:20px 22px;}
+.ba-cell-before{background:var(--before-bg);border-left:3px solid var(--before-border);}
+.ba-cell-after{background:var(--after-bg);border-left:3px solid var(--after-border);}
+.ba-example{
+  font-family:'DM Mono',monospace;font-size:10px;line-height:1.7;
+  padding:10px 14px;border-radius:2px;margin-bottom:10px;
+}
+.ex-before{background:rgba(200,184,154,.2);color:#4A3820;}
+.ex-after{background:rgba(245,168,0,.12);color:#6B3A00;}
+.ba-rationale{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.ba-rationale strong{color:var(--ink);font-weight:700;}
+
+/* ── IMPACT BOX ── */
+.impact-box{
+  background:var(--bee);padding:36px 40px;
+  margin-top:32px;position:relative;overflow:hidden;border-radius:4px;
+}
+.impact-box::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 40%,rgba(255,208,0,.12),transparent 55%),
+             radial-gradient(circle at 10% 80%,rgba(255,140,0,.08),transparent 45%);
+  pointer-events:none;
+}
+.impact-box::after{
+  content:'';position:absolute;inset:0;opacity:.07;
+  background-image:radial-gradient(circle,rgba(255,208,0,.8) 1.5px,transparent 1.5px);
+  background-size:24px 24px;pointer-events:none;
+}
+.ib-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(255,208,0,.45);
+  margin-bottom:12px;position:relative;z-index:1;
+}
+.ib-text{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;
+  color:#fff;line-height:1.45;position:relative;z-index:1;
+}
+.ib-text em{font-style:normal;color:var(--sun);}
+
+/* ── FOOTER ── */
+.doc-footer{
+  margin-top:80px;padding-top:24px;border-top:2px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .cover-emoji{display:none;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .sum-grid{grid-template-columns:1fr 1fr;}
+  .ba-header,.ba-cols{grid-template-columns:1fr;}
+  .ba-cell-before{border-bottom:2px solid var(--before-border);}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div class="cover-emoji">🐝</div>
+  <div>
+    <div class="project-series">From Prompt to Production · Bumblebee World · Brand 03 of 06</div>
+    <h1 class="cover-title">Before<br><em>&amp; After</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 11 — Before &amp; After</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Bumblebee World</div></div>
+    <div class="meta-block"><div class="meta-label">Decisions compared</div><div class="meta-value">9 design decisions</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — What this comparison shows</div>
+    <h2 class="section-heading">The category average<br><em>versus</em> Bumblebee World.</h2>
+    <p class="body-text">The "before" column is not a bad design. It is the average design — what most Indian children's book and toy brands produce when no one has made deliberate decisions about copy, layout, visual system, or dual-audience thinking. Usborne, Kiddopia, and Hamleys India all represent the before. Bumblebee World is the after: the same category, a completely different set of decisions made from the research, the persona, and the gap analysis.</p>
+    <p class="body-text">Nine decisions are compared. Each one traces directly to a specific finding in Steps 4–6. None of these choices were made by taste.</p>
+
+    <div class="sum-grid">
+      <div class="sum-card"><div class="sum-num">9</div><div class="sum-label">Design decisions compared against the category average</div></div>
+      <div class="sum-card"><div class="sum-num">4</div><div class="sum-label">Universal gaps from the competitor audit that Bumblebee World closes</div></div>
+      <div class="sum-card"><div class="sum-num">0</div><div class="sum-label">Decisions made by taste alone — every choice has a source</div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — Nine decisions · category average vs Bumblebee World</div>
+    <h2 class="section-heading">What changed.<br><em>Why</em> it changed.</h2>
+
+    <div class="ba-header">
+      <div class="ba-col-head col-before">Before · Category average · Usborne · Kiddopia · Hamleys India</div>
+      <div class="ba-col-head col-after">After · Bumblebee World · Direction A · Sunny / Bloom</div>
+    </div>
+
+    <!-- 01 Hero headline -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">01</div>
+        <div class="ba-row-title">Hero headline · the first words the parent reads</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">"Fun Learning for Little Ones!"
+"Your Child's Best Friend in Education"
+"Where Learning Meets Play"</div>
+          <div class="ba-rationale">Category headlines are aspirational and vague. Every phrase is a superlative or a promise with no specificity. "Fun learning," "best friend," and "meets play" say nothing that a parent can hold onto or verify. They communicate that the brand does not yet know who it is speaking to. Priya reads them and keeps scrolling — there is nothing here that earns her 20 minutes.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"Every child is a world."</div>
+          <div class="ba-rationale">Five words. No superlative. No promise. A statement about the child — not about the brand's product range or educational philosophy. <strong>It places Aarav at the centre immediately.</strong> The headline arrived in the first draft of Step 8 and was not changed. Priya reads it and feels seen — this brand knows that her child is the whole universe to her, not a demographic to be targeted with "fun learning."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 Buyer address -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">02</div>
+        <div class="ba-row-title">Who the page speaks to · buyer vs user confusion</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Bright primary colours. Large cartoon characters.
+Copy written to excite a child. "Super fun!"
+"Your kid will LOVE it!"</div>
+          <div class="ba-rationale">Most Indian children's brands write copy for the child and design for the child — but a child aged 3–6 cannot read the website, cannot search Google, and cannot swipe a payment. The parent buys. When the page speaks to the child's excitement rather than the parent's trust, it misses the actual decision-maker entirely. The brand looks playful and earns zero conversions.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"Indian stories and handcrafted toys that grow
+with your child — beautiful enough to gift,
+meaningful enough to keep."</div>
+          <div class="ba-rationale"><strong>Every word speaks to Priya — not to Aarav.</strong> "Beautiful enough to gift" answers her gifting question. "Meaningful enough to keep" answers her developmental value question. "Grow with your child" addresses her aspiration. The design is visually joyful — the child will engage with it — but the copy is written entirely for the parent making the decision. Both audiences are served. Neither is confused for the other.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 Cultural representation -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">03</div>
+        <div class="ba-row-title">Cultural representation · who appears on the page</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Usborne: Every child on the site is white and British.
+UK farm animals, London buses, village shops.
+Indian brands: generic characters, no specific setting.</div>
+          <div class="ba-rationale">The Step 6 audit found this gap across every competitor. Usborne has the best design quality in the category and zero Indian cultural content — Aarav cannot see himself in a single book. Indian competitors have the cultural content but not the design quality. The parent buying for her child wants to see her child in the stories. This was the most consistently cited gap across the entire research phase.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"Marigolds and mango trees. Monsoon and festivals.
+Characters who look like your child, in worlds
+that feel like home."
+Aman, Poppu, the Wise Hathi — Indian names,
+Indian settings, Indian stories.</div>
+          <div class="ba-rationale"><strong>Indian children are visible everywhere on the page.</strong> Every character name is Indian. Every setting reference is specific — marigolds, mango trees, monsoon, Diwali. Not "India-inspired" — just Indian. Priya does not need it labelled. She recognises it immediately and feels the pride the brand was designed to give her. The product makes a promise the competitors have never made: Aarav will see himself.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 Gifting pathway -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">04</div>
+        <div class="ba-row-title">Gifting pathway · how the 62% use case is handled</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">No dedicated gifting section.
+"Gift wrapping available at checkout" — buried.
+No gift tiers. No personalisation at hero level.
+No price bundles designed for occasions.</div>
+          <div class="ba-rationale">The Step 4 research found that 62% of premium children's product purchases are gifts — birthdays, baby showers, Diwali, festivals. Despite this, no Indian children's brand surfaces the gifting pathway prominently. It is either absent entirely or buried in the checkout flow. Priya buying for her niece's birthday has to search for a path that should be the primary one.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Dedicated "The Gift" section — third position.
+Starter Gift ₹999 · Birthday Box ₹1,499
+Diwali Set ₹2,299
+"Add their name to the cover. Free with every order."
+Two hero CTAs: "Start the collection →" AND
+"Find the perfect gift"</div>
+          <div class="ba-rationale"><strong>The gifting pathway is as prominent as the product pathway.</strong> Two CTAs at the hero level — one for the everyday buyer building a collection, one for the gifting buyer with an occasion in mind. The Gift section sits third in the IA — after Books and Toys — because it is the primary purchase driver. Three gift tiers match real occasion budgets. Personalisation is free and stated at the first mention of a gift.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 Founder visibility -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">05</div>
+        <div class="ba-row-title">Founder visibility · the trust signal Priya needs</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">No founder photograph on homepage.
+"Our mission is to..." — institutional, no person.
+About page exists but Priya will never visit it.
+Brand feels corporate and anonymous.</div>
+          <div class="ba-rationale">The Step 5 persona found that Priya converts from browser to buyer when she knows who made the product and why. A founder photo, a founding story, a clearly stated personal reason for starting the brand — these are the trust signals that distinguish a brand she will recommend to friends from one she might order once. The category average has no person visible. The brand is a logo, not a human.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"When my daughter was three, she asked me why
+none of the children in her books looked like her.
+I didn't have a good answer. So I made one."
+— Meera, founder &amp; mother of two</div>
+          <div class="ba-rationale"><strong>The founding story answers Priya's most important question: who made this and why?</strong> Meera's daughter asked why she couldn't see herself in a book — that is also Priya's question, about Aarav. The founding moment is the brand thesis expressed as a human story. It is on the homepage, not on a separate About page. Priya reads it and the decision is made. This is not marketing. It is the reason the brand exists, stated plainly.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 Trust signals -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">06</div>
+        <div class="ba-row-title">Trust signals · what Priya needs above the fold</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Safety certifications buried in product pages.
+No BIS mark visible on homepage.
+"Premium quality" stated but not demonstrated.
+No parent review photographs — star ratings only.</div>
+          <div class="ba-rationale">Priya's purchase journey includes a deliberate research phase — she checks safety certifications, reads reviews, and looks for developmental credentials before buying. The category average either does not surface this information or places it deep in the product page flow. By the time Priya finds it, she may already have left. Trust signals below the fold do not build trust — they confirm it too late.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Hero trust strip — first viewport:
+🛡️ BIS Certified · 🌿 Non-toxic · 🇮🇳 Made in India
+⭐ 4.9 · 1,240 reviews
+Reviews with Indian names, cities, child ages,
+and specific observed moments — not star ratings.</div>
+          <div class="ba-rationale"><strong>The four most important trust signals appear in the first viewport, before any scrolling.</strong> BIS certification, non-toxic materials, Made in India origin, and a specific review count — all visible immediately. The reviews section uses full parent names, cities, child names and ages, and a specific observed moment ("he recognises the marigolds from our pooja room"). Generic star ratings build no trust. A specific moment builds complete trust.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 Developmental specificity -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">07</div>
+        <div class="ba-row-title">Developmental claims · specific vs vague</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">"Educational and fun!"
+"Boosts your child's creativity"
+"Great for development"
+"Age-appropriate learning"</div>
+          <div class="ba-rationale">The category default is to state that a product is "educational" without specifying what it teaches, how, or at what developmental stage. Priya is a product manager — she stress-tests claims. "Boosts creativity" is not a claim she can evaluate. "Great for development" applies to literally everything. Vague developmental language signals that the brand has not thought carefully about what its products actually do.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"Fine motor skills — threading, stacking, and sorting
+toys designed to strengthen coordination and focus."
+"Colour recognition — open-ended play sets that
+invite children to tell their own story."
+Each toy has one named developmental purpose.</div>
+          <div class="ba-rationale"><strong>Every toy has a named, specific developmental benefit — not a category.</strong> "Fine motor skills through threading and stacking" is a claim Priya can evaluate: she knows what threading does, she can observe it in Aarav's hands. The specificity transforms the product from a toy into an investment — exactly the framing that justifies a ₹999–₹2,299 purchase to an aspirational parent.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 CTA language -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">08</div>
+        <div class="ba-row-title">CTA language · the words on the primary button</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">"Buy Now"
+"Add to Cart"
+"Shop the Collection"
+"Order Today — Limited Stock!"</div>
+          <div class="ba-rationale">E-commerce language signals a transaction. "Buy Now" and "Add to Cart" communicate that this is a purchase, not a choice about her child's development. "Limited Stock!" is manufactured urgency — Priya has spent her career in product and can identify it immediately. Transactional CTAs position the brand as a shop. Bumblebee World is not a shop. It is a world Aarav belongs in.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"Start the collection →"
+"Find the perfect gift"
+"Help me choose"
+"Browse the book collection →"
+"Explore the toy range →"</div>
+          <div class="ba-rationale"><strong>"Start the collection" implies that this is the beginning of something — not a transaction.</strong> "Find the perfect gift" speaks to Priya's gifting occasion with no urgency. "Help me choose" — which opens a short quiz — removes decision fatigue for first-time buyers. The arrow on primary CTAs is directional, not urgent. No exclamation marks. No countdown timers. No artificial scarcity.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 Visual system -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">09</div>
+        <div class="ba-row-title">Visual system · palette, illustration, shareability</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Pastels: mint, blush, powder blue.
+Stock photography of white children.
+No consistent illustration system.
+Plain cardboard packaging — not photographable.
+Design either too generic or too low-quality
+to appear on an Indian parent's Instagram.</div>
+          <div class="ba-rationale">The Step 4 research identified that the Indian children's market has shifted from pale pastels toward warm, saturated, confident palettes. Step 6 confirmed that Kiddopia (S:2/5) and Tulika Books (S:1/5) are the lowest-scoring competitors on shareability — not because their products are poor but because nothing about their visual identity invites an Instagram post. The design does not pass Priya's Instagram test.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Direction A — Sunny / Bloom:
+Sunshine #FFD000 · Honey #F5A800 · Leaf #2E7D32
+Marigold #FF6B35 · Cream #FFF8D6
+Forest illustration system — parallax jungle layers.
+Illustrated book covers with Indian characters.
+Yellow gift box, kraft ribbon — photographable
+before the product is opened.</div>
+          <div class="ba-rationale"><strong>Every visual decision passes two simultaneous tests: the child's engagement test and Priya's Instagram test.</strong> The sunshine yellow palette photographs beautifully against neutral backgrounds and wooden floors — the standard Indian parenting account aesthetic. The forest illustration system is distinctive enough to stop scrolling. The yellow gift box with kraft ribbon is designed to be unboxed on Stories. The brand earns its own organic reach from Priya's posts.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — What these nine decisions add up to</div>
+    <h2 class="section-heading">The category picks a side.<br><em>Bumblebee World</em> holds both.</h2>
+
+    <div class="impact-box">
+      <div class="ib-label">The cumulative effect of nine research-led decisions</div>
+      <div class="ib-text">Every competitor in this category has made a choice: beautiful or Indian. Educational or Instagrammable. For the parent or for the child. <em>Bumblebee World refuses every one of those trade-offs.</em> Each of the nine decisions above traces to a specific finding in the research, the persona, or the audit. None were made by taste. The before column is not wrong — it is appropriate for brands that have not looked carefully at who is actually making the purchase decision, and why, and on what device, and at what time of day. The after is built for Priya: a mother with 20 minutes on a Saturday morning who wants to feel proud of what she buys for Aarav — and proud to give it.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 11 — BEFORE &amp; AFTER · BUMBLEBEE WORLD</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

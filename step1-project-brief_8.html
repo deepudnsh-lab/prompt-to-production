@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Project Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --accent-dark: #8B3A18;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .document {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 80px;
+    background: #fff;
+    min-height: 100vh;
+  }
+
+  /* ── COVER BAND ── */
+  .cover-band {
+    background: var(--ink);
+    margin: -80px -80px 0;
+    padding: 56px 80px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .project-series {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-series::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .cover-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    line-height: 1.0;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .cover-title em {
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  .cover-meta {
+    text-align: right;
+  }
+
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .meta-value {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 300;
+  }
+
+  .meta-block { margin-bottom: 20px; }
+  .meta-block:last-child { margin-bottom: 0; }
+
+  /* ── ORANGE RULE ── */
+  .accent-rule {
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light), transparent);
+    margin: 0 -80px;
+  }
+
+  /* ── BODY LAYOUT ── */
+  .doc-body { padding-top: 64px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 56px; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .section-heading em { font-style: italic; color: var(--accent); }
+
+  .body-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--ink-mid);
+    margin-bottom: 16px;
+  }
+
+  .body-text:last-child { margin-bottom: 0; }
+
+  /* ── MANIFESTO QUOTE ── */
+  .manifesto {
+    border-left: 3px solid var(--accent);
+    padding: 24px 32px;
+    background: var(--tag-bg);
+    margin: 32px 0;
+  }
+
+  .manifesto-text {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .manifesto-attr {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  /* ── 2-COL GRID ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+
+  /* ── CARD ── */
+  .card {
+    border: 1px solid var(--rule);
+    padding: 24px;
+    background: #fff;
+  }
+
+  .card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .card-body {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  /* ── ACCENT CARD ── */
+  .card-accent {
+    border: 1px solid var(--accent);
+    background: var(--accent-light);
+    padding: 24px;
+  }
+
+  .card-accent .card-label { color: var(--accent-dark); }
+  .card-accent .card-title { color: var(--accent-dark); }
+  .card-accent .card-body { color: var(--accent-dark); }
+
+  /* ── WEBSITE TABLE ── */
+  .website-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+
+  .website-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 8px 16px;
+    background: var(--tag-bg);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .website-table td {
+    padding: 16px 16px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-mid);
+    vertical-align: top;
+  }
+
+  .website-table tr:last-child td { border-bottom: none; }
+
+  .website-table td:first-child {
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    background: var(--tag-bg);
+    color: var(--ink-muted);
+    border-radius: 2px;
+  }
+
+  .badge-featured {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ── HYPOTHESIS BOX ── */
+  .hypothesis {
+    background: var(--ink);
+    color: #fff;
+    padding: 40px 48px;
+    margin: 32px 0;
+  }
+
+  .hypothesis-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+  }
+
+  .hypothesis-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1.4;
+    color: #fff;
+    margin-bottom: 0;
+  }
+
+  .hypothesis-text em {
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  /* ── TOOLS ROW ── */
+  .tools-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+
+  .tool-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--rule);
+    background: #fff;
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .tool-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── PROCESS STEPS ── */
+  .process-steps { margin-top: 24px; counter-reset: step; }
+
+  .process-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 20px 0;
+    align-items: start;
+  }
+
+  .process-step:first-child { border-top: 1px solid var(--rule); }
+
+  .step-num-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 500;
+    padding-top: 2px;
+  }
+
+  .step-content-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .step-content-desc {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+  }
+
+  .step-tags { display: flex; gap: 6px; margin-top: 8px; }
+
+  .step-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    background: var(--tag-bg);
+    color: var(--ink-muted);
+    border-radius: 2px;
+  }
+
+  .step-tag-orange {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline { margin-top: 24px; }
+
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 24px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .timeline-row:first-child { border-top: 1px solid var(--rule); }
+
+  .timeline-week {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .timeline-task {
+    font-size: 13px;
+    color: var(--ink-mid);
+  }
+
+  .timeline-task strong { color: var(--ink); font-weight: 500; }
+
+  /* ── AI ANGLE BOX ── */
+  .ai-angle {
+    border: 1px solid var(--accent);
+    padding: 32px 36px;
+    margin: 32px 0;
+    position: relative;
+  }
+
+  .ai-angle-corner {
+    position: absolute;
+    top: -1px; right: 24px;
+    background: var(--accent);
+    padding: 4px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .ai-angle-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+
+  .ai-bullets { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .ai-bullets li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .ai-bullets li::before {
+    content: '→';
+    color: var(--accent);
+    font-weight: 500;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── DELIVERABLES ── */
+  .deliverables-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 24px; }
+
+  .deliverable-item {
+    background: var(--tag-bg);
+    padding: 20px 20px;
+  }
+
+  .deliverable-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .deliverable-label {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.4;
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  .page-rule {
+    height: 1px;
+    background: var(--rule);
+    margin: 56px -80px;
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: #fff; }
+    .document { padding: 60px; box-shadow: none; }
+    .cover-band { margin: -60px -60px 0; padding: 48px 60px 40px; }
+    .accent-rule { margin: 0 -60px; }
+    .page-rule { margin: 48px -60px; }
+  }
+
+  /* ── RESPONSIVE · MOBILE FIRST ──────────────────────────── */
+  @media (max-width: 640px) {
+
+    /* Core document spacing */
+    .document { padding: 24px 20px !important; }
+
+    /* Cover band — remove negative margins, restack */
+    .cover-band {
+      margin: -24px -20px 0 !important;
+      padding: 40px 24px 32px !important;
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+
+    .cover-title { font-size: 32px !important; }
+    .cover-meta  { text-align: left !important; }
+
+    /* Accent rule full bleed */
+    .accent-rule { margin: 0 -20px !important; }
+
+    /* Page rule full bleed */
+    .page-rule { margin: 40px -20px !important; }
+
+    /* Section headings */
+    .section-heading { font-size: 26px !important; }
+
+    /* ── Grids → single column ── */
+    .two-col,
+    .stat-grid,
+    .trend-grid,
+    .split-grid,
+    .behaviour-grid,
+    .criteria-grid,
+    .criteria-row,
+    .candidates-grid,
+    .selected-grid,
+    .rejected-grid,
+    .implications-grid,
+    .deliverables-grid,
+    .trust-breakdown,
+    .opp-three-col,
+    .gap-grid,
+    .brand-card-body,
+    .comp-attr,
+    .audit-body,
+    .persona-summary,
+    .insight-block,
+    .process-steps,
+    .timeline,
+    .tools-row,
+    .score-row,
+    .reveal-voice
+    { grid-template-columns: 1fr !important; }
+
+    /* Rejected grid needs more breathing room */
+    .rejected-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Cover band meta stacking ── */
+    .meta-block { margin-bottom: 12px !important; }
+
+    /* ── Stat/criteria pills ── */
+    .stat-grid { grid-template-columns: 1fr 1fr !important; }
+    .criteria-row { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Persona hero ── */
+    .persona-hero { grid-template-columns: 1fr !important; }
+    .persona-avatar { padding: 28px 20px !important; }
+    .persona-summary {
+      grid-template-columns: 1fr 1fr !important;
+      padding: 20px !important;
+    }
+
+    /* ── Insight block ── */
+    .insight-block { grid-template-columns: 1fr !important; }
+    .insight-num {
+      padding: 16px !important;
+      font-size: 24px !important;
+    }
+
+    /* ── Brand card ── */
+    .brand-card-header {
+      grid-template-columns: 1fr !important;
+      flex-direction: column !important;
+    }
+    .brand-wordmark-preview {
+      border-left: none !important;
+      border-top: 1px solid var(--rule) !important;
+      padding: 16px 20px !important;
+      text-align: left !important;
+    }
+    .brand-num { display: none !important; }
+
+    /* ── Audit cards ── */
+    .audit-header {
+      grid-template-columns: 1fr !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .audit-scores {
+      padding: 12px 16px !important;
+      flex-wrap: wrap !important;
+      border-left: none !important;
+      border-top: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    .audit-title-block { padding: 14px 16px !important; }
+
+    /* ── Annotation grid → stack ── */
+    .annotation-grid,
+    .competitor-body,
+    .visual-zone
+    { grid-template-columns: 1fr !important; }
+
+    .annotation-col,
+    .comp-attr,
+    .audit-col
+    { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    .annotation-col:last-child,
+    .comp-attr:last-child,
+    .audit-col:last-child
+    { border-bottom: none !important; }
+
+    /* ── Tables → scrollable ── */
+    .scoring-wrap,
+    .gap-table,
+    .compare-table,
+    .device-table,
+    .summary-table,
+    .website-table
+    { overflow-x: auto !important; display: block !important; }
+
+    /* ── Process steps ── */
+    .process-step { grid-template-columns: 40px 1fr !important; }
+
+    /* ── Timeline ── */
+    .timeline-row { grid-template-columns: 60px 1fr !important; gap: 12px !important; }
+
+    /* ── Opportunity / gap / hypothesis boxes ── */
+    .opportunity-box,
+    .hypothesis,
+    .gap-box,
+    .trust-box
+    { padding: 28px 20px !important; }
+
+    .opportunity-statement,
+    .hypothesis-text,
+    .gap-text,
+    .trust-statement
+    { font-size: 20px !important; }
+
+    /* ── Name cards (Step 3) ── */
+    .name-card-top { flex-direction: column !important; gap: 8px !important; }
+    .naming-strategy { align-self: flex-start !important; }
+
+    /* ── Selected reveal ── */
+    .selected-reveal {
+      grid-template-columns: 1fr !important;
+      padding: 20px !important;
+      gap: 16px !important;
+    }
+    .reveal-name { font-size: 24px !important; }
+
+    /* ── Industry header ── */
+    .industry-header { flex-wrap: wrap !important; gap: 8px !important; }
+    .industry-category { margin-left: 0 !important; }
+
+    /* ── Score chips in audit header ── */
+    .score-chip-val { width: 26px !important; height: 26px !important; font-size: 11px !important; }
+
+    /* ── Drop zones ── */
+    .drop-zone { height: auto !important; min-height: 200px !important; padding: 24px 16px !important; }
+    .drop-steps { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; }
+    .drop-legend { position: static !important; margin-top: 16px !important; flex-wrap: wrap !important; }
+
+    /* ── Competitor block ── */
+    .competitor-header { grid-template-columns: 1fr !important; }
+    .comp-tags { justify-content: flex-start !important; border-left: none !important; border-top: 1px solid var(--rule) !important; }
+    .comp-num { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    /* ── Hero / section headings ── */
+    .section-heading { font-size: 24px !important; line-height: 1.2 !important; }
+    .body-text { font-size: 14px !important; }
+
+    /* ── Note box ── */
+    .note-box { padding: 14px 16px !important; }
+    .note-box p { font-size: 12px !important; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      flex-direction: column !important;
+      gap: 10px !important;
+      align-items: flex-start !important;
+    }
+    .footer-right { text-align: left !important; }
+
+    /* ── Step 1 specific ── */
+    .manifesto { padding: 16px 18px !important; }
+    .manifesto-text { font-size: 18px !important; }
+    .card { padding: 16px !important; }
+    .deliverables-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Step 2 specific ── */
+    .selected-card { padding: 20px !important; }
+    .selected-card-num { font-size: 36px !important; top: 16px !important; right: 16px !important; }
+
+    /* ── Step 4 specific ── */
+    .stat-num { font-size: 28px !important; }
+    .insight-block { display: flex !important; flex-direction: column !important; }
+    .opp-three-col { grid-template-columns: 1fr !important; }
+
+    /* ── Step 5 specific ── */
+    .trust-breakdown { grid-template-columns: 1fr !important; }
+    .behaviour-grid { grid-template-columns: 1fr !important; }
+
+    /* ── Step 6 specific ── */
+    .gap-grid { grid-template-columns: 1fr !important; }
+    .criteria-bar { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  @media (max-width: 400px) {
+    .cover-title { font-size: 26px !important; }
+    .section-heading { font-size: 22px !important; }
+    .stat-grid { grid-template-columns: 1fr !important; }
+    .persona-summary { grid-template-columns: 1fr !important; }
+    .deliverables-grid { grid-template-columns: 1fr !important; }
+    .rejected-grid { grid-template-columns: 1fr !important; }
+  }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+  <!-- COVER BAND -->
+  <div class="cover-band">
+    <div>
+      <div class="project-series">Portfolio Project · Case Study Series · 2026</div>
+      <h1 class="cover-title">From Prompt<br>to <em>Production</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block">
+        <div class="meta-label">Designer</div>
+        <div class="meta-value">Deepu Dinesh</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Document</div>
+        <div class="meta-value">Step 01 — Project Brief</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Status</div>
+        <div class="meta-value">Version 1.0 · April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <!-- BODY -->
+  <div class="doc-body">
+
+    <!-- SECTION 1: THE BIG IDEA -->
+    <div class="section">
+      <div class="section-label">01 — The big idea</div>
+      <h2 class="section-heading">A designer who uses<br>AI isn't being <em>replaced.</em><br>They're being multiplied.</h2>
+
+      <p class="body-text">The design industry is in the middle of a seismic shift. Generative AI tools can produce landing pages, write copy, generate brand identities, and ship production-ready code — all in seconds. Many designers are responding with fear. This project responds with something different: a demonstration.</p>
+
+      <p class="body-text"><strong>From Prompt to Production</strong> is a self-initiated Behance portfolio series that documents the complete process of designing six professional-grade landing pages across six completely different industries — entirely through conversation with Claude (Anthropic). No separate design tools. No manual file creation. No coding by hand. Every artifact in this project — the research, the personas, the moodboard directions, the copy, the layout concepts, the coded page, and the case study document itself — is produced through a directed AI workflow, guided by 13+ years of design leadership, brand strategy, and visual craft.</p>
+
+      <div class="manifesto">
+        <div class="manifesto-text">"Anyone can type a prompt. It takes a trained designer to ask the right questions, in the right order, with the right creative intent — and know when the output is wrong."</div>
+        <div class="manifesto-attr">— The core thesis of this project</div>
+      </div>
+
+      <p class="body-text">This project doesn't hide the AI. It celebrates it — and shows exactly what separates a designer who uses AI from someone who just uses AI.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: THE PROBLEM -->
+    <div class="section">
+      <div class="section-label">02 — The problem being solved</div>
+      <h2 class="section-heading">What does a <em>modern</em><br>design leader actually do?</h2>
+
+      <p class="body-text">After 13+ years leading design at companies like Interface.ai and Tact.ai — building brand identities, managing teams, shipping hundreds of assets quarterly — the question every employer is now asking is: <em>can you work at the speed of AI?</em></p>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-label">The old expectation</div>
+          <div class="card-title">Design is slow, expensive, and tool-dependent</div>
+          <div class="card-body">Figma → wireframes → mockups → stakeholder reviews → developer handoff. Weeks per project. High resource cost.</div>
+        </div>
+        <div class="card card-accent">
+          <div class="card-label">The new reality</div>
+          <div class="card-title">Design thinking × AI = a fully directed workflow</div>
+          <div class="card-body">Brief → research → persona → moodboard direction → copy → layout concept → live HTML page. Every step executed through a single AI conversation. One creative director, zero separate tools.</div>
+        </div>
+      </div>
+
+      <p class="body-text" style="margin-top: 24px;">This project is the proof of concept. Six live, production-quality landing pages — each with a fully documented case study showing every decision, every prompt, every iteration.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: HYPOTHESIS -->
+    <div class="section">
+      <div class="section-label">03 — The hypothesis</div>
+
+      <div class="hypothesis">
+        <div class="hypothesis-label">Design hypothesis</div>
+        <div class="hypothesis-text">When a designer brings <em>research, persona thinking, moodboarding, content strategy, and creative direction</em> to AI prompting — the quality and speed of output raises a genuine question: what is the role of a design team in a world where one person can do this?</div>
+      </div>
+
+      <p class="body-text">This will be tested across six distinct industries, each with a unique visual language, audience, and emotional register. The hypothesis either holds — or we learn exactly where AI still needs a human in the loop.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: THE 6 WEBSITES -->
+    <div class="section">
+      <div class="section-label">04 — The six websites</div>
+      <h2 class="section-heading">Six industries.<br>Six design <em>challenges.</em><br>Zero templates.</h2>
+
+      <p class="body-text">Six industries were selected through a scored evaluation process (documented in Step 02). Each will become a fully designed, hypothetical brand — with its own name, identity, persona, and visual direction. Brand names are not assigned at this stage. They emerge from the naming exercise in Step 03, after research establishes what each brand needs to communicate.</p>
+
+      <table class="website-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Industry</th>
+            <th>Design challenge</th>
+            <th>Brand name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01</td>
+            <td>Fine dining / hospitality</td>
+            <td>Moody, editorial, sensory luxury with a reservation flow</td>
+            <td><span class="badge">Named in Step 03</span></td>
+            <td><span class="badge badge-featured">Active</span></td>
+          </tr>
+          <tr>
+            <td>02</td>
+            <td>Space tourism / aerospace</td>
+            <td>Cinematic dark UI for a high-stakes, futuristic brand</td>
+            <td><span class="badge">Named in Step 03</span></td>
+            <td><span class="badge">Planned</span></td>
+          </tr>
+          <tr>
+            <td>03</td>
+            <td>Kids entertainment / EdTech</td>
+            <td>Ultra-joyful, safe, age-appropriate UX for a dual audience</td>
+            <td><span class="badge">Named in Step 03</span></td>
+            <td><span class="badge">Planned</span></td>
+          </tr>
+          <tr>
+            <td>04</td>
+            <td>AI SaaS / B2B tech</td>
+            <td>Sleek dark-mode product page for a technical audience</td>
+            <td><span class="badge">Named in Step 03</span></td>
+            <td><span class="badge">Planned</span></td>
+          </tr>
+          <tr>
+            <td>05</td>
+            <td>Luxury skincare / beauty</td>
+            <td>Minimalist editorial elegance with a premium feel</td>
+            <td><span class="badge">Named in Step 03</span></td>
+            <td><span class="badge">Planned</span></td>
+          </tr>
+          <tr>
+            <td>06</td>
+            <td>Pet care / consumer D2C</td>
+            <td>Warm, emotionally-driven brand for urban pet owners</td>
+            <td><span class="badge">Named in Step 03</span></td>
+            <td><span class="badge">Planned</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 5: THE PROCESS -->
+    <div class="section">
+      <div class="section-label">05 — The 14-step process</div>
+      <h2 class="section-heading">Every case study follows<br>the same <em>rigorous</em> flow.</h2>
+
+      <p class="body-text">This is not a "I typed a prompt and here's what came out" project. Every website goes through a documented, professional design process — the same process a senior designer would apply on a client brief.</p>
+
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num-badge">01</div>
+          <div>
+            <div class="step-content-title">Project brief & framing</div>
+            <div class="step-content-desc">Manifesto, hypothesis, tools, and the AI-first angle defined for the entire series.</div>
+            <div class="step-tags"><span class="step-tag">Once</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">02</div>
+          <div>
+            <div class="step-content-title">Industry selection & scoring matrix</div>
+            <div class="step-content-desc">16 industries evaluated, 6 selected. Scoring criteria: visual range, persona clarity, design challenge, emotional diversity.</div>
+            <div class="step-tags"><span class="step-tag">Once</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">03</div>
+          <div>
+            <div class="step-content-title">Brand naming & identity skeleton</div>
+            <div class="step-content-desc">Name, tagline and wordmark for all 6 brands before any design work begins.</div>
+            <div class="step-tags"><span class="step-tag">Once</span><span class="step-tag step-tag-orange">New</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">04</div>
+          <div>
+            <div class="step-content-title">Deep industry research</div>
+            <div class="step-content-desc">Market data, top 5 competitors, dominant visual trends, emotional drivers, 5 annotated reference websites.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">05</div>
+          <div>
+            <div class="step-content-title">Ideal customer profile / persona</div>
+            <div class="step-content-desc">Demographics, lifestyle, device habits, pain points, motivations, and the one thing that earns instant trust.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">06</div>
+          <div>
+            <div class="step-content-title">Competitor visual audit</div>
+            <div class="step-content-desc">3 competitor hero sections analysed. Design gap identified. Opportunity statement written.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">New</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">07</div>
+          <div>
+            <div class="step-content-title">Moodboard — 3 directions</div>
+            <div class="step-content-desc">Three distinct visual routes per brand. Direction chosen and justified against persona.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">AI-assisted</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">08</div>
+          <div>
+            <div class="step-content-title">Content & copywriting</div>
+            <div class="step-content-desc">All website copy written before design begins — headlines, body, CTAs, micro-copy — in the brand's tone-of-voice.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">AI-assisted</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">09</div>
+          <div>
+            <div class="step-content-title">Landing page — 3 layout concepts</div>
+            <div class="step-content-desc">Three distinct layout directions before building. Final direction chosen with documented rationale.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">AI-assisted</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">10</div>
+          <div>
+            <div class="step-content-title">Prompt diary — every iteration documented</div>
+            <div class="step-content-desc">A running log of every prompt sent, output received, critique made, and revised prompt. Minimum 5 iterations shown.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">AI core</span><span class="step-tag step-tag-orange">New</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">11</div>
+          <div>
+            <div class="step-content-title">Live build — final landing page</div>
+            <div class="step-content-desc">Final HTML page built with Claude. Design decisions from all prior phases applied and refined.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">AI core</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">12</div>
+          <div>
+            <div class="step-content-title">Before vs after — AI baseline comparison</div>
+            <div class="step-content-desc">Generic AI output vs strategic designer-directed output — side by side. Proves the value of design thinking.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">New</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">13</div>
+          <div>
+            <div class="step-content-title">Case study documentation</div>
+            <div class="step-content-desc">All artifacts compiled into the 11-section Behance IA: cover, brief, research, persona, moodboard, concepts, prompt diary, final build, responsive notes, reflections.</div>
+            <div class="step-tags"><span class="step-tag">×6 per website</span><span class="step-tag step-tag-orange">New</span></div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num-badge">14</div>
+          <div>
+            <div class="step-content-title">Process summary document + Behance publish</div>
+            <div class="step-content-desc">A final AI-generated document per case study that narrates the full journey — from brief to live page — in a format ready to upload to Behance. All 6 case studies published under the series banner.</div>
+            <div class="step-tags"><span class="step-tag">Once</span><span class="step-tag step-tag-orange">AI core</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 6: AI ANGLE -->
+    <div class="section">
+      <div class="section-label">06 — The AI angle</div>
+      <h2 class="section-heading">What this project<br>does <em>differently.</em></h2>
+
+      <div class="ai-angle">
+        <div class="ai-angle-corner">The differentiators</div>
+        <div class="ai-angle-heading">This project makes the process the product.</div>
+        <ul class="ai-bullets">
+          <li>The prompt diary is fully documented. Every prompt sent, every output evaluated, every revision made — shown openly as part of the case study. The process itself is the deliverable, not just the final page.</li>
+          <li>Research comes before prompting. Industry data, competitor audits, and personas are completed before a single prompt is written — the same sequence a professional agency would follow.</li>
+          <li>The before/after comparison is honest. A basic AI output with a generic prompt is shown alongside the strategically directed result — so the viewer can judge the difference for themselves.</li>
+          <li>The creative director is always in control. AI handles production; the designer handles vision, judgment, taste, and strategy. Every decision in the prompt diary is explained and owned.</li>
+          <li>Six industries, zero repetition. Each website has a completely different visual language, tone-of-voice, and design approach — demonstrating range across categories, not depth in one.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 7: TOOLS -->
+    <div class="section">
+      <div class="section-label">07 — Tools & technology</div>
+      <h2 class="section-heading">The <em>stack.</em></h2>
+
+      <p class="body-text">Every tool in this project has a specific role. None of them replace design thinking — they accelerate it.</p>
+
+      <div class="tools-row">
+        <div class="tool-tag"><div class="tool-dot"></div>Claude (Anthropic) — research, strategy, copy, build</div>
+        <div class="tool-tag"><div class="tool-dot"></div>HTML / CSS / JS — live production output format</div>
+        <div class="tool-tag"><div class="tool-dot"></div>Google Fonts — open-source typography system</div>
+        <div class="tool-tag"><div class="tool-dot"></div>Behance — portfolio publication platform</div>
+      </div>
+      <p class="body-text" style="margin-top:20px;">Every step in this project — from industry research and persona writing to moodboard direction, copywriting, layout concepts, and the final coded page — is executed through a conversation with Claude. Deepu Dinesh directs as creative lead and domain expert. Claude executes. Nothing in this workflow requires a separate design tool, manual file creation, or physical production work.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 8: TIMELINE -->
+    <div class="section">
+      <div class="section-label">08 — Estimated timeline</div>
+      <h2 class="section-heading">Eight weeks.<br><em>Six</em> fully documented case studies.</h2>
+
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="timeline-week">Week 1</div>
+          <div class="timeline-task"><strong>Strategy foundation</strong> — Brief, scoring matrix, all 6 brand names & taglines (Steps 1–3)</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-week">Week 2</div>
+          <div class="timeline-task"><strong>Brand 01 · Fine dining</strong> — Research → persona → audit → naming → moodboard → copy → concepts → build → comparison (Steps 4–12)</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-week">Week 3</div>
+          <div class="timeline-task"><strong>Brand 02 · Space tourism</strong> — Full process cycle (Steps 4–12)</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-week">Week 4</div>
+          <div class="timeline-task"><strong>Brand 03 · Kids entertainment</strong> — Full process cycle (Steps 4–12)</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-week">Week 5</div>
+          <div class="timeline-task"><strong>Brand 04 · AI SaaS</strong> — Full process cycle (Steps 4–12)</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-week">Week 6</div>
+          <div class="timeline-task"><strong>Brand 05 · Luxury skincare</strong> — Full process cycle (Steps 4–12)</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-week">Week 7</div>
+          <div class="timeline-task"><strong>Brand 06 · Pet care</strong> — Full process cycle (Steps 4–12)</div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-week">Week 8</div>
+          <div class="timeline-task"><strong>Publish</strong> — All 6 case study documents compiled and formatted for Behance series launch (Steps 13–14)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 9: DELIVERABLES -->
+    <div class="section">
+      <div class="section-label">09 — Final deliverables</div>
+      <h2 class="section-heading">What this project <em>produces.</em></h2>
+
+      <div class="deliverables-grid">
+        <div class="deliverable-item">
+          <div class="deliverable-num">6</div>
+          <div class="deliverable-label">Live, production-quality HTML landing pages</div>
+        </div>
+        <div class="deliverable-item">
+          <div class="deliverable-num">6</div>
+          <div class="deliverable-label">Full Behance case studies with 11 sections each</div>
+        </div>
+        <div class="deliverable-item">
+          <div class="deliverable-num">6</div>
+          <div class="deliverable-label">Before/after AI comparison slides</div>
+        </div>
+        <div class="deliverable-item">
+          <div class="deliverable-num">6</div>
+          <div class="deliverable-label">Prompt diaries documenting every iteration</div>
+        </div>
+        <div class="deliverable-item">
+          <div class="deliverable-num">6</div>
+          <div class="deliverable-label">Persona cards and competitor audit sheets</div>
+        </div>
+        <div class="deliverable-item">
+          <div class="deliverable-num">6</div>
+          <div class="deliverable-label">AI-generated process summary documents, Behance-ready</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+      <div class="footer-left">
+        FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>
+        STEP 01 — PROJECT BRIEF & MANIFESTO
+      </div>
+      <div class="footer-right">
+        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="127677776267767c617a52757f737b7e3c717d7f">[email&#160;protected]</a><br>
+     

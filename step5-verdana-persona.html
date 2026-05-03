@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 5: Customer Persona · Verdana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF7F2;--cream-mid:#F2EDE4;--cream-dark:#E8DFD0;
+  --sage:#5C7A5F;--sage-light:#8FAE92;--sage-tint:#EEF4EE;
+  --warm:#C4855A;--warm-tint:#FBF1EB;--warm-soft:#E8C4A8;
+  --ink:#1A1612;--ink-mid:#4A4038;--ink-muted:#8A7A6A;--ink-faint:#C4B8A8;
+  --white:#FFFFFF;--border:#E0D8CC;--rule:#EDE8E0;
+  --good-bg:#EEF4EE;--good-text:#2D5E30;
+  --warn-bg:#FDF6EE;--warn-text:#7A5020;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{background:var(--cream);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(92,122,95,.07) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--sage);opacity:.8;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--sage);opacity:.6;}
+.cover-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:56px;line-height:.95;color:var(--ink);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--sage);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--border);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--sage);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--sage-tint);border-left:3px solid var(--sage);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── PERSONA NAMEPLATE ── */
+.persona-plate{background:var(--ink);padding:36px 40px;margin:28px 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;position:relative;overflow:hidden;}
+.persona-plate::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);}
+.persona-plate::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(92,122,95,.08) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;}
+.pp-left{display:flex;align-items:center;gap:24px;position:relative;z-index:1;}
+.pp-initial{width:72px;height:72px;background:var(--sage);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.6rem;color:var(--white);flex-shrink:0;}
+.pp-name{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.9rem;color:var(--white);line-height:1;letter-spacing:-.01em;}
+.pp-role{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:6px;}
+.pp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;position:relative;z-index:1;}
+.pp-stat{background:rgba(255,255,255,.05);padding:14px 16px;text-align:center;}
+.pp-stat-num{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.4rem;color:var(--sage-light);line-height:1;margin-bottom:3px;}
+.pp-stat-label{font-size:10px;color:rgba(255,255,255,.3);line-height:1.3;}
+
+/* ── BEHAVIOUR CARDS ── */
+.beh-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:20px 0;}
+.beh-card{background:var(--cream);border:1px solid var(--border);padding:20px;}
+.beh-num{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--sage);margin-bottom:8px;}
+.beh-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+.beh-text{font-size:12.5px;color:var(--ink-mid);line-height:1.65;}
+.beh-text strong{color:var(--ink);}
+
+/* ── DATA TABLE ── */
+.data-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.data-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--white);padding:11px 14px;text-align:left;}
+.data-table td{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink-mid);line-height:1.55;vertical-align:top;}
+.data-table tr:hover td{background:var(--cream);}
+.data-table td:first-child{color:var(--ink);font-weight:600;}
+.td-sage{color:var(--sage);font-family:'DM Mono',monospace;font-size:11px;font-weight:500;}
+
+/* ── TRUST VS FRICTION ── */
+.sf-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:20px 0;}
+.sf-head{padding:12px 18px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;}
+.sf-head-trust{background:var(--sage-tint);color:var(--sage);}
+.sf-head-friction{background:var(--warm-tint);color:var(--warm);}
+.sf-item{padding:12px 18px;border-bottom:1px solid var(--rule);font-size:12.5px;color:var(--ink-mid);line-height:1.55;background:var(--white);}
+.sf-item:last-child{border-bottom:none;}
+.sf-item strong{color:var(--ink);}
+
+/* ── IMPLICATION LIST ── */
+.imp-list{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.imp-row{display:grid;grid-template-columns:48px 1fr;border:1px solid var(--border);border-bottom:none;background:var(--white);}
+.imp-row:first-child{border-radius:2px 2px 0 0;}
+.imp-row:last-child{border-bottom:1px solid var(--border);border-radius:0 0 2px 2px;}
+.imp-row:hover{background:var(--cream);}
+.imp-num{background:var(--sage);display:flex;align-items:center;justify-content:center;padding:16px 8px;align-self:stretch;border-right:1px solid rgba(255,255,255,.15);}
+.imp-num span{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.85);letter-spacing:.1em;}
+.imp-content{padding:14px 18px;}
+.imp-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.imp-text{font-size:12px;color:var(--ink-muted);line-height:1.55;}
+
+/* ── THESIS BOX ── */
+.thesis-box{background:var(--ink);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;}
+.thesis-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);}
+.thesis-box::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(92,122,95,.08) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+.tb-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(143,174,146,.45);margin-bottom:12px;position:relative;z-index:1;}
+.tb-text{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;font-style:italic;color:var(--white);line-height:1.55;position:relative;z-index:1;}
+.tb-text em{font-style:normal;color:var(--sage-light);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .persona-plate{grid-template-columns:1fr;}
+  .pp-stats{grid-template-columns:1fr 1fr 1fr;}
+  .beh-grid,.sf-grid{grid-template-columns:1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Verdana · Brand 05 of 06</div>
+    <h1 class="cover-title">Customer<br><em>Persona</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 05 — Customer Persona</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Verdana</div></div>
+    <div class="meta-block"><div class="meta-label">Persona</div><div class="meta-value">Sloane Mitchell · 29 · Brooklyn, NY</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 NAMEPLATE -->
+  <div class="section">
+    <div class="section-label">01 — The ideal customer</div>
+    <h2 class="section-heading">Meet Sloane.<br><em>She buys the jar first.</em></h2>
+
+    <div class="persona-plate">
+      <div class="pp-left">
+        <div class="pp-initial">SM</div>
+        <div>
+          <div class="pp-name">Sloane Mitchell</div>
+          <div class="pp-role">UX Designer · Brooklyn, NY · 29</div>
+        </div>
+      </div>
+      <div class="pp-stats">
+        <div class="pp-stat"><div class="pp-stat-num">$94K</div><div class="pp-stat-label">Annual salary</div></div>
+        <div class="pp-stat"><div class="pp-stat-num">$340</div><div class="pp-stat-label">Monthly skincare spend</div></div>
+        <div class="pp-stat"><div class="pp-stat-num">12K</div><div class="pp-stat-label">Instagram followers · lifestyle account</div></div>
+      </div>
+    </div>
+
+    <p class="body-text">Sloane is a 29-year-old UX designer at a tech company in Brooklyn. She earns well, lives alone, and treats her skincare routine as the most intentional 15 minutes of her day. Her bathroom shelf is curated the way her apartment is curated — every product earns its place by looking right and working right, in that order.</p>
+
+    <p class="body-text">She discovered skincare as a self-care practice during the pandemic, graduated from drugstore to premium within two years, and now spends more on skincare than on clothing. She knows the difference between retinol and retinal. She knows what bakuchiol is and why it matters for a 29-year-old with sensitive skin. She follows three dermatologists on TikTok and two ingredient chemists on Instagram. She still buys the jar because of how it looks on her shelf.</p>
+
+    <div class="note-box">
+      <p><strong>The buyer thesis:</strong> Sloane does not choose between beautiful and effective. She requires both — and she will pay $150 for the brand that delivers both without making her feel like she is compromising either.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 SIX BEHAVIOURS -->
+  <div class="section">
+    <div class="section-label">02 — Six defining behaviours</div>
+    <h2 class="section-heading">How Sloane<br><em>actually shops.</em></h2>
+
+    <div class="beh-grid">
+      <div class="beh-card">
+        <div class="beh-num">B01</div>
+        <div class="beh-title">She discovers on TikTok and Instagram, buys on the brand's website</div>
+        <div class="beh-text">Sloane finds new brands through short-form video — texture clips, founder stories, ingredient breakdowns by dermatologists she follows. But she does not buy through the app. <strong>She opens the brand website in Safari, reads the full product page, looks at every photo, and only then adds to cart.</strong> The brand website is where the sale is won or lost — not the app where she discovered it.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">B02</div>
+        <div class="beh-title">She buys on aesthetics first, validates on ingredients second</div>
+        <div class="beh-text">The sequence is always the same: <strong>packaging stops the scroll → photography creates desire → ingredient list confirms the decision.</strong> She will not buy a product that does not look right on her shelf, no matter how strong the formula. She will not keep a product that looks right but contains silicones or fragrances she has decided to avoid. Both gates must be passed.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">B03</div>
+        <div class="beh-title">She reads every ingredient at percentage level when she can find it</div>
+        <div class="beh-text">Sloane uses INCIDecoder and CosDNA to cross-reference formulas she cannot decode herself. She follows Caroline Hirons and Hyram on YouTube. She knows that "fragrance" in an INCI list is a red flag for sensitive skin. <strong>A brand that names its percentages — "5% bakuchiol, 2% squalane" — earns trust instantly.</strong> A brand that says "with bakuchiol" without naming the percentage triggers suspicion.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">B04</div>
+        <div class="beh-title">She photographs every product she buys and posts the shelfie</div>
+        <div class="beh-text">Sloane's Instagram has 12,000 followers built around her apartment, her shelf, and her routine. Every new product she buys is photographed before it is used. <strong>The packaging is content before the formula is content.</strong> A brand she buys from will appear in posts seen by 12,000 people who share her aesthetic and her income bracket. The unboxing experience is not optional — it is the first distribution channel.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">B05</div>
+        <div class="beh-title">She is deeply loyal to brands that have never disappointed her</div>
+        <div class="beh-text">Sloane's current routine has six products from four brands. Three of those brands she has repurchased without re-evaluating for over a year. Once a brand earns her trust — through formula consistency, packaging integrity, and communication honesty — <strong>she does not comparison-shop.</strong> She simply re-orders. The conversion cost is high. The retention cost is low.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">B06</div>
+        <div class="beh-title">She treats premium skincare as an investment, not an indulgence</div>
+        <div class="beh-text">Sloane does not experience guilt at a $150 price point. She frames skincare as preventative healthcare — cheaper than Botox, more reliable than any wellness supplement, more lasting than a restaurant meal. <strong>She will reject a brand that apologises for its price</strong> — phrases like "affordable luxury" or "without the luxury markup" read as insecurity. She wants the brand to know it is worth what it costs.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 PURCHASE JOURNEY -->
+  <div class="section">
+    <div class="section-label">03 — The purchase journey</div>
+    <h2 class="section-heading">From scroll<br><em>to shelfie.</em></h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Stage</th><th>What happens</th><th>What Verdana must do</th><th>Timeline</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01 — Discovery</td>
+          <td>Sees a texture clip on TikTok or a shelfie flatlay on Instagram. The packaging stops her scroll. She saves the post.</td>
+          <td class="td-sage">The product must photograph beautifully in natural light. Warm cream and glass. The texture must be visible on film.</td>
+          <td>Day 1</td>
+        </tr>
+        <tr>
+          <td>02 — Investigation</td>
+          <td>Opens the brand website. Reads the product page top to bottom. Looks at every photo. Checks the ingredient list. Opens INCIDecoder in another tab.</td>
+          <td class="td-sage">Full ingredient transparency on the product page — named, percentaged, explained. Photography that shows texture, context, and ritual. No vague claims.</td>
+          <td>Day 1–3</td>
+        </tr>
+        <tr>
+          <td>03 — Validation</td>
+          <td>Searches Reddit r/SkincareAddiction and YouTube for reviews. DMs a friend who she knows uses clean beauty. Reads two long-form reviews.</td>
+          <td class="td-sage">Seeded reviews with ingredient-literate language. Earned press in Into The Gloss, Vogue Beauty, Allure. Community presence on Reddit.</td>
+          <td>Day 3–7</td>
+        </tr>
+        <tr>
+          <td>04 — Purchase</td>
+          <td>Returns to the brand website. Adds to cart. Hesitates at checkout. Proceeds. Receives a confirmation email she actually reads.</td>
+          <td class="td-sage">Frictionless checkout. No required account creation. The confirmation email must be as beautiful as the product page — same aesthetic, same care.</td>
+          <td>Day 7–14</td>
+        </tr>
+        <tr>
+          <td>05 — Unboxing</td>
+          <td>Photographs the unboxing before opening. Posts to Instagram Stories. Tags the brand. Begins the ritual.</td>
+          <td class="td-sage">Glass packaging. Beautiful insert card. Ribbon or tissue. The unboxing is a post — it must be designed for the camera, not just the shelf.</td>
+          <td>Day 14–16</td>
+        </tr>
+        <tr>
+          <td>06 — Advocacy</td>
+          <td>Posts a full review in month 2. Recommends to three friends. Repurchases without re-evaluating. Mentions in her monthly empties post.</td>
+          <td class="td-sage">Consistency of formula and packaging between batches. Refill programme if available. A loyalty mechanism that rewards her advocacy, not just her spend.</td>
+          <td>Month 2+</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 TRUST VS FRICTION -->
+  <div class="section">
+    <div class="section-label">04 — Trust signals vs friction points</div>
+    <h2 class="section-heading">What converts Sloane.<br><em>What loses her.</em></h2>
+
+    <div class="sf-grid">
+      <div>
+        <div class="sf-head sf-head-trust">✓ Trust signals — what converts</div>
+        <div class="sf-item"><strong>Named percentages in the ingredient list</strong> — "5% niacinamide" not "with niacinamide." The specificity is the proof.</div>
+        <div class="sf-item"><strong>Warm, tactile photography</strong> — natural light, linen or stone surfaces, the product in use, texture visible. Not a white sweep studio shot.</div>
+        <div class="sf-item"><strong>Glass packaging</strong> — frosted or clear. Signals seriousness at the $80–$300 tier. Plastic at this price point is a credibility failure.</div>
+        <div class="sf-item"><strong>Founder who knows the formula</strong> — not a lifestyle founder, a formulation founder. Someone who can answer "why 5% and not 7%?" specifically.</div>
+        <div class="sf-item"><strong>Clean INCI list</strong> — no fragrance, no parabens, no silicones. Sloane can read the list and will. She will catch anything she does not want in her routine.</div>
+        <div class="sf-item"><strong>Editorial-quality brand visuals</strong> — the brand must look like it belongs in a magazine. If the photography looks like a Shopify template, the $150 price tag is dissonant.</div>
+      </div>
+      <div>
+        <div class="sf-head sf-head-friction">✕ Friction points — what loses her</div>
+        <div class="sf-item"><strong>"Natural" without specifics</strong> — "made with natural ingredients" is the most common greenwashing phrase in the category. Sloane knows it and distrusts it immediately.</div>
+        <div class="sf-item"><strong>Fragrance listed as "fragrance"</strong> — this is a known irritant mask on INCI lists. Sloane will see it, flag it, and leave the product page without purchasing.</div>
+        <div class="sf-item"><strong>Plastic packaging at premium prices</strong> — any product priced above $60 in a plastic tube or jar fails Sloane's first visual credibility check. She does not read past the packaging.</div>
+        <div class="sf-item"><strong>Vague efficacy claims</strong> — "visibly transforms skin" means nothing without a timeframe, a percentage, or a mechanism. Sloane wants to know what it does and why.</div>
+        <div class="sf-item"><strong>Forced account creation before purchase</strong> — any checkout gate that requires an account before buy will lose Sloane at the critical moment. Guest checkout is non-negotiable.</div>
+        <div class="sf-item"><strong>Apologising for the price</strong> — "affordable luxury," "without the markup," "accessible high-performance." Sloane interprets these as a brand that does not believe in its own value. It makes her believe it less too.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 DESIGN IMPLICATIONS -->
+  <div class="section">
+    <div class="section-label">05 — Six design implications for Verdana</div>
+    <h2 class="section-heading">What Sloane means<br><em>for the brand.</em></h2>
+
+    <div class="imp-list">
+      <div class="imp-row">
+        <div class="imp-num"><span>D01</span></div>
+        <div class="imp-content">
+          <div class="imp-title">Packaging photography must be the hero — not a lifestyle afterthought</div>
+          <div class="imp-text">The product in natural light, on a warm linen or stone surface, with texture visible, is the single most important image on the website. Not a model. Not a lifestyle scene. The jar itself, photographed with the care of fine jewellery. Sloane's first gate is visual — if the photography does not stop her scroll, the formula never gets a chance.</div>
+        </div>
+      </div>
+      <div class="imp-row">
+        <div class="imp-num"><span>D02</span></div>
+        <div class="imp-content">
+          <div class="imp-title">Ingredient transparency must be structural — not a footnote</div>
+          <div class="imp-text">The product page must lead with ingredient names and percentages — not bury them at the bottom in small type. "5% bakuchiol sourced from Psoralea corylifolia, cold-pressed. 2% squalane from sugarcane, not shark liver." This is not marketing copy — it is the proof that the formula deserves the price. It must be the most prominent information on the page after the product name.</div>
+        </div>
+      </div>
+      <div class="imp-row">
+        <div class="imp-num"><span>D03</span></div>
+        <div class="imp-content">
+          <div class="imp-title">Copy must not apologise for price or explain luxury</div>
+          <div class="imp-text">No phrases like "accessible luxury," "affordable high-performance," or "without the department store markup." Verdana's price is stated plainly — $128 — with no justification and no discount framing. The brand knows what it costs and why. A buyer who needs to be convinced it is worth it is not Sloane. A buyer who needs the price confirmed is.</div>
+        </div>
+      </div>
+      <div class="imp-row">
+        <div class="imp-num"><span>D04</span></div>
+        <div class="imp-content">
+          <div class="imp-title">The visual system must be shelfie-ready</div>
+          <div class="imp-text">Sloane will photograph Verdana before she uses it. The brand palette — cream, sage, warm terracotta — must look beautiful against the warm tones of a Brooklyn apartment, against linen, against marble. The product must be designed for the camera. The label typography must be legible in an Instagram photo at 50% zoom. This is not vanity — it is distribution.</div>
+        </div>
+      </div>
+      <div class="imp-row">
+        <div class="imp-num"><span>D05</span></div>
+        <div class="imp-content">
+          <div class="imp-title">The editorial register must match a $150 price point</div>
+          <div class="imp-text">Cormorant Garamond at display scale, generous line height, warm cream surface — the visual system must communicate the same category of luxury as the product it describes. If the website looks like a Squarespace template, the $150 jar becomes dissonant. The design is not decoration — it is the brand's first proof that it belongs at this tier.</div>
+        </div>
+      </div>
+      <div class="imp-row">
+        <div class="imp-num"><span>D06</span></div>
+        <div class="imp-content">
+          <div class="imp-title">The unboxing experience must be designed for documentation</div>
+          <div class="imp-text">The packaging, tissue, insert card, and outer box must be photographable — warm colours, premium materials, thoughtful detail. An insert card with the product's key ingredients written in the brand typeface. A note that feels personal. The unboxing post is Verdana's most efficient marketing channel — Sloane's 12,000 followers are her exact buyer. The unboxing must earn that post.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="thesis-box">
+    <div class="tb-label">The buyer thesis · Sloane Mitchell · Verdana</div>
+    <div class="tb-text">Sloane does not choose between beautiful and effective. She requires both — and she will pay $150 for the brand that delivers both <em>without asking her to compromise either.</em></div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 05 — CUSTOMER PERSONA · VERDANA</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

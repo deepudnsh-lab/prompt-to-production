@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 11: Before & After · OrbitX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0E0E;--ink-mid:#3D3D3D;--ink-muted:#7A7A7A;--ink-faint:#B8B8B8;
+  --paper:#FAF8F4;--accent:#2563C8;--accent-light:#C8DAF7;
+  --rule:#E0DCD5;--tag-bg:#F0EDE8;
+  --space:#020916;--mission:#0A1E3D;--signal:#2563C8;--horizon:#60A5FA;
+  --before-bg:#F5F0EB;--before-border:#C8B89A;
+  --after-bg:#EAF0FB;--after-border:#2563C8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* COVER */
+.cover-band{background:var(--space);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(37,99,200,.25),transparent 65%);pointer-events:none;}
+.cover-band::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 10%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--accent-light);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--accent-light),transparent);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--accent);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+/* COLUMN HEADERS */
+.ba-header{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:3px;}
+.ba-col-head{padding:12px 20px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;}
+.col-before{background:var(--before-bg);color:#6B5840;border-left:3px solid var(--before-border);}
+.col-after{background:var(--after-bg);color:var(--signal);border-left:3px solid var(--after-border);}
+
+/* COMPARISON ROWS */
+.ba-row{margin-bottom:3px;}
+.ba-row-label{background:var(--ink);padding:10px 20px;display:flex;align-items:center;gap:12px;}
+.ba-row-num{font-family:'DM Serif Display',serif;font-size:16px;color:var(--horizon);}
+.ba-row-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+.ba-cols{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
+
+.ba-cell{padding:20px 22px;}
+.ba-cell-before{background:var(--before-bg);border-left:3px solid var(--before-border);}
+.ba-cell-after{background:var(--after-bg);border-left:3px solid var(--after-border);}
+
+.ba-example{font-family:'DM Mono',monospace;font-size:10px;line-height:1.7;padding:10px 14px;border-radius:2px;margin-bottom:10px;}
+.ex-before{background:rgba(200,184,154,.2);color:#4A3820;}
+.ex-after{background:rgba(37,99,200,.1);color:#1a3a80;}
+
+.ba-rationale{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.ba-rationale strong{color:var(--ink);font-weight:500;}
+
+/* IMPACT BOX */
+.impact-box{background:var(--space);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;}
+.impact-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(37,99,200,.2),transparent 60%);pointer-events:none;}
+.impact-box::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 20% 30%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 70% 20%,rgba(255,255,255,.3),transparent),radial-gradient(1px 1px at 50% 70%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+.ib-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent-light);margin-bottom:14px;position:relative;z-index:1;}
+.ib-text{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;line-height:1.45;position:relative;z-index:1;}
+.ib-text em{font-style:italic;color:var(--accent-light);}
+
+/* SUMMARY STATS */
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:28px 0;}
+.sum-card{background:var(--space);padding:22px 18px;position:relative;overflow:hidden;}
+.sum-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(37,99,200,.18),transparent);}
+.sum-num{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--accent-light);line-height:1;margin-bottom:6px;position:relative;z-index:1;}
+.sum-label{font-size:12px;color:rgba(255,255,255,.4);line-height:1.45;font-weight:300;position:relative;z-index:1;}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:28px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .ba-header,.ba-cols{grid-template-columns:1fr;}
+  .ba-cell-before{border-bottom:2px solid var(--before-border);}
+  .sum-grid{grid-template-columns:1fr 1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · OrbitX · Brand 02 of 06</div>
+    <h1 class="cover-title">Before<br><em>&amp; After</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 11 — Before &amp; After</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">OrbitX</div></div>
+    <div class="meta-block"><div class="meta-label">Decisions compared</div><div class="meta-value">9 design decisions</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- INTRO -->
+  <div class="section">
+    <div class="section-label">01 — What this document shows</div>
+    <h2 class="section-heading">The category average<br>versus <em>OrbitX.</em></h2>
+
+    <p class="body-text">The "before" column is not a bad design. It is the average design — what every space tourism competitor does by default. Blue Origin, Virgin Galactic, and SpaceX all represent the before. OrbitX is the after: the same category, a completely different set of decisions made from the research, the persona, and the gap analysis.</p>
+
+    <p class="body-text">Nine decisions are compared. Each one traces directly to a specific finding in Steps 4–6. None of these choices were made by taste.</p>
+
+    <div class="sum-grid">
+      <div class="sum-card"><div class="sum-num">9</div><div class="sum-label">Design decisions compared against category average</div></div>
+      <div class="sum-card"><div class="sum-num">4</div><div class="sum-label">Universal gaps from the competitor audit that OrbitX closes</div></div>
+      <div class="sum-card"><div class="sum-num">0</div><div class="sum-label">Decisions made by taste alone — every choice has a source</div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- COMPARISONS -->
+  <div class="section">
+    <div class="section-label">02 — Nine decisions · category average vs OrbitX</div>
+    <h2 class="section-heading">What changed.<br><em>Why it changed.</em></h2>
+
+    <div class="ba-header">
+      <div class="ba-col-head col-before">Category average · Blue Origin · Virgin Galactic · SpaceX</div>
+      <div class="ba-col-head col-after">OrbitX · Direction A · Cosmonaut / Vast</div>
+    </div>
+
+    <!-- 01 HERO ALIGNMENT -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">01</div>
+        <div class="ba-row-title">Hero alignment · the first structural signal</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Left-aligned headline and body copy.
+Primary CTA bottom-left.
+Image fills right half of viewport.</div>
+          <div class="ba-rationale">Left alignment is the default for web design. Every competitor uses it. It communicates competence and familiarity — the visual language of a professional website. For space tourism, it reads as: hospitality, e-commerce, SaaS. It does not read as aerospace.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Centre-aligned headline, sub-copy, and CTAs.
+Full-viewport video behind everything.
+Text floats over the footage.</div>
+          <div class="ba-rationale"><strong>Centre alignment reads as aerospace.</strong> Mission posters, launch screens, pre-flight displays — all centred. The alignment alone signals that this is not a product page. It is a mission briefing. This was the single most impactful structural change to the landing page — one alignment decision changed the entire register.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 HERO VISUAL -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">02</div>
+        <div class="ba-row-title">Hero visual · what occupies the first viewport</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Static photography of the vehicle.
+Rocket on pad, or rocket in flight.
+No person visible in the hero.</div>
+          <div class="ba-rationale">All three competitors lead with the vehicle. The rocket is the hero. This communicates engineering capability — which is the right signal for an engineering company. For a passenger experience company, it is the wrong signal. It answers "what does the rocket look like?" not "what does it feel like to go?"</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Full-viewport AI-generated video.
+Earth from orbit. Stars. Atmosphere.
+Headline text centred over footage.</div>
+          <div class="ba-rationale"><strong>The view from space — not the vehicle that gets you there.</strong> The competitor audit found that no competitor shows the experience from the passenger's perspective at hero level. OrbitX leads with the view: what you will actually see. The vehicle is in The Vehicle section. The hero is about the destination.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 HEADLINE -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">03</div>
+        <div class="ba-row-title">Hero headline · the first words read</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">"Making Life Multiplanetary" — SpaceX
+"Space for All Who Dream" — Virgin Galactic
+"New Glenn · Orbital Rocket" — Blue Origin</div>
+          <div class="ba-rationale">Three different approaches — mission statement, aspiration, and product name. All three are outward-looking: about the company, the vehicle, or the vision. None of them place the passenger as the grammatical subject. None of them describe what the passenger will actually experience.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"At 100km, the atmosphere disappears."</div>
+          <div class="ba-rationale"><strong>A fact. Not a promise. Not a tagline. A description of what happens.</strong> The number grounds it. The consequence — the atmosphere disappears — is stated without embellishment. Arjun reads this and thinks: yes. That is what happens. The emotion arrives from the precision. This headline was not changed from the first draft of Step 8.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 PASSENGER VISIBILITY -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">04</div>
+        <div class="ba-row-title">Passenger visibility · who appears on the page</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">No named civilian passengers on homepage.
+Blue Origin: 58 passengers flown.
+None appear by name or biography.</div>
+          <div class="ba-rationale">The passenger is invisible across all three competitor sites. Despite Blue Origin having flown 58 people and Virgin Galactic having 700+ on a waitlist, no named civilian passenger appears on any homepage. This was the single most significant gap identified in the Step 6 audit.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Passenger 08 · NX-03
+Founder & Chairman · Manufacturing
+Mumbai · Flew March 2027</div>
+          <div class="ba-rationale"><strong>Biographical signal cards — not testimonials.</strong> Three previous passengers appear by role, sector, geography, and mission number. Identities kept confidential at request — which is itself a quality signal. Arjun sees his peer group: founder, Mumbai. He does not need a quote. He needs a mirror. The anonymity communicates that OrbitX protects its passengers.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 SCARCITY -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">05</div>
+        <div class="ba-row-title">Scarcity signal · how limited availability is communicated</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">"Limited availability"
+"Join the waitlist"
+"Reserve your seat" (generic)</div>
+          <div class="ba-rationale">No competitor displays actual mission designations, specific seat counts, or real launch windows at a visible level. The scarcity is implied but never stated. Arjun has spent his career distinguishing between genuine scarcity and manufactured urgency. Generic waitlist language reads as the second one.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">NX-12 · Q1 2028 · 2 of 6 seats remaining
+NX-13 · Q2 2028 · 5 of 6 seats remaining
+NX-14 · Q3 2028 · 6 of 6 seats available</div>
+          <div class="ba-rationale"><strong>Real mission designations. Specific dates. Actual seat counts.</strong> Not manufactured urgency — operational fact. Three missions listed so the pipeline is visible. Arjun can choose his window. "2 of 6 seats remaining" is more compelling than "Limited availability" because it is true and specific. No exclamation mark. No colour emphasis. Just the number.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 CTA LANGUAGE -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">06</div>
+        <div class="ba-row-title">CTA language · the words on the primary button</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">"Book Now"
+"Reserve Your Seat"
+"Learn More" / "Explore"</div>
+          <div class="ba-rationale">"Book Now" is e-commerce language. "Reserve Your Seat" is airline language. Both position the interaction as a transaction. For a $300,000 purchase decision, transactional language signals that OrbitX does not understand its customer. Arjun is not buying a product. He is requesting access to a programme.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">"Reserve your manifest position →"
+"Request a briefing →"
+"Speak to a Specialist"</div>
+          <div class="ba-rationale"><strong>Mission language throughout.</strong> "Manifest position" — not seat. "Briefing" — not consultation. "Specialist" — not sales rep. Every CTA word was chosen to match Arjun's register: a person who has built companies, reads mission documents, and expects to speak to someone who knows more than he does. The arrow is directional, not urgent.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 CONTACT FORM -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">07</div>
+        <div class="ba-row-title">Contact mechanism · how the enquiry is handled</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Generic contact form.
+Name / Email / Phone / Message.
+"We'll be in touch" — no person named.</div>
+          <div class="ba-rationale">Generic contact forms communicate that the company does not yet know who is contacting them. For a $300,000 purchase, this signals either that the company is not selective about its passengers or that the enquiry will be handled by someone without authority. Arjun will not fill in a form addressed to nobody.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Three fields: name · contact time · mission.
+Named specialist: Priya Sharma.
+"No call centre. No automated response."</div>
+          <div class="ba-rationale"><strong>A named person with a specific role and a stated number of passengers supported.</strong> Three fields only — no email asked (captured from metadata), no phone asked (she calls him). "No deposit required to begin the conversation" removes the last friction point. Arjun is not submitting an enquiry. He is requesting a briefing from a decision-maker.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 INFORMATION ARCHITECTURE -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">08</div>
+        <div class="ba-row-title">Page structure · the logic of the information sequence</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Hero → About / Mission → Experience
+→ Testimonials → Book / Contact</div>
+          <div class="ba-rationale">The standard hospitality and luxury product IA: atmosphere first, product second, social proof third, conversion last. This structure works when the customer needs to be convinced. It requires engagement to be earned before information is given. For Arjun, who has already decided in principle, this structure wastes his 20 minutes.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Hero → Vehicle → Passengers → Mission
+→ Training → Manifest → Specialist</div>
+          <div class="ba-rationale"><strong>A mission briefing document, not a hospitality experience.</strong> Each section answers a specific question in Arjun's head at 11pm on a laptop: Is this real? Can I trust the engineering? Has anyone like me done this? What exactly happens? How do I begin? The page does not build atmosphere before substance — it leads with facts and lets atmosphere emerge from precision.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 VISUAL DIRECTION -->
+    <div class="ba-row">
+      <div class="ba-row-label">
+        <div class="ba-row-num">09</div>
+        <div class="ba-row-title">Visual direction · the overall palette and image treatment</div>
+      </div>
+      <div class="ba-cols">
+        <div class="ba-cell ba-cell-before">
+          <div class="ba-example ex-before">Dark background. White or blue typography.
+Vehicle photography — rockets, engines.
+No consistent colour grading across images.</div>
+          <div class="ba-rationale">All three competitors use dark backgrounds and vehicle photography — which is the correct category signal. But the images are used inconsistently in colour temperature and mood. The category look is present but undisciplined. The visual system communicates aerospace but not a specific, considered brand within that category.</div>
+        </div>
+        <div class="ba-cell ba-cell-after">
+          <div class="ba-example ex-after">Deep Space #020916 base.
+Three images graded to OrbitX palette:
+brightness(0.82-0.88) hue-rotate(-15 to -28deg)</div>
+          <div class="ba-rationale"><strong>Every image graded to the same colour temperature.</strong> The warmest image (golden dusk rocket) received the most aggressive grade. The coolest (interior, already blue) the gentlest. A blue multiply overlay on every image. The result: three source images from completely different colour worlds read as a single, consistent visual system. Consistency in tone — not uniformity in temperature.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- IMPACT STATEMENT -->
+  <div class="section">
+    <div class="section-label">03 — What these nine decisions add up to</div>
+    <h2 class="section-heading">The category builds rockets.<br><em>OrbitX builds passengers.</em></h2>
+
+    <p class="body-text">Each of the nine decisions above traces to a specific finding in the research, persona, or competitor audit. None were made by taste. The before column is not wrong — it is appropriate for engineering companies selling missions to institutional clients. The after column is built for Arjun: a founder at 11pm who has already decided in principle and needs confirmation, not persuasion.</p>
+
+    <div class="impact-box">
+      <div class="ib-label">The cumulative effect of nine research-led decisions</div>
+      <div class="ib-text">Blue Origin builds the rocket. Virgin Galactic builds the experience. SpaceX builds the future. <em>OrbitX builds the passenger.</em> Every design decision on this page — alignment, copy, CTA language, IA structure, image grading — points to the same thesis: the person who goes is more important than the vehicle that takes them.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 11 — BEFORE &amp; AFTER · ORBITX</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

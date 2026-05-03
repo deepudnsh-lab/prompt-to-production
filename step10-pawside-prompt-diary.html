@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 10: Prompt Diary · Pawside</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0E0E;--ink-mid:#3D3D3D;--ink-muted:#7A7A7A;--ink-faint:#B8B8B8;
+  --paper:#FAF8F4;--accent:#FF6B6B;--accent-light:#FFB3B3;
+  --rule:#E0DCD5;--tag-bg:#FFF5F5;
+  --teal:#4ECDC4;--yellow:#FFE66D;--cream:#FFF8F0;
+  --good-bg:#E8F5EE;--good-text:#1A6B3A;
+  --warn-bg:#FFF4E6;--warn-text:#8B4A1C;
+  --fix-bg:#EEF0FF;--fix-text:#3D4AB7;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* COVER */
+.cover-band{background:linear-gradient(135deg,#FF6B6B,#FFB3B3);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(255,255,255,.3),transparent 65%);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:rgba(255,255,255,.5);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--teal),var(--yellow));margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--accent);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--tag-bg);border-left:3px solid var(--accent);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* PROMPT ENTRIES */
+.prompt-entry{border:1px solid var(--rule);overflow:hidden;margin-bottom:3px;}
+
+.pe-header{background:linear-gradient(135deg,#FF6B6B,#FFB3B3);padding:14px 20px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:14px;position:relative;overflow:hidden;}
+.pe-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(255,255,255,.2),transparent);pointer-events:none;}
+.pe-num{font-family:'DM Serif Display',serif;font-size:20px;color:#fff;line-height:1;position:relative;z-index:1;}
+.pe-step{position:relative;z-index:1;}
+.pe-step-name{font-size:14px;font-weight:500;color:#fff;margin-bottom:2px;}
+.pe-step-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.4);}
+.pe-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;position:relative;z-index:1;}
+.badge-worked{background:rgba(30,107,58,.3);color:#5DC889;border:1px solid rgba(30,107,58,.3);}
+.badge-iterated{background:rgba(78,205,196,.2);color:var(--teal);border:1px solid rgba(78,205,196,.3);}
+.badge-key{background:rgba(200,167,0,.15);color:#D4AF20;border:1px solid rgba(200,167,0,.2);}
+
+/* Prompt box */
+.prompt-box{background:rgba(255,107,107,.96);border-bottom:1px solid rgba(255,255,255,.06);padding:0;}
+.pb-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:12px 20px 8px;}
+.pb-text{font-family:'DM Mono',monospace;font-size:11px;line-height:1.75;color:rgba(245,245,255,.82);padding:0 20px 16px;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
+
+/* Analysis */
+.pe-analysis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.pa-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.pa-col:last-child{border-right:none;}
+.pa-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;border-radius:2px;display:inline-block;margin-bottom:8px;}
+.label-worked{background:var(--good-bg);color:var(--good-text);}
+.label-issue{background:var(--warn-bg);color:var(--warn-text);}
+.label-lesson{background:var(--fix-bg);color:var(--fix-text);}
+.pa-text{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.pa-text strong{color:var(--ink);font-weight:500;}
+
+/* KEY LESSON BOX */
+.key-lesson{background:linear-gradient(135deg,#FF6B6B,#FFB3B3);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;}
+.key-lesson::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(255,255,255,.2),transparent 60%);pointer-events:none;}
+.kl-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:12px;position:relative;z-index:1;}
+.kl-text{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;line-height:1.45;position:relative;z-index:1;}
+.kl-text em{font-style:italic;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:28px 0;}
+.stat-card{background:linear-gradient(135deg,#FF6B6B,#FFB3B3);padding:20px 16px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(255,255,255,.2),transparent);}
+.stat-num{font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;line-height:1;margin-bottom:5px;position:relative;z-index:1;}
+.stat-label{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4;font-weight:300;position:relative;z-index:1;}
+
+/* FOOTER */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:28px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .pe-analysis{grid-template-columns:1fr;}
+  .pa-col{border-right:none;border-bottom:1px solid var(--rule);}
+  .pa-col:last-child{border-bottom:none;}
+  .pe-header{grid-template-columns:28px 1fr;}
+  .pe-badge{display:none;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+  .pb-text{font-size:10px;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Pawside · Brand 06 of 06</div>
+    <h1 class="cover-title">Prompt<br><em>Diary</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 10 — Prompt Diary</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Pawside</div></div>
+    <div class="meta-block"><div class="meta-label">Prompts documented</div><div class="meta-value">8 prompts · 6 steps</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- INTRO -->
+  <div class="section">
+    <div class="section-label">01 — What this document is</div>
+    <h2 class="section-heading">The actual prompts.<br><em>Verbatim.</em></h2>
+
+    <p class="body-text">This document records every significant prompt used to create Pawside — the exact words sent to Claude at each step, what the output was, what was wrong with it, and what the fix was. This is the creative direction record. The prompts are the decisions.</p>
+
+    <p class="body-text">Each entry shows: the prompt as written, what worked, what needed iteration, and the lesson that applies to future projects. No editing after the fact. These are the actual instructions that produced the final output.</p>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">Total prompts documented</div></div>
+      <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Prompts worked first time</div></div>
+      <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Prompts required iteration</div></div>
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Key lessons extracted</div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- PROMPTS -->
+  <div class="section">
+    <div class="section-label">02 — The prompt diary · all eight entries</div>
+    <h2 class="section-heading">What I wrote.<br>What <em>happened.</em></h2>
+
+    <!-- PROMPT 01 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">01</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Moodboard Direction Selection</div>
+          <div class="pe-step-sub">Creating four distinct visual directions</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">I want you to create a moodboard direction that is more fun and vibrant</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude created Direction D — Playful with vibrant Coral #FF6B6B, Teal #4ECDC4, Sunny Yellow #FFE66D palette. The direction was genuinely distinct from the other three (Warmth, Precision, Sacred). Playful direction became the selected direction for Pawside.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing — the Playful direction was exactly what was needed and became the foundation for the entire brand.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Brief, focused prompts that state what's needed work well. "More fun and vibrant" produced a complete direction with palette, typography, and Midjourney prompt.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 02 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">02</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 8 — Copywriting</div>
+          <div class="pe-step-sub">Playful, fun copy with humour</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">Step 8 — Copywriting for Pawside with playful and fun with less faces and more engaging content, add humor to it as well</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude delivered playful, humorous copy across all sections: "Cleans without stripping. Your dog will smell like they got professional grooming, not a chemical bath." and "For when your dog has created a wool sweater from their own fur in 48 hours. It happens. We understand. This fixes it." The voice was consistent and authentic.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing — the copy delivered on all requirements. Six voice rules established and applied throughout.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Playful voice requires specific tone instructions: "humor", "own the awkwardness", "short sentences", "facts before feelings". These guidelines produced consistent, authentic voice.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 03 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">03</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 9 — Landing Page Design</div>
+          <div class="pe-step-sub">Joyful website with all 11 images</div>
+        </div>
+        <span class="pe-badge badge-iterated">One iteration</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">Building Step 9 — Landing Page for Pawside with a joyful website, also i want you to create 1 single prompt that i can use to generate all them images you will use for this website, i will use this prompt in any other image generating AI tool and i should be able to download all the images in a zip folder</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude created two deliverables: (1) A full landing page with all 11 image placeholders and (2) A comprehensive Master Image Prompt that specified all 11 images with exact dimensions, global brand guidelines, and individual specifications. The master prompt was tool-agnostic and could be used in any AI image generator.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The landing page design felt too formal, too safe, too rigid. Layout was standard grid-based. Colors were timid. No playfulness evident despite the copy. This led to Step 09b Design Audit.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Generic design direction ("joyful website") produces generic results. Need specific design language ("asymmetrical layouts", "full-width color blocks", "rotated elements", "animations") to produce playful designs.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 04 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">04</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 Design Audit</div>
+          <div class="pe-step-sub">Critical analysis of landing page</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">I don't like the current design. The layout seems too formal. You are an expert graphic designer. Do a design audit of the landing page. And suggest how we can make this into a better design or a landing page. Want this to be fun. Colorful, vibrant, and attractive. So suggest steps or suggest how we can make this better.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude identified 7 major design problems: overly formal grid layout, timid color usage, safe typography, disconnected sections, boxed images, even whitespace, no animations. For each problem, provided specific solutions: asymmetrical layouts, bold full-color sections, large typography, illustrations, image treatment, animations, varied spacing. Included 6 quick wins and 6 core design principles.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing — the audit was thorough and strategic. It became the blueprint for the complete redesign.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When a design doesn't feel right, audit before iterating. Identify structural problems (layout, color usage, spacing) not cosmetic ones. A good audit enables complete redesign rather than endless tweaks.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 05 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">05</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 Redesign Implementation</div>
+          <div class="pe-step-sub">All audit recommendations applied</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">okay lets implement these changes</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude completely redesigned the landing page implementing ALL recommendations: Asymmetrical layouts (staggered product cards, rotated images), Bold full-width color sections (Coral, Teal, Yellow backgrounds), Playful typography (92px hero headline), Illustrated elements (paw prints, emojis), Image treatment (overlap, rotate, float), Micro-interactions (bounce hovers, scale transforms, animations), Varied spacing (40-100px). Result was vibrant, fun, and attractive.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Hero copy was sticking too much to the left. Needed better breathing space on left side. Required adjustment: grid changed from 1fr 1fr to 0.7fr 1.3fr, left padding increased to 140px.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Short, direct prompts ("okay lets implement these changes") work well when the prior context is detailed and clear. The previous audit provided enough structure that a minimal prompt could trigger complete implementation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 06 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">06</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 Hero Spacing Adjustment</div>
+          <div class="pe-step-sub">Breathing space on left side</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">This looks good, but I feel that the home page hero bot copy is sticking too much to the left. Let's align it with the rest of the text. So that there is more breathing space on the left side.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude adjusted the hero layout immediately: Grid changed from 1fr 1fr to 0.7fr 1.3fr (narrower content column, wider image column), left padding increased from 60px to 140px, gap increased from 80px to 100px. Result: hero copy now centered with generous left breathing space.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing — the adjustment was precise and solved the spacing issue immediately.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Specific spatial feedback ("sticking too much to the left", "more breathing space on the left side") produces accurate adjustments. Grid ratio and padding adjustments are the right levers for this type of correction.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 07 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">07</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 10 — Prompt Diary (First Version)</div>
+          <div class="pe-step-sub">Documentation of all prompts</div>
+        </div>
+        <span class="pe-badge badge-iterated">One iteration</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">Perfect! Let's move to Step 10 — Prompt Diary for Pawside. This will document all the actual prompts used throughout the design and copy process.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude created a comprehensive Step 10 document with all prompts, analysis, and key lessons. Format was clear and professional. All sections included: prompt, what worked, what needed fixing, lessons learned.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The prompts in the first version were reconstructed/paraphrased, not verbatim. Deepu requested: "Use the actual prompts instead of what you have written." This required going back through the conversation and using the EXACT prompts as they were sent.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Step 10 Prompt Diary must use verbatim prompts, not reconstructed or paraphrased versions. The value of the document is in the exact language used to create the work. Reconstruction loses authenticity and accuracy.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 08 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">08</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 10 — Prompt Diary (Actual Verbatim)</div>
+          <div class="pe-step-sub">Documenting actual prompts used</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">Use the actual prompts instead of what you have written.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Claude went back through the conversation history and extracted the exact, verbatim prompts as they were originally sent. Eight actual prompts documented with their exact wording. This version captures the true creative decisions and language used throughout the Pawside project.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing — the verbatim approach is correct and authentic.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Prompt diaries are only valuable when they capture actual, verbatim language. Reconstruction loses nuance and authenticity. Always reference the actual prompts as they were written, not interpretations of them.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end prompts -->
+
+  <div class="page-rule"></div>
+
+  <!-- KEY LESSONS -->
+  <div class="section">
+    <div class="section-label">03 — Five key lessons · from Pawside prompts</div>
+    <h2 class="section-heading">What the prompts<br><em>reveal.</em></h2>
+
+    <div class="key-lesson">
+      <div class="kl-label">Lesson 01 — Specific Design Language Matters</div>
+      <div class="kl-text">Generic direction ("fun, colorful, vibrant") produces generic results. <em>Specific language ("asymmetrical layouts", "full-width color blocks", "92px headlines", "bounce animations")</em> produces playful, distinctive designs.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 02 — Audit Before Iterating</div>
+      <div class="kl-text">When a design doesn't feel right, <em>stop and audit the structural problems</em> instead of making small tweaks. A good audit enables complete redesign, which is more effective than endless iterations.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 03 — Short Prompts Work With Clear Context</div>
+      <div class="kl-text">"Okay lets implement these changes" worked because the prior audit was detailed and structured. <em>Short prompts require strong prior context.</em> Long prompts work when context is weak.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 04 — Spatial Feedback Is Precise</div>
+      <div class="kl-text">Specific spatial language ("sticking too much to the left", "more breathing space on left side") produces accurate adjustments. <em>Grid ratios and padding are the right levers for spacing corrections.</em></div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 05 — Prompt Diaries Require Verbatim Language</div>
+      <div class="kl-text">The value of a prompt diary is in the exact language used. <em>Reconstructed or paraphrased prompts lose authenticity.</em> Always capture the actual, verbatim wording as it was sent.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 10 — PROMPT DIARY · PAWSIDE</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

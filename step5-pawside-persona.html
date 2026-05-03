@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 5: Persona · Pawside</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF8F0;--cream2:#FEF3E8;--tan:#E8D5C4;--rust:#8B5A3C;--rust-light:#B8855C;--rust-tint:#F9EEE8;
+  --ink:#2B1810;--ink-mid:#4A3628;--ink-faint:#8B7563;--white:#FFFFFF;--border:#E0D4C8;--rule:#EBE0D8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+.cover-band{background:var(--cream);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--rust),var(--rust-light),transparent);}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--rust);opacity:.8;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';width:28px;height:1px;background:var(--rust);}
+.cover-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:56px;line-height:.95;color:var(--ink);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--rust);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:18px;}
+.accent-rule{height:1px;background:var(--border);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--rust);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--rust);}
+.body-text{font-size:16px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+.persona-hero{background:linear-gradient(135deg,var(--rust-tint),var(--cream2));border:1px solid var(--border);padding:32px 36px;margin:24px 0;border-radius:12px;}
+.persona-name{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:28px;color:var(--ink);margin-bottom:4px;}
+.persona-sub{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+.persona-stat{font-size:14px;line-height:1.7;color:var(--ink-mid);margin-bottom:8px;}
+.persona-stat strong{color:var(--ink);}
+
+.quote-box{background:var(--cream2);border-left:4px solid var(--rust);padding:24px 28px;margin:24px 0;font-style:italic;font-size:15px;color:var(--ink-mid);line-height:1.8;}
+
+.section-box{background:var(--cream2);border:1px solid var(--border);padding:24px 28px;margin:16px 0;border-radius:8px;}
+.section-box h4{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+.section-box p{font-size:14px;line-height:1.7;color:var(--ink-mid);margin-bottom:10px;}
+.section-box p:last-child{margin-bottom:0;}
+
+.behavior-list{list-style:none;margin:16px 0;}
+.behavior-item{padding:14px 0;border-bottom:1px solid var(--rule);font-size:14px;line-height:1.7;color:var(--ink-mid);}
+.behavior-item:last-child{border-bottom:none;}
+.behavior-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);display:block;margin-bottom:4px;}
+.behavior-text{color:var(--ink-mid);}
+
+.insight-box{background:linear-gradient(135deg,rgba(139,90,60,.08),rgba(249,238,232,.4));border:1px solid rgba(139,90,60,.2);border-radius:12px;padding:28px;margin:24px 0;}
+.insight-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+.insight-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--ink);margin-bottom:8px;}
+.insight-text{font-size:15px;line-height:1.75;color:var(--ink-mid);}
+
+.purchase-journey{margin:24px 0;}
+.journey-item{padding:16px;background:var(--cream2);border:1px solid var(--border);margin-bottom:8px;border-radius:6px;display:grid;grid-template-columns:60px 1fr;gap:16px;align-items:start;}
+.journey-num{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--rust);font-weight:300;}
+.journey-text{font-size:14px;color:var(--ink-mid);line-height:1.6;}
+.journey-text strong{color:var(--ink);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .journey-item{grid-template-columns:1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Pawside · Brand 06 of 06</div>
+    <h1 class="cover-title">Customer<br><em>Persona</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div>
+    <div class="meta-label">Document</div><div class="meta-value">Step 5 — Persona</div>
+    <div class="meta-label">Brand</div><div class="meta-value">Pawside</div>
+    <div class="meta-label">Buyer</div><div class="meta-value">Maya Chen · 34 · Austin TX</div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="persona-hero">
+      <div class="persona-name">Maya Chen</div>
+      <div class="persona-sub">North Star Buyer · Pawside</div>
+      <div class="persona-stat"><strong>Age:</strong> 34 · <strong>Location:</strong> Austin, TX · <strong>Household income:</strong> $142K</div>
+      <div class="persona-stat"><strong>Dog:</strong> Biscuit, 4-year-old Golden Retriever · <strong>Annual dog care spend:</strong> $380</div>
+      <div class="persona-stat"><strong>Grooming budget:</strong> $28-$45 per order · <strong>Purchase frequency:</strong> 10-12 times/year</div>
+      <div class="persona-stat"><strong>Primary platform:</strong> Instagram · <strong>Secondary:</strong> TikTok (dog grooming accounts)</div>
+    </div>
+
+    <p class="body-text">Maya is a Product Manager at a software company. She lives with her husband and their 4-year-old Golden Retriever, Biscuit. She spends approximately $380 per year on grooming products, treats, and wellness items for Biscuit — about 8% of her total household discretionary spending. She discovers products through Instagram (following dog grooming accounts, trainer recommendations, dog wellness creators), verifies ingredients through Reddit and Facebook dog groups, and makes purchase decisions based on ingredient transparency and other dog owners' experiences.</p>
+
+    <div class="quote-box">
+      "I want to know exactly what's in the shampoo I'm putting on Biscuit's coat. If a brand won't tell me the percentages, I assume they have something to hide."
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">01 — Who Maya is</div>
+    <h2 class="section-heading">The buyer<br><em>in detail.</em></h2>
+
+    <div class="section-box">
+      <h4>Profession & income</h4>
+      <p>Product Manager at a B2B SaaS company in Austin. $142K base salary. Remote work (saves 3 hours/week). Comfortable spending $300-$500/month on discretionary items. No budget constraints for dog care.</p>
+    </div>
+
+    <div class="section-box">
+      <h4>Dog ownership context</h4>
+      <p>Biscuit (Golden Retriever, 4 years old) is treated as a family member. Maya photographs Biscuit weekly for Instagram. Follows 47 dog-related accounts. Participates actively in Austin dog owner Facebook groups (3,200+ members). Biscuit's coat health is a point of pride — mentions it frequently in conversations.</p>
+    </div>
+
+    <div class="section-box">
+      <h4>Online behavior</h4>
+      <p>Spends 90 minutes/day on Instagram (primarily dog content). Checks TikTok 4-5 times/week (watches dog grooming tutorials, coat health videos). Active in Reddit r/dogs and r/goldenretrievers. Reads product reviews meticulously before purchase. Makes decisions based on ingredient lists and peer recommendations, not advertising.</p>
+    </div>
+
+    <div class="section-box">
+      <h4>Shopping pattern</h4>
+      <p>Purchases grooming supplies every 3-4 weeks. Orders $28-$45 per purchase. Uses Amazon Prime occasionally (when convenience > ingredient precision). Prefers D2C brand sites when they offer ingredient transparency. Willing to pay premium pricing ($35 shampoo vs $12 at Target) for ingredient clarity.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — How Maya shops</div>
+    <h2 class="section-heading">Six behaviors<br><em>that define purchase decisions.</em></h2>
+
+    <ul class="behavior-list">
+      <li class="behavior-item">
+        <span class="behavior-label">B01 — Photographs before and after grooming</span>
+        <span class="behavior-text">Posts grooming photos to Instagram 2-3 times per week. Looks for visible coat improvements (shine, texture) as proof of product efficacy. Reads captions on other dog owners' grooming posts for product mentions.</span>
+      </li>
+      <li class="behavior-item">
+        <span class="behavior-label">B02 — Researches ingredients obsessively</span>
+        <span class="behavior-text">Before purchase, reads the full ingredient list and researches each unknown ingredient on Google. Looks for percentages to assess concentration. Distrusts brands that use vague terms like "natural botanical blend."</span>
+      </li>
+      <li class="behavior-item">
+        <span class="behavior-label">B03 — Asks the dog owner community first</span>
+        <span class="behavior-text">When considering a new product, posts in Austin dog groups asking "Has anyone tried [brand]?" Trusts peer recommendations over advertising. Wants to hear about actual results, not marketing claims.</span>
+      </li>
+      <li class="behavior-item">
+        <span class="behavior-label">B04 — Follows dog grooming creators</span>
+        <span class="behavior-text">Follows 12+ accounts focused on dog grooming and coat health. Watches tutorials on proper shampoo technique. Clicks links in creator bios when they recommend products. Follows recommendations from dog trainers and veterinarians on Instagram.</span>
+      </li>
+      <li class="behavior-item">
+        <span class="behavior-label">B05 — Commits to products that work</span>
+        <span class="behavior-text">Once a product proves effective on Biscuit's coat, becomes a loyal repeat customer. Does not shop around if current product is working. Stops researching. Builds routine.</span>
+      </li>
+      <li class="behavior-item">
+        <span class="behavior-label">B06 — Treats dog care spending as investment</span>
+        <span class="behavior-text">Does not compare to human product pricing. Views $40 shampoo as normal. Sees dog wellness as health spend, not discretionary spending. Willing to pay premium for ingredient transparency.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — Purchase journey</div>
+    <h2 class="section-heading">Five stages<br><em>to decision.</em></h2>
+
+    <div class="purchase-journey">
+      <div class="journey-item">
+        <div class="journey-num">1</div>
+        <div class="journey-text"><strong>Discover</strong> — Sees a dog grooming post on Instagram. Creator mentions "Pawside shampoo changed Biscuit's coat." Clicks link. Arrives at landing page.</div>
+      </div>
+      <div class="journey-item">
+        <div class="journey-num">2</div>
+        <div class="journey-text"><strong>Research</strong> — Reads the full ingredient list. Sees percentages. Verifies each ingredient on Google. Checks the dog owner Reddit communities for mentions of the brand. Posts in Austin dog group: "Has anyone tried Pawside?"</div>
+      </div>
+      <div class="journey-item">
+        <div class="journey-num">3</div>
+        <div class="journey-text"><strong>Verify</strong> — Finds 3-4 positive comments from Austin dog owners who tried Pawside. No negative reviews. Reads testimonials from other dog owners on the landing page. Sees photos of actual dogs (not models) with healthy coats.</div>
+      </div>
+      <div class="journey-item">
+        <div class="journey-num">4</div>
+        <div class="journey-text"><strong>Purchase</strong> — Orders a single bottle ($28-$35 price point feels reasonable). Adds to cart. Checks out. Does not look for discount codes (willing to pay full price for transparency).</div>
+      </div>
+      <div class="journey-item">
+        <div class="journey-num">5</div>
+        <div class="journey-text"><strong>Commit</strong> — Product proves effective. Biscuit's coat improves. Posts before/after photos on Instagram mentioning Pawside. Repeats order every 3-4 weeks without researching alternatives. Becomes brand advocate.</div>
+      </div>
+    </div>
+
+    <p class="body-text">The entire journey from discover to purchase takes 2-7 days. The commitment phase lasts 6+ months (or until product runs out). Maya is looking for a reason to trust — ingredient percentages and peer recommendations provide that reason.</p>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">04 — Design implications</div>
+    <h2 class="section-heading">What Maya needs<br><em>from Pawside.</em></h2>
+
+    <div class="insight-box">
+      <div class="insight-label">Insight 01 — Ingredient percentages are trust signals</div>
+      <div class="insight-title">Not optional. Essential.</div>
+      <div class="insight-text">Maya will spend 15 minutes researching ingredients before purchase. If percentages are missing, she will assume they are hidden for a reason. Ingredient transparency is not a nice-to-have feature — it is the primary proof of quality.</div>
+    </div>
+
+    <div class="insight-box">
+      <div class="insight-label">Insight 02 — Dog owner testimonials work better than anything</div>
+      <div class="insight-title">Real dogs. Real people. Real results.</div>
+      <div class="insight-text">Maya distrusts professional photography and marketing copy. She trusts testimonials from other dog owners who have actually used the product. Photos of real dogs (with their actual owners) are more persuasive than any brand photography.</div>
+    </div>
+
+    <div class="insight-box">
+      <div class="insight-label">Insight 03 — The landing page is research territory</div>
+      <div class="insight-title">Make it easy to verify.</div>
+      <div class="insight-text">Maya will read every section of a landing page looking for proof points. Long-form copy, detailed ingredient information, and peer testimonials should be on the page itself — not hidden behind tabs or links. She is in research mode and wants everything visible.</div>
+    </div>
+
+    <div class="insight-box">
+      <div class="insight-label">Insight 04 — Instagram and dog communities drive decisions</div>
+      <div class="insight-title">Where Maya lives.</div>
+      <div class="insight-text">Landing page alone is not enough. Pawside needs to show up in dog owner conversations organically. This means dog grooming creators must recommend the product. The community must validate the brand. Maya will not buy based on advertising — she will buy based on peer recommendation.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 05 — PERSONA · PAWSIDE</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

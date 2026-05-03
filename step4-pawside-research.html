@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 4: Industry Research · Pawside</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF8F0;--cream2:#FEF3E8;--tan:#E8D5C4;--tan2:#D4C0AE;
+  --rust:#8B5A3C;--rust-light:#B8855C;--rust-tint:#F9EEE8;
+  --amber:#D4A574;--ink:#2B1810;--ink-mid:#4A3628;--ink-faint:#8B7563;
+  --white:#FFFFFF;--border:#E0D4C8;--rule:#EBE0D8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+.cover-band{background:var(--cream);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--rust),var(--rust-light),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(139,90,60,.07) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--rust);opacity:.8;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--rust);opacity:.6;}
+.cover-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:56px;line-height:.95;color:var(--ink);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--rust);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.accent-rule{height:1px;background:var(--border);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--rust);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--rust);}
+.body-text{font-size:16px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+.market-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.market-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--white);padding:11px 14px;text-align:left;}
+.market-table td{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:14px;color:var(--ink-mid);}
+.market-table tr:hover td{background:var(--cream);}
+
+.note-box{background:var(--rust-tint);border-left:3px solid var(--rust);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:14px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+.trend-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0;}
+.trend-card{background:var(--cream2);border:1px solid var(--border);padding:20px;border-radius:8px;}
+.trend-card strong{color:var(--ink);}
+.trend-card p{font-size:13px;line-height:1.7;margin-bottom:0;}
+
+.stat-box{background:var(--cream2);border:1px solid var(--border);padding:20px;margin:16px 0;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:var(--rust);line-height:1;}
+.stat-text{font-size:14px;color:var(--ink-mid);line-height:1.6;}
+.stat-text strong{color:var(--ink);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .trend-grid{grid-template-columns:1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Pawside · Brand 06 of 06</div>
+    <h1 class="cover-title">Industry<br><em>Research</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 4 — Industry Research</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Pawside</div></div>
+    <div class="meta-block"><div class="meta-label">Market</div><div class="meta-value">US pet wellness D2C</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — Market overview</div>
+    <h2 class="section-heading">The US pet wellness<br><em>market is $32B.</em></h2>
+
+    <p class="body-text">Pawside enters a mature and growing market. Pet owners spend more on their animals annually than on most discretionary consumer goods — and the trend is accelerating. The pet wellness category (grooming, nutrition, supplements, wellness products) represents 18% of total pet spending and grows at 14.2% CAGR. Unlike human skincare, the pet care category is still dominated by mass-market brands (PetSmart house brands, Purina, Mars) which control 68% of retail shelf space. D2C pet brands are fragmented and underfunded.</p>
+
+    <div class="stat-box">
+      <div class="stat-num">$32B</div>
+      <div class="stat-text"><strong>Total US pet market value</strong> (2025). Dog owners account for 54% of spend — $17.3B annually on dogs alone.</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="stat-num">$5.8B</div>
+      <div class="stat-text"><strong>Pet wellness subset</strong> (grooming + nutrition + supplements). Growing 14.2% annually. The fastest-growing segment.</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="stat-num">68%</div>
+      <div class="stat-text"><strong>Market share held by 5 mass-market brands.</strong> The gap: no premium, ingredient-transparent, D2C-first brand exists in the $20-$80 order value range.</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="stat-num">47%</div>
+      <div class="stat-text"><strong>Of dog owners purchase grooming products online.</strong> Up from 23% in 2020. COVID accelerated adoption; behavior persists.</div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — The dog owner</div>
+    <h2 class="section-heading">$340/year on grooming.<br><em>$28/order average.</em></h2>
+
+    <p class="body-text">Dog owners in the premium segment ($340+/year grooming spend) are primarily millennial women aged 28-45, college-educated, living in urban/suburban areas. They view their dog as a family member, not a pet. They research ingredients before purchase, photograph grooming sessions for Instagram, and participate in dog-focused online communities (Instagram, TikTok, Facebook groups). This segment is overrepresented on Instagram (3.2x more likely than average to follow dog content) and TikTok (2.8x more likely).</p>
+
+    <table class="market-table">
+      <thead>
+        <tr><th>Segment</th><th>Annual spend</th><th>Order value</th><th>Purchase frequency</th><th>Primary platform</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mass market</td><td>$80-$140</td><td>$12-$18</td><td>4-6x/year</td><td>Pet stores</td></tr>
+        <tr><td>Mid-market</td><td>$140-$240</td><td>$16-$24</td><td>6-8x/year</td><td>Amazon</td></tr>
+        <tr><td>Premium (Pawside target)</td><td>$240-$480</td><td>$28-$60</td><td>8-12x/year</td><td>Instagram / brand site</td></tr>
+        <tr><td>Ultra-premium</td><td>$480+</td><td>$60-$140</td><td>12+x/year</td><td>Vet recommendation</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <p><strong>Pawside targets the premium segment</strong> — dog owners who spend $240-$480 annually on grooming, purchase 8-12 times per year, and discover products on Instagram and TikTok. Order value target: $28-$60.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — Design trends in pet care</div>
+    <h2 class="section-heading">What the category<br><em>looks like right now.</em></h2>
+
+    <p class="body-text">Five dominant visual and brand trends define the premium pet care category:</p>
+
+    <div class="trend-grid">
+      <div class="trend-card">
+        <p><strong>1. Dog-as-protagonist photography</strong> — Product shots are secondary. The dog is the star. Close-ups of healthy coats, clear eyes, happy expressions. The product is a supporting character in the dog's story.</p>
+      </div>
+      <div class="trend-card">
+        <p><strong>2. Ingredient transparency theater</strong> — "Natural" and "clean" labels everywhere. Ingredient lists hidden or simplified ("5 ingredients or fewer"). Actual percentages never shown.</p>
+      </div>
+      <div class="trend-card">
+        <p><strong>3. Pastel color palettes</strong> — Soft pinks, sage greens, cream whites. Gender-coded toward dog-owning women. No brown, rust, or earth tones (despite being more dog-appropriate).</p>
+      </div>
+      <div class="trend-card">
+        <p><strong>4. Founder narrative</strong> — Every brand has a "my dog inspired this" origin story. Often the founder's dog is prominently featured. Personal stake as proof of quality.</p>
+      </div>
+      <div class="trend-card">
+        <p><strong>5. Community over product</strong> — Heavy Instagram engagement. User-generated content. #DogCommunity hashtags. The brand is secondary to the social movement around dog wellness.</p>
+      </div>
+      <div class="trend-card">
+        <p><strong>Universal gap: Ingredient percentages</strong> — No premium pet brand publishes exact ingredient percentages on the landing page. The human skincare category (Verdana, Tatcha, Drunk Elephant) has moved to named percentages as a trust signal. Pet care is 10 years behind.</p>
+      </div>
+    </div>
+
+    <div class="note-box">
+      <p><strong>Design opportunity:</strong> Combine dog-as-hero photography with ingredient percentages. Be the first premium pet brand to name exact percentages (5% Oat Kernel Extract · 3% Shea Butter · 2% Aloe Vera). This moves Pawside into a different category — formula-transparent pet care, not aspiration-based community.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">04 — Competitor landscape</div>
+    <h2 class="section-heading">Five D2C pet brands<br><em>at different tiers.</em></h2>
+
+    <table class="market-table">
+      <thead>
+        <tr><th>Brand</th><th>Positioning</th><th>Order value</th><th>Visual register</th><th>Ingredient transparency</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>The Farmer's Dog</strong></td><td>Fresh-cooked meal delivery</td><td>$40-$80</td><td>Dog hero, warmth, UGC</td><td>Recipe-forward, no percentages</td></tr>
+        <tr><td><strong>Ollie</strong></td><td>Premium kibble + coaching</td><td>$30-$60</td><td>Science-first, clinical</td><td>Ingredient list, no percentages</td></tr>
+        <tr><td><strong>Nom Nom</strong></td><td>Fresh dog food + wellness</td><td>$35-$70</td><td>Playful, pastel, dog-centric</td><td>Ingredient-led, vague sourcing</td></tr>
+        <tr><td><strong>Tuft & Paw</strong></td><td>Grooming + accessories</td><td>$18-$45</td><td>Minimalist, dog as prop</td><td>Minimal ingredient info</td></tr>
+        <tr><td><strong>Native Pet</strong></td><td>Joint health supplements</td><td>$25-$50</td><td>Warm, founder-driven</td><td>Ingredient list, vague percentages</td></tr>
+      </tbody>
+    </table>
+
+    <p class="body-text">No competitor combines: (1) dog-as-hero photography, (2) ingredient percentages on the landing page, (3) sourcing transparency (where the ingredient comes from), and (4) formula-forward design minimalism. Each competitor owns one or two of these, but the combination is unclaimed.</p>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">05 — Design opportunity statement</div>
+    <h2 class="section-heading"><em>Pawside</em> owns<br>what nobody else does.</h2>
+
+    <div class="note-box">
+      <p><strong>The Farmer's Dog has the dog story. Ollie has the science. Nom Nom has the warmth. Tuft & Paw has the minimalism. Pawside has all four — and the ingredient percentages that none of them do.</strong></p>
+      <p style="margin-top:12px;">Pawside is positioned as the first formula-transparent pet care brand. Not just ingredient-led — percentages. Not just dog community — formula research backing every product. The dog is the protagonist. The formula is the proof.</p>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 04 — RESEARCH · PAWSIDE</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

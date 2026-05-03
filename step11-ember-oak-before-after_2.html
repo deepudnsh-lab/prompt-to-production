@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 11: Before & After · Ember & Oak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+    --good: #1A6B3A;
+    --good-bg: #E8F5EE;
+    --bad: #A02020;
+    --bad-bg: #FEF0F0;
+    /* brand */
+    --void: #0E0A06;
+    --coal: #2C1A0E;
+    --ember: #C85A2A;
+    --gold: #C9A84C;
+    --cream: #F5EDD8;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--paper); font-family:'DM Sans',sans-serif; color:var(--ink); font-size:15px; line-height:1.7; }
+  .document { max-width:960px; margin:0 auto; padding:80px; background:#fff; }
+
+  /* COVER */
+  .cover-band { background:var(--ink); margin:-80px -80px 0; padding:56px 80px 48px; display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px; }
+  .project-series { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.25em; text-transform:uppercase; color:var(--accent-light); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .project-series::before { content:''; display:inline-block; width:28px; height:1px; background:var(--accent); }
+  .cover-title { font-family:'DM Serif Display',serif; font-size:44px; line-height:1.05; color:#fff; letter-spacing:-.02em; }
+  .cover-title em { font-style:italic; color:var(--accent-light); }
+  .cover-meta { text-align:right; }
+  .meta-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px; }
+  .meta-value { font-size:13px; color:#fff; font-weight:300; }
+  .meta-block { margin-bottom:20px; }
+  .meta-block:last-child { margin-bottom:0; }
+  .accent-rule { height:3px; background:linear-gradient(to right,var(--accent),var(--accent-light),transparent); margin:0 -80px; }
+  .doc-body { padding-top:64px; }
+  .section { margin-bottom:56px; }
+  .section-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--rule); }
+  .section-heading { font-family:'DM Serif Display',serif; font-size:32px; line-height:1.15; letter-spacing:-.01em; color:var(--ink); margin-bottom:20px; }
+  .section-heading em { font-style:italic; color:var(--accent); }
+  .body-text { font-size:15px; line-height:1.8; color:var(--ink-mid); margin-bottom:16px; }
+  .page-rule { height:1px; background:var(--rule); margin:56px -80px; }
+  .note-box { background:var(--tag-bg); border-left:3px solid var(--accent); padding:18px 22px; margin:24px 0; }
+  .note-box p { font-size:13px; color:var(--ink-mid); line-height:1.7; }
+  .note-box strong { color:var(--ink); }
+
+  /* ── COMPARISON SECTION ── */
+  .comparison-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+    display:block;
+  }
+
+  .label-before { color:var(--bad); }
+  .label-after  { color:var(--good); }
+
+  .comparison-title {
+    font-family:'DM Serif Display',serif;
+    font-size:20px;
+    color:var(--ink);
+    margin-bottom:20px;
+    line-height:1.2;
+  }
+
+  /* Split frame */
+  .split-frame {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3px;
+    margin-bottom:3px;
+  }
+
+  /* Simulated screens */
+  .screen {
+    overflow:hidden;
+    position:relative;
+    border:1px solid var(--rule);
+  }
+
+  .screen-label {
+    position:absolute;
+    top:10px; left:10px;
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    padding:3px 10px;
+    border-radius:2px;
+    z-index:3;
+  }
+
+  .screen-label-before { background:var(--bad-bg); color:var(--bad); }
+  .screen-label-after  { background:var(--good-bg); color:var(--good); }
+
+  /* BEFORE screen — generic restaurant */
+  .before-screen {
+    background:#F8F5F0;
+    min-height:320px;
+  }
+
+  .before-nav {
+    background:#fff;
+    padding:14px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid #8B4513;
+  }
+
+  .before-logo {
+    font-family:'DM Serif Display',serif;
+    font-size:16px;
+    color:#3D2A1A;
+    letter-spacing:.05em;
+  }
+
+  .before-cta {
+    font-family:'DM Sans',sans-serif;
+    font-size:11px;
+    background:#8B4513;
+    color:#fff;
+    padding:7px 14px;
+    border-radius:3px;
+  }
+
+  .before-hero {
+    background:linear-gradient(135deg,#C8A882,#D4B896);
+    padding:36px 20px;
+    text-align:center;
+  }
+
+  .before-hero-text {
+    font-family:'DM Serif Display',serif;
+    font-size:22px;
+    color:rgba(0,0,0,.5);
+    font-style:italic;
+    margin-bottom:12px;
+  }
+
+  .before-hero-sub {
+    font-size:12px;
+    color:rgba(0,0,0,.4);
+    margin-bottom:14px;
+  }
+
+  .before-hero-btn {
+    display:inline-block;
+    background:#8B4513;
+    color:#fff;
+    font-family:'DM Sans',sans-serif;
+    font-size:11px;
+    padding:8px 18px;
+    border-radius:3px;
+  }
+
+  .before-tags {
+    background:#fff;
+    padding:10px 20px;
+    display:flex;
+    gap:8px;
+    border-top:1px solid #E0D0C0;
+  }
+
+  .before-tag {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    padding:3px 8px;
+    border:1px solid #C8B8A8;
+    border-radius:2px;
+    color:#7A6050;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+
+  .before-menu-strip {
+    background:#FAF5F0;
+    padding:16px 20px;
+  }
+
+  .before-menu-title {
+    font-family:'DM Serif Display',serif;
+    font-size:14px;
+    color:#3D2A1A;
+    margin-bottom:10px;
+    padding-bottom:8px;
+    border-bottom:1px solid #E0D0C0;
+  }
+
+  .before-menu-item {
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    color:#8B6040;
+    padding:5px 0;
+    border-bottom:1px dashed #E0D0C0;
+  }
+
+  .before-pdf-link {
+    font-size:10px;
+    color:#8B4513;
+    font-style:italic;
+    margin-top:8px;
+    display:block;
+  }
+
+  /* AFTER screen — Ember & Oak */
+  .after-screen {
+    background:var(--void);
+    min-height:320px;
+  }
+
+  .after-nav {
+    background:rgba(14,10,6,.95);
+    padding:14px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(245,237,216,.05);
+  }
+
+  .after-logo {
+    font-family:'Cormorant Garamond',serif;
+    font-size:13px;
+    letter-spacing:.2em;
+    color:rgba(245,237,216,.85);
+    text-transform:uppercase;
+  }
+
+  .after-cta {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    background:var(--ember);
+    color:var(--void);
+    padding:6px 13px;
+    font-weight:500;
+  }
+
+  .after-hero {
+    background:linear-gradient(to right,rgba(14,10,6,.95) 50%,rgba(14,10,6,.6));
+    padding:28px 20px 20px;
+    position:relative;
+  }
+
+  .after-eyebrow {
+    font-family:'DM Mono',monospace;
+    font-size:8px;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    color:rgba(200,90,42,.65);
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .after-eyebrow::before { content:''; width:16px; height:1px; background:var(--ember); }
+
+  .after-headline {
+    font-family:'Cormorant Garamond',serif;
+    font-weight:300;
+    font-size:32px;
+    line-height:.95;
+    letter-spacing:-.02em;
+    color:var(--cream);
+    margin-bottom:12px;
+  }
+
+  .after-headline em { font-style:italic; color:rgba(200,90,42,.82); }
+
+  .after-sub {
+    font-family:'DM Sans',sans-serif;
+    font-weight:300;
+    font-size:11px;
+    color:rgba(245,237,216,.6);
+    line-height:1.7;
+    margin-bottom:14px;
+  }
+
+  .after-btn {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    background:var(--ember);
+    color:var(--void);
+    padding:8px 16px;
+    font-weight:500;
+  }
+
+  .after-wood-strip {
+    display:flex;
+    gap:0;
+    border-top:1px solid rgba(245,237,216,.06);
+    padding-top:12px;
+    margin-top:12px;
+    flex-wrap:wrap;
+  }
+
+  .after-wood-chip {
+    font-family:'DM Mono',monospace;
+    font-size:8px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:rgba(245,237,216,.25);
+    padding-right:14px;
+    margin-right:14px;
+    border-right:1px solid rgba(245,237,216,.07);
+    line-height:1.6;
+    margin-bottom:4px;
+  }
+
+  .after-wood-chip:last-child { border-right:none; }
+  .after-wood-chip strong { display:block; color:var(--ember); }
+
+  /* After menu */
+  .after-menu {
+    background:var(--void);
+    padding:16px 20px;
+    border-top:1px solid rgba(245,237,216,.04);
+  }
+
+  .after-menu-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:12px;
+    padding-bottom:10px;
+    border-bottom:1px solid rgba(245,237,216,.05);
+  }
+
+  .after-menu-season {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--ember);
+  }
+
+  .after-menu-note {
+    font-size:10px;
+    color:rgba(245,237,216,.3);
+    font-style:italic;
+  }
+
+  .after-dish {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px solid rgba(245,237,216,.04);
+    gap:12px;
+  }
+
+  .after-dish-name {
+    font-family:'Cormorant Garamond',serif;
+    font-size:17px;
+    font-weight:300;
+    color:var(--cream);
+  }
+
+  .after-dish-desc {
+    font-size:10px;
+    color:rgba(245,237,216,.4);
+    margin-top:2px;
+  }
+
+  .after-wood-tag {
+    font-family:'DM Mono',monospace;
+    font-size:8px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--ember);
+    border:1px solid rgba(200,90,42,.2);
+    padding:2px 8px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+
+  /* ── ANNOTATION TABLE ── */
+  .ann-table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    margin-top:3px;
+  }
+
+  .ann-table th {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:#fff;
+    padding:10px 14px;
+    text-align:left;
+  }
+
+  .ann-table td {
+    padding:12px 14px;
+    border-bottom:1px solid var(--rule);
+    color:var(--ink-mid);
+    vertical-align:top;
+    line-height:1.6;
+  }
+
+  .ann-table td:first-child {
+    font-weight:500;
+    color:var(--ink);
+    white-space:nowrap;
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+  }
+
+  .ann-table tr:last-child td { border-bottom:none; }
+  .ann-table tr:nth-child(even) td { background:var(--tag-bg); }
+
+  .change-before {
+    display:inline-block;
+    background:var(--bad-bg);
+    color:var(--bad);
+    font-family:'DM Mono',monospace;
+    font-size:10px;
+    padding:2px 8px;
+    border-radius:2px;
+    margin-bottom:4px;
+    text-decoration:line-through;
+  }
+
+  .change-after {
+    display:inline-block;
+    background:var(--good-bg);
+    color:var(--good);
+    font-family:'DM Mono',monospace;
+    font-size:10px;
+    padding:2px 8px;
+    border-radius:2px;
+    margin-bottom:4px;
+  }
+
+  .arrow { color:var(--ink-faint); margin:0 4px; font-size:11px; }
+
+  /* ── METRICS STRIP ── */
+  .metrics-strip {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:2px;
+    margin:24px 0;
+  }
+
+  .metric-card {
+    background:var(--tag-bg);
+    padding:20px 16px;
+    text-align:center;
+  }
+
+  .metric-num {
+    font-family:'DM Serif Display',serif;
+    font-size:32px;
+    color:var(--accent);
+    line-height:1;
+    margin-bottom:6px;
+  }
+
+  .metric-label {
+    font-size:12px;
+    color:var(--ink-muted);
+    line-height:1.4;
+  }
+
+  /* ── TRANSFORMATION BOX ── */
+  .transformation-box {
+    background:var(--ink);
+    padding:40px 48px;
+    margin-top:32px;
+  }
+
+  .tf-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--accent-light);
+    margin-bottom:14px;
+  }
+
+  .tf-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2px;
+  }
+
+  .tf-col {
+    padding:18px 20px;
+    border:1px solid rgba(255,255,255,.07);
+  }
+
+  .tf-col-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+
+  .tf-col-label.before { color:rgba(220,80,80,.6); }
+  .tf-col-label.after  { color:rgba(80,200,120,.6); }
+
+  .tf-list {
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .tf-item {
+    font-size:13px;
+    color:rgba(245,237,216,.55);
+    line-height:1.5;
+    display:flex;
+    gap:8px;
+  }
+
+  .tf-item::before { flex-shrink:0; }
+  .tf-item.before-item::before { content:'✗'; color:rgba(220,80,80,.5); }
+  .tf-item.after-item::before  { content:'✓'; color:rgba(80,200,120,.6); }
+
+  /* FOOTER */
+  .doc-footer { margin-top:80px; padding-top:24px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; }
+  .footer-left { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; }
+  .footer-right { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; text-align:right; }
+
+  /* RESPONSIVE */
+  @media (max-width:640px) {
+    .document { padding:24px 20px; }
+    .cover-band { margin:-24px -20px 0; padding:40px 24px 32px; grid-template-columns:1fr; gap:20px; }
+    .cover-title { font-size:30px; }
+    .cover-meta { text-align:left; }
+    .accent-rule { margin:0 -20px; }
+    .page-rule { margin:40px -20px; }
+    .section-heading { font-size:24px; }
+    .split-frame { grid-template-columns:1fr; }
+    .metrics-strip { grid-template-columns:1fr 1fr; }
+    .tf-grid { grid-template-columns:1fr; }
+    .transformation-box { padding:28px 20px; }
+    .doc-footer { flex-direction:column; gap:8px; align-items:flex-start; }
+    .footer-right { text-align:left; }
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Ember &amp; Oak · Brand 01 of 06</div>
+      <h1 class="cover-title">Before &amp;<br><em>After</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+      <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 11 — Before & After</div></div>
+      <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Ember &amp; Oak</div></div>
+      <div class="meta-block"><div class="meta-label">Comparing</div><div class="meta-value">Category average vs. final build</div></div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- INTRO -->
+    <div class="section">
+      <div class="section-label">01 — What this comparison shows</div>
+      <h2 class="section-heading">The gap between<br>average and <em>intentional.</em></h2>
+
+      <p class="body-text">The "before" in this document is not a real website. It is a composite of the visual and structural patterns observed across the majority of fine dining websites in India — the category average identified in the Step 6 competitor audit. It represents what most fine dining sites look like when no one has made deliberate decisions about the design.</p>
+
+      <p class="body-text">The "after" is Ember &amp; Oak — the result of 10 steps of research, persona development, moodboarding, copywriting, and deliberate design direction. Every difference between the two is the product of a specific decision made at a specific step in this process.</p>
+
+      <div class="note-box">
+        <p><strong>How to read this document:</strong> Each comparison section shows a simulated screen of the before and after side by side, followed by an annotation table explaining what changed and which step of the process drove each change. The before uses real patterns from the category audit. The after uses the actual copy, typography, and palette from the Ember &amp; Oak landing page.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- COMPARISON 01: HERO -->
+    <div class="section">
+      <div class="section-label">02 — Hero section</div>
+      <h2 class="section-heading">The first five<br><em>seconds.</em></h2>
+
+      <p class="body-text">The hero section is where Rohit makes his trust decision. Both screens show the same viewport. One earns his trust. One loses it.</p>
+
+      <div class="split-frame">
+
+        <!-- BEFORE -->
+        <div class="screen before-screen">
+          <div class="screen-label screen-label-before">Before · Category average</div>
+          <div class="before-nav">
+            <span class="before-logo">The Golden Fork</span>
+            <span class="before-cta">Book Now</span>
+          </div>
+          <div class="before-hero">
+            <div class="before-hero-text">"An Unforgettable Culinary Experience"</div>
+            <div class="before-hero-sub">Premium multi-cuisine fine dining · Bangalore</div>
+            <span class="before-hero-btn">Book a Table</span>
+          </div>
+          <div class="before-tags">
+            <span class="before-tag">Fine Dining</span>
+            <span class="before-tag">Multi-Cuisine</span>
+            <span class="before-tag">Live Music</span>
+            <span class="before-tag">Bangalore</span>
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="screen after-screen">
+          <div class="screen-label screen-label-after">After · Ember &amp; Oak</div>
+          <div class="after-nav">
+            <span class="after-logo">Ember &amp; Oak</span>
+            <span class="after-cta">Reserve a Table</span>
+          </div>
+          <div class="after-hero">
+            <div class="after-eyebrow">Bangalore · Est. 2026 · 28 guests each evening</div>
+            <div class="after-headline">Where fire<br>meets <em>flavour.</em></div>
+            <div class="after-sub">Wood-fired. Seasonal. Unhurried.<br>The fire is lit at four. Dinner begins at seven.</div>
+            <div class="after-btn">Reserve a Table →</div>
+            <div class="after-wood-strip">
+              <div class="after-wood-chip"><strong>Hickory</strong>for the lamb</div>
+              <div class="after-wood-chip"><strong>Apple</strong>for the sea bass</div>
+              <div class="after-wood-chip"><strong>Cedar</strong>for the mushrooms</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <table class="ann-table">
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>The decision · which step drove it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Headline</td>
+            <td><span class="change-before">"An Unforgettable Culinary Experience"</span></td>
+            <td><span class="change-after">"Where fire meets flavour."</span></td>
+            <td>Step 08 copy rule: specific beats superlative. "Unforgettable" is a claim. "Where fire meets flavour" is a fact about the cooking method and a brand identity statement simultaneously.</td>
+          </tr>
+          <tr>
+            <td>CTA button text</td>
+            <td><span class="change-before">Book Now</span></td>
+            <td><span class="change-after">Reserve a Table</span></td>
+            <td>Step 08 copy rule: "Reserve" is quieter and more considered than "Book." It implies the table is already set — the guest is claiming it, not placing an order. Applied consistently across every CTA on the page.</td>
+          </tr>
+          <tr>
+            <td>Scarcity signal</td>
+            <td><span class="change-before">Absent</span></td>
+            <td><span class="change-after">28 guests each evening · in eyebrow</span></td>
+            <td>Step 06 audit finding: scarcity is the gap no competitor closes. Surfaced at the first viewport as factual information, not as a pressure tactic. From Step 05 persona: Rohit responds to exclusivity signals when they are stated as fact.</td>
+          </tr>
+          <tr>
+            <td>Category tags</td>
+            <td><span class="change-before">Fine Dining · Multi-Cuisine · Live Music</span></td>
+            <td><span class="change-after">Hickory for the lamb · Apple for the sea bass</span></td>
+            <td>Step 04 research insight: method storytelling is the gap the category leaves open. The wood strip replaces generic category tags with specific, named cooking decisions — communicating craft in the same visual space.</td>
+          </tr>
+          <tr>
+            <td>Background palette</td>
+            <td><span class="change-before">Warm beige gradient</span></td>
+            <td><span class="change-after">Near-black #0E0A06</span></td>
+            <td>Step 07 moodboard: Direction A (Noir) selected over B and C. Dark mode is the established visual register of premium fine dining globally. Ember orange as the single accent creates warmth within darkness — the gap EMP and Canlis both leave open.</td>
+          </tr>
+          <tr>
+            <td>Typography</td>
+            <td><span class="change-before">Default serif · no considered pairing</span></td>
+            <td><span class="change-after">Cormorant Garamond Light 300 + DM Mono</span></td>
+            <td>Step 07 naming selection: Cormorant Garamond at Light 300 creates editorial tension — refined and slightly fragile at display scale, mirroring the experience of food that takes hours to make and minutes to eat. DM Mono for all labels.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- COMPARISON 02: MENU -->
+    <div class="section">
+      <div class="section-label">03 — Menu section</div>
+      <h2 class="section-heading">Where the kitchen's<br><em>thinking</em> shows.</h2>
+
+      <p class="body-text">The menu is the first thing Rohit looks at. Both screens show the same menu section. One tells him what is on offer. One tells him how the kitchen thinks.</p>
+
+      <div class="split-frame">
+
+        <!-- BEFORE -->
+        <div class="screen before-screen">
+          <div class="screen-label screen-label-before">Before · Category average</div>
+          <div class="before-menu-strip">
+            <div class="before-menu-title">Our Menu</div>
+            <div class="before-menu-item"><span>Butter Chicken (half / full)</span><span>₹480 / ₹880</span></div>
+            <div class="before-menu-item"><span>Grilled Salmon with seasonal veg</span><span>₹1,200</span></div>
+            <div class="before-menu-item"><span>Chef's Special (market price)</span><span>Market</span></div>
+            <div class="before-menu-item"><span>Paneer Tikka with truffle oil</span><span>₹680</span></div>
+            <div class="before-menu-item"><span>Imported Ribeye Steak</span><span>₹2,400</span></div>
+            <a class="before-pdf-link">Download full menu (PDF) →</a>
+          </div>
+        </div>
+
+        <!-- AFTER -->
+        <div class="screen after-screen">
+          <div class="screen-label screen-label-after">After · Ember &amp; Oak</div>
+          <div class="after-menu">
+            <div class="after-menu-top">
+              <span class="after-menu-season">Spring 2026</span>
+              <span class="after-menu-note">The menu changes when the season does.</span>
+            </div>
+            <div class="after-dish">
+              <div>
+                <div class="after-dish-name">Smoked Beetroot</div>
+                <div class="after-dish-desc">Cold-smoked · goat's cheese · compressed apple · walnut soil</div>
+              </div>
+              <span class="after-wood-tag">Apple wood</span>
+            </div>
+            <div class="after-dish">
+              <div>
+                <div class="after-dish-name">Nilgiri Sea Bass</div>
+                <div class="after-dish-desc">Plank-roasted · coconut broth · finger lime · herb oil</div>
+              </div>
+              <span class="after-wood-tag">Apple wood</span>
+            </div>
+            <div class="after-dish">
+              <div>
+                <div class="after-dish-name">Deccan Lamb Rack</div>
+                <div class="after-dish-desc">Slow-cooked six hours · black garlic · seasonal greens</div>
+              </div>
+              <span class="after-wood-tag">Hickory</span>
+            </div>
+            <div class="after-dish">
+              <div>
+                <div class="after-dish-name">Camphor Panna Cotta</div>
+                <div class="after-dish-desc">Set overnight · camphor smoke · raw honey</div>
+              </div>
+              <span class="after-wood-tag">Camphor smoke</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <table class="ann-table">
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>The decision · which step drove it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Menu format</td>
+            <td><span class="change-before">PDF download link</span></td>
+            <td><span class="change-after">Native HTML · inline</span></td>
+            <td>Step 04 research: PDF menus are a 2015-era UX failure. They cannot be indexed by search engines, do not resize for mobile, and interrupt the browsing flow. Step 05 persona: Rohit uses mobile first — a PDF download would lose him immediately.</td>
+          </tr>
+          <tr>
+            <td>Wood type label</td>
+            <td><span class="change-before">Absent</span></td>
+            <td><span class="change-after">Named per dish · right-aligned tag</span></td>
+            <td>Step 08 copy rule: the wood is always named. Step 04 insight: method storytelling is the visual gap no competitor closes. The wood tag on every dish makes the philosophy section above feel earned rather than promotional.</td>
+          </tr>
+          <tr>
+            <td>Ingredient sourcing</td>
+            <td><span class="change-before">Generic: "Imported Ribeye" "seasonal veg"</span></td>
+            <td><span class="change-after">Specific: "Nilgiri Sea Bass" "Deccan Lamb"</span></td>
+            <td>Step 08 copy: Indian sourcing references localise the menu without making it feel regional. They signal provenance and quality simultaneously — the kind of specificity Rohit reads as depth of craft.</td>
+          </tr>
+          <tr>
+            <td>Seasonal signal</td>
+            <td><span class="change-before">Absent</span></td>
+            <td><span class="change-after">"Spring 2026" · "The menu changes when the season does. Not before."</span></td>
+            <td>Step 08 copy: the seasonal label makes the commitment to freshness visible and specific. The closing line — "Not before" — is a statement of operating principle in two words. It signals that seasons, not business convenience, drive the menu.</td>
+          </tr>
+          <tr>
+            <td>Price display</td>
+            <td><span class="change-before">Prices listed per item</span></td>
+            <td><span class="change-after">No prices shown</span></td>
+            <td>Step 07 direction A: premium fine dining sites globally do not display prices on the main landing page. Prices belong in a full menu accessed after the decision to visit is made. Removing them keeps the page focused on experience, not transaction.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- METRICS -->
+    <div class="section">
+      <div class="section-label">04 — What changed by the numbers</div>
+      <h2 class="section-heading">The transformation<br><em>quantified.</em></h2>
+
+      <div class="metrics-strip">
+        <div class="metric-card">
+          <div class="metric-num">10</div>
+          <div class="metric-label">Steps of process between the before and the after</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">6</div>
+          <div class="metric-label">Specific design decisions visible in the hero section alone</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">0</div>
+          <div class="metric-label">Superlatives in the Ember &amp; Oak copy</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">4</div>
+          <div class="metric-label">Named wood types — one per protein · visible at hero level</div>
+        </div>
+      </div>
+
+      <div class="transformation-box">
+        <div class="tf-label">The complete transformation · Before and After</div>
+        <div class="tf-grid">
+          <div class="tf-col">
+            <div class="tf-col-label before">Category average · Before</div>
+            <ul class="tf-list">
+              <li class="tf-item before-item">Generic headline claiming the "unforgettable experience"</li>
+              <li class="tf-item before-item">Warm beige palette with no distinct identity</li>
+              <li class="tf-item before-item">Category tags signalling confusion about positioning</li>
+              <li class="tf-item before-item">PDF menu download breaking the browsing flow</li>
+              <li class="tf-item before-item">Prices displayed — page reads as a transaction</li>
+              <li class="tf-item before-item">No cooking method visible anywhere</li>
+              <li class="tf-item before-item">No scarcity signal — availability appears infinite</li>
+              <li class="tf-item before-item">"Book Now" CTA — urgent, generic, undistinctive</li>
+              <li class="tf-item before-item">No mobile-first consideration in layout</li>
+            </ul>
+          </div>
+          <div class="tf-col">
+            <div class="tf-col-label after">Ember &amp; Oak · After</div>
+            <ul class="tf-list">
+              <li class="tf-item after-item">Specific headline stating the cooking method and the brand</li>
+              <li class="tf-item after-item">Near-black Noir palette with single ember-orange accent</li>
+              <li class="tf-item after-item">Wood type strip replacing tags — method as identity</li>
+              <li class="tf-item after-item">Native HTML menu — instant, readable, indexed</li>
+              <li class="tf-item after-item">No prices — page reads as an experience invitation</li>
+              <li class="tf-item after-item">Named wood per dish throughout every section</li>
+              <li class="tf-item after-item">"28 guests each evening" at the first viewport</li>
+              <li class="tf-item after-item">"Reserve a Table" — quiet, considered, brand-consistent</li>
+              <li class="tf-item after-item">Mobile hamburger menu · responsive at every breakpoint</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 11 — BEFORE &amp; AFTER · EMBER &amp; OAK</div>
+      <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

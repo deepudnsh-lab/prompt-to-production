@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 11: Before & After · Pawside</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF8F0;--coral:#FF6B6B;--teal:#4ECDC4;--yellow:#FFE66D;--ink:#2B1810;
+  --ink-mid:#4A3628;--paper:#FAF8F4;--rule:#E0DCD5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+.cover-band{background:linear-gradient(135deg,var(--coral),var(--teal));margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(255,255,255,.25),transparent 65%);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:rgba(255,255,255,.5);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+
+.accent-rule{height:3px;background:linear-gradient(to right,var(--coral),var(--teal),var(--yellow));margin:0 -80px;}
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--coral);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:24px;}
+.section-heading em{font-style:italic;color:var(--coral);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin:40px 0;align-items:center;}
+.comparison-header{text-align:center;margin-bottom:20px;}
+.comparison-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--coral);margin-bottom:8px;}
+.comparison-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--ink);margin-bottom:12px;}
+.comparison-desc{font-size:13px;color:var(--ink-mid);line-height:1.6;}
+
+.comparison-visual{background:#f5f5f5;border-radius:12px;padding:24px;min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center;border:2px solid var(--rule);}
+.comparison-visual.before{background:linear-gradient(135deg,rgba(200,200,200,.1),rgba(150,150,150,.05));}
+.comparison-visual.after{background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(78,205,196,.08));}
+
+.visual-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:16px;font-weight:600;}
+.visual-grid{display:grid;grid-template-columns:1fr;gap:12px;width:100%;}
+.visual-item{background:rgba(0,0,0,.02);padding:12px;border-radius:6px;border-left:3px solid var(--coral);font-size:12px;color:var(--ink-mid);}
+
+.key-change{background:linear-gradient(135deg,rgba(255,107,107,.1),rgba(78,205,196,.1));border-left:4px solid var(--coral);padding:20px;border-radius:8px;margin:24px 0;}
+.change-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--coral);font-weight:700;margin-bottom:8px;}
+.change-text{font-size:14px;color:var(--ink-mid);line-height:1.7;}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:32px 0;}
+.stat-box{background:linear-gradient(135deg,var(--coral),#FF5252);color:#fff;padding:28px;border-radius:12px;text-align:center;}
+.stat-number{font-family:'DM Serif Display',serif;font-size:2.5rem;line-height:1;margin-bottom:8px;}
+.stat-text{font-size:13px;opacity:.95;}
+
+.footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-mid);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-mid);text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:28px;}
+  .comparison{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Pawside · Brand 06 of 06</div>
+    <h1 class="cover-title">Before<br><em>& After</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 11 — Before & After</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Pawside</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — The transformation</div>
+    <h2 class="section-heading">From formal to <em>playful.</em></h2>
+    <p class="body-text">The first iteration of Pawside's landing page was structurally sound but emotionally flat. It followed good design principles: clear hierarchy, proper spacing, readable copy. But it didn't feel like Pawside. It felt corporate. A design audit identified 7 structural problems. The redesign addressed all of them.</p>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="section">
+    <div class="section-label">02 — Layout & Structure</div>
+    <h2 class="section-heading">Breaking the <em>grid.</em></h2>
+    
+    <div class="comparison">
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">❌ Before</div>
+          <div class="comparison-title">Rigid Grid</div>
+          <div class="comparison-desc">All sections stacked predictably. Two-column or one-column layouts. Even padding (60px everywhere). Maximum width constraint (960px). No surprise, no personality.</div>
+        </div>
+        <div class="comparison-visual before">
+          <div class="visual-grid">
+            <div class="visual-item">Hero: 1fr 1fr grid</div>
+            <div class="visual-item">Products: 3-column grid</div>
+            <div class="visual-item">Testimonials: 3-column grid</div>
+            <div class="visual-item">All centred, all aligned</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">✅ After</div>
+          <div class="comparison-title">Asymmetrical</div>
+          <div class="comparison-desc">Hero grid 0.7fr 1.3fr (breathing space on left). Product cards staggered vertically (±40px offset). Ingredient cards rotated (-1° to +1°). Community cards rotated (±2°). Unpredictable, playful, energetic.</div>
+        </div>
+        <div class="comparison-visual after">
+          <div class="visual-grid">
+            <div class="visual-item">Hero: 0.7fr 1.3fr grid + 140px left padding</div>
+            <div class="visual-item">Products: Staggered +40px, 0px, -40px</div>
+            <div class="visual-item">Ingredients: Rotated ±1deg each</div>
+            <div class="visual-item">All full-width sections</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLOR -->
+  <div class="section">
+    <div class="section-label">03 — Color & Background</div>
+    <h2 class="section-heading">From timid to <em>bold.</em></h2>
+    
+    <div class="comparison">
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">❌ Before</div>
+          <div class="comparison-title">Subtle Gradients</div>
+          <div class="comparison-desc">Cream background everywhere. Subtle color gradients (rgba transparency). Border accents in individual sections. Colors existed but were barely visible. No energy.</div>
+        </div>
+        <div class="comparison-visual before">
+          <div class="visual-grid">
+            <div class="visual-item">Cream hero + subtle gradient overlay</div>
+            <div class="visual-item">Cream products section</div>
+            <div class="visual-item">Light pink testimonials</div>
+            <div class="visual-item">Dark sourcing section</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">✅ After</div>
+          <div class="comparison-title">Full-Width Colors</div>
+          <div class="comparison-desc">BOLD full-width sections. Coral (#FF6B6B) ingredients section. Teal (#4ECDC4) products section. Yellow (#FFE66D) testimonials section. Colors own the space. Maximum vibrancy.</div>
+        </div>
+        <div class="comparison-visual after">
+          <div class="visual-grid">
+            <div class="visual-item">Coral background + white text</div>
+            <div class="visual-item">Teal background + white text</div>
+            <div class="visual-item">Yellow background + dark text</div>
+            <div class="visual-item">Dark gradient sourcing section</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="section">
+    <div class="section-label">04 — Typography & Scale</div>
+    <h2 class="section-heading">From safe to <em>playful.</em></h2>
+    
+    <div class="comparison">
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">❌ Before</div>
+          <div class="comparison-title">Consistent Sizes</div>
+          <div class="comparison-desc">Hero h1: 64px. All section headings: 32-48px. No size variation. No hierarchy contrast. Elegant serif display, but reserved. DM Sans body at 15px. Safe, predictable.</div>
+        </div>
+        <div class="comparison-visual before">
+          <div class="visual-grid">
+            <div class="visual-item">Hero h1: 64px (elegant, reserved)</div>
+            <div class="visual-item">Section headings: 32-48px (consistent)</div>
+            <div class="visual-item">Body: 15px (safe)</div>
+            <div class="visual-item">No playful accents</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">✅ After</div>
+          <div class="comparison-title">Dramatic Scale</div>
+          <div class="comparison-desc">Hero h1: 92px (MASSIVE). Callout text: 28px bold teal. Ingredient percentages: 32px serif (visual element, not just text). Bold sans-serif labels. Emoji badges in buttons. Extreme scale contrast = playful energy.</div>
+        </div>
+        <div class="comparison-visual after">
+          <div class="visual-grid">
+            <div class="visual-item">Hero h1: 92px (dominates)</div>
+            <div class="visual-item">Callout: 28px bold teal</div>
+            <div class="visual-item">Percentages: 32px serif (hero)</div>
+            <div class="visual-item">Emoji + bold accents</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGERY & ELEMENTS -->
+  <div class="section">
+    <div class="section-label">05 — Imagery & Decorative Elements</div>
+    <h2 class="section-heading">From boxed to <em>alive.</em></h2>
+    
+    <div class="comparison">
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">❌ Before</div>
+          <div class="comparison-title">Contained</div>
+          <div class="comparison-desc">All images boxed in containers. Border-radius, border, fixed container size. Images are polite, formal. No overlap, no breaking the grid. No decorative elements. Pure photography, nothing else.</div>
+        </div>
+        <div class="comparison-visual before">
+          <div class="visual-grid">
+            <div class="visual-item">Images: border-radius, border</div>
+            <div class="visual-item">Fixed container sizes</div>
+            <div class="visual-item">No overlapping</div>
+            <div class="visual-item">No paw prints, no emojis</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">✅ After</div>
+          <div class="comparison-title">Dynamic</div>
+          <div class="comparison-desc">Hero image rotates -3deg. Ingredient cards rotate ±1deg. Product cards stagger & overlap. Community cards rotate ±2deg. Paw print watermarks (animated float). Emoji decorations (🐾🛒). Images own their space. Personality everywhere.</div>
+        </div>
+        <div class="comparison-visual after">
+          <div class="visual-grid">
+            <div class="visual-item">Hero: rotate(-3deg)</div>
+            <div class="visual-item">Cards: stagger + rotate</div>
+            <div class="visual-item">Paw prints: animated float</div>
+            <div class="visual-item">Emojis: decorative elements</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTIONS -->
+  <div class="section">
+    <div class="section-label">06 — Interactions & Animations</div>
+    <h2 class="section-heading">From static to <em>playful.</em></h2>
+    
+    <div class="comparison">
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">❌ Before</div>
+          <div class="comparison-title">Minimal Motion</div>
+          <div class="comparison-desc">Hover effects: subtle color change, slight lift (2-3px). No scroll animations. No page load animations. No micro-interactions. Page feels static and unresponsive. No delight.</div>
+        </div>
+        <div class="comparison-visual before">
+          <div class="visual-grid">
+            <div class="visual-item">Hover: color change</div>
+            <div class="visual-item">Hover: translateY(-3px)</div>
+            <div class="visual-item">No scroll animations</div>
+            <div class="visual-item">No page load effects</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="comparison-header">
+          <div class="comparison-label">✅ After</div>
+          <div class="comparison-title">Bouncy & Energetic</div>
+          <div class="comparison-desc">CTA button: scale(1.08) + rotate(-1deg) + bounce (cubic-bezier). Product cards: scale(1.08) + rotate(2deg). Paw prints: animated float (6s infinite). Hero content: slideInLeft on load. Testimonials: slideX on hover. Animations everywhere = energy.</div>
+        </div>
+        <div class="comparison-visual after">
+          <div class="visual-grid">
+            <div class="visual-item">CTA: cubic-bezier bounce</div>
+            <div class="visual-item">Products: scale + rotate</div>
+            <div class="visual-item">Paw prints: float animation</div>
+            <div class="visual-item">Load: slideIn animations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY CHANGES -->
+  <div class="section">
+    <div class="section-label">07 — The 7 Critical Changes</div>
+    <h2 class="section-heading">Design audit <em>results.</em></h2>
+
+    <div class="key-change">
+      <div class="change-label">Change 01: Grid Asymmetry</div>
+      <div class="change-text">Hero grid changed from 1fr 1fr (equal) to 0.7fr 1.3fr (narrower content, wider image). Left padding increased from 60px to 140px. Result: breathing space on left, content feels centered.</div>
+    </div>
+
+    <div class="key-change">
+      <div class="change-label">Change 02: Full-Width Color Blocks</div>
+      <div class="change-text">Removed max-width constraints. Sections now stretch edge-to-edge. Coral section, Teal section, Yellow section. Colors own the full viewport. Maximum impact.</div>
+    </div>
+
+    <div class="key-change">
+      <div class="change-label">Change 03: Oversized Typography</div>
+      <div class="change-text">Hero h1 scaled from 64px to 92px. Added 28px bold teal callout. Ingredient percentages displayed in 32px serif (visual weight, not just text). Extreme scale = playful impact.</div>
+    </div>
+
+    <div class="key-change">
+      <div class="change-label">Change 04: Illustrated Elements</div>
+      <div class="change-text">Added paw print watermarks (position:fixed, opacity:.08, animated float). Added emoji badges in buttons (🐾🛒). Added visual hierarchy through graphic elements, not just typography.</div>
+    </div>
+
+    <div class="key-change">
+      <div class="change-label">Change 05: Image Treatment</div>
+      <div class="change-text">Hero image rotates -3deg. Cards rotate/stagger. Community cards rotate ±2deg. Images overlap sections. Images break the grid. Asymmetry creates energy.</div>
+    </div>
+
+    <div class="key-change">
+      <div class="change-label">Change 06: Micro-Interactions</div>
+      <div class="change-text">CTA hover: scale(1.08) + rotate(-1deg) + cubic-bezier bounce. Product cards: scale(1.08) + rotate(2deg) on hover. Paw prints: float animation (6s infinite). Testimonials: slideX(20px) on hover. Animations throughout.</div>
+    </div>
+
+    <div class="key-change">
+      <div class="change-label">Change 07: Varied Spacing</div>
+      <div class="change-text">Replaced uniform 60px padding with variable 40px-100px. Hero: 120px (tall, dominates). Ingredients: 120px (breathe). Products: 100px (balanced). Community: 120px (immersive). Spacing creates rhythm.</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="section">
+    <div class="section-label">08 — Impact Metrics</div>
+    <h2 class="section-heading">By the <em>numbers.</em></h2>
+    
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-number">7</div>
+        <div class="stat-text">Critical design problems identified in audit</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">7</div>
+        <div class="stat-text">Changes implemented in redesign</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">28px</div>
+        <div class="stat-text">Hero headline increase (64px → 92px)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">80px</div>
+        <div class="stat-text">Left padding increase (60px → 140px)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">09 — Conclusion</div>
+    <h2 class="section-heading">From formal to <em>alive.</em></h2>
+    <p class="body-text">The first iteration was correct in structure but wrong in spirit. A thorough design audit identified that the problem wasn't tactical (details) but strategic (layout, color, typography, spacing, animation). The redesign addressed all 7 structural issues. The result: a landing page that feels as playful and joyful as Pawside's copy. The design now matches the brand.</p>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 11 — BEFORE & AFTER · PAWSIDE</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

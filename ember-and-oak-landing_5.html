@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ember & Oak — Wood-Fired Fine Dining · Bangalore</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────── */
+:root {
+  --void:       #0E0A06;
+  --coal:       #2C1A0E;
+  --ember:      #C85A2A;
+  --gold:       #C9A84C;
+  --cream:      #F5EDD8;
+  --cream-60:   rgba(245,237,216,0.60);
+  --cream-40:   rgba(245,237,216,0.40);
+  --cream-20:   rgba(245,237,216,0.20);
+  --ember-60:   rgba(200,90,42,0.60);
+  --ember-20:   rgba(200,90,42,0.20);
+}
+
+/* ─────────────────────────────────────────
+   RESET
+───────────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+img  { display:block; max-width:100%; }
+a    { text-decoration:none; }
+
+body {
+  background: var(--void);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  /* cursor:none is set only on desktop via JS */
+}
+
+/* ─────────────────────────────────────────
+   FIRE CURSOR  (desktop only, injected by JS)
+───────────────────────────────────────── */
+#cur-dot {
+  width: 12px; height: 12px;
+  background: radial-gradient(circle, #FFE566 0%, #FF6A00 55%, transparent 100%);
+  border-radius: 50%;
+  position: fixed; top:0; left:0;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 10px 3px rgba(255,120,0,0.5);
+  display: none;
+}
+
+#cur-ring {
+  width: 30px; height: 30px;
+  border: 1px solid rgba(255,120,0,0.35);
+  border-radius: 50%;
+  position: fixed; top:0; left:0;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  z-index: 9998;
+  display: none;
+}
+
+.fire-spark {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9997;
+  border-radius: 50% 40% 60% 30% / 50% 60% 40% 50%;
+  mix-blend-mode: screen;
+  animation: spark-rise linear forwards;
+}
+
+@keyframes spark-rise {
+  0%   { opacity:.9; transform:translate(-50%,-50%) scale(1); }
+  100% { opacity:0;  transform:translate(-50%,-200%) scale(.1); }
+}
+
+/* ─────────────────────────────────────────
+   NAV
+───────────────────────────────────────── */
+nav {
+  position: fixed; top:0; left:0; right:0;
+  z-index: 200;
+  display: flex; align-items:center; justify-content:space-between;
+  padding: 22px 48px;
+  transition: background .4s, padding .4s;
+}
+
+nav.solid {
+  background: rgba(14,10,6,.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 14px 48px;
+  border-bottom: 1px solid rgba(245,237,216,.05);
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--cream);
+  font-weight: 400;
+}
+
+.nav-links {
+  display: flex; gap:28px; list-style:none;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--cream-40);
+  transition: color .3s;
+}
+
+.nav-links a:hover { color: var(--cream); }
+
+.nav-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  background: var(--ember);
+  color: var(--void);
+  padding: 11px 22px;
+  font-weight: 500;
+  transition: background .3s;
+}
+
+.nav-cta:hover { background: var(--gold); }
+
+/* hamburger — mobile */
+.nav-ham {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.nav-ham span {
+  display: block; width: 24px; height: 1px;
+  background: var(--cream); transition: .3s;
+}
+
+/* mobile menu drawer */
+.nav-drawer {
+  display: none;
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(14,10,6,.97);
+  z-index: 190;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+.nav-drawer.open { display: flex; }
+
+.nav-drawer a {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--cream);
+  letter-spacing: .04em;
+}
+
+.nav-drawer a:hover { color: var(--ember); }
+
+.nav-drawer-close {
+  position: absolute; top:24px; right:28px;
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem; letter-spacing:.2em; text-transform:uppercase;
+  color: var(--cream-40);
+  background:none; border:none; cursor:pointer;
+}
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex; align-items: center;
+  overflow: hidden;
+  background: var(--void);
+}
+
+.hero-img {
+  position: absolute; inset:0;
+  background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80&fit=crop') center/cover no-repeat;
+  opacity: .35;
+  /* NO background-attachment:fixed — breaks on mobile */
+}
+
+.hero-img::after {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    linear-gradient(to right, rgba(14,10,6,.96) 45%, rgba(14,10,6,.2)),
+    linear-gradient(to top,   rgba(14,10,6,.85) 0%,  transparent 50%);
+}
+
+.hero-body {
+  position: relative; z-index:2;
+  padding: 120px 48px 80px;
+  max-width: 700px;
+  animation: fadeUp .9s ease both;
+  animation-delay: .2s;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(28px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: .75rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--ember-60);
+  margin-bottom: 18px;
+  display: flex; align-items:center; gap:10px;
+}
+
+.eyebrow::before {
+  content:''; width:22px; height:1px;
+  background: var(--ember); flex-shrink:0;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  line-height: .95;
+  letter-spacing: -.03em;
+  color: var(--cream);
+  margin-bottom: 24px;
+}
+
+h1 em { font-style:italic; color:rgba(200,90,42,.82); }
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--cream-60);
+  line-height: 1.85;
+  margin-bottom: 32px;
+}
+
+.hero-actions {
+  display:flex; flex-wrap:wrap; gap:12px;
+  margin-bottom: 44px;
+}
+
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: .78rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: 13px 26px;
+  display: inline-flex; align-items:center; gap:8px;
+  transition: background .3s, color .3s, border-color .3s, transform .2s;
+}
+
+.btn-fill { background:var(--ember); color:var(--void); font-weight:500; }
+.btn-fill:hover { background:var(--gold); transform:translateY(-1px); }
+
+.btn-outline { border:1px solid var(--ember-60); color:var(--ember-60); }
+.btn-outline:hover { border-color:var(--ember); color:var(--ember); }
+
+.wood-strip {
+  display:flex; flex-wrap:wrap; gap:0;
+  border-top: 1px solid rgba(245,237,216,.07);
+  padding-top: 20px;
+}
+
+.wood-chip {
+  font-family:'DM Mono', monospace;
+  font-size:.72rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color: var(--cream-40);
+  padding-right:20px; margin-right:20px;
+  border-right: 1px solid rgba(245,237,216,.07);
+  line-height:1.6;
+  margin-bottom:8px;
+}
+.wood-chip:last-child { border-right:none; }
+.wood-chip strong { display:block; color:var(--ember); margin-bottom:1px; }
+
+.scroll-hint {
+  position:absolute; bottom:28px; left:50%;
+  transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  z-index:2;
+  animation: fadeUp 1s both; animation-delay:1s;
+}
+
+.scroll-hint span {
+  font-family:'DM Mono',monospace;
+  font-size:.65rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--cream-20);
+}
+
+.scroll-line {
+  width:1px; height:36px;
+  background:linear-gradient(to bottom,var(--ember),transparent);
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%,100%{opacity:.3;} 50%{opacity:1;}
+}
+
+/* ─────────────────────────────────────────
+   THE FIRE
+───────────────────────────────────────── */
+#fire {
+  background: var(--coal);
+}
+
+.fire-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:100vh;
+}
+
+.fire-img-col {
+  position:relative; overflow:hidden;
+  background: linear-gradient(135deg,#3D2010,#1C0E06);
+  min-height:360px;
+}
+
+.fire-img-col img {
+  width:100%; height:100%;
+  object-fit:cover; object-position:center;
+  filter:brightness(.72) saturate(1.2);
+  transition:transform 6s ease;
+}
+
+.fire-img-col:hover img { transform:scale(1.04); }
+
+.fire-img-col::after {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(to right,rgba(44,26,14,.2),rgba(44,26,14,.65));
+}
+
+.fire-text {
+  display:flex; flex-direction:column; justify-content:center;
+  padding: 80px 60px;
+  position:relative;
+}
+
+.fire-text::before {
+  content:'';
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(200,90,42,.07),transparent 70%);
+  pointer-events:none;
+}
+
+h2 {
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(2rem,3.5vw,3rem);
+  line-height:1.05;
+  letter-spacing:-.02em;
+  color:var(--cream);
+  margin-bottom:24px;
+}
+
+h2 em { font-style:italic; color:rgba(200,90,42,.82); }
+
+.body-text {
+  font-size:1rem;
+  color:var(--cream-60);
+  line-height:1.9;
+  margin-bottom:16px;
+  max-width:460px;
+}
+
+.pills {
+  display:flex; flex-wrap:wrap; gap:8px;
+  margin:20px 0;
+}
+
+.pill {
+  font-family:'DM Mono',monospace;
+  font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+  padding:5px 12px;
+  border:1px solid var(--ember-20);
+  color:var(--ember);
+}
+
+.italic-close {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.25rem; font-style:italic;
+  color:rgba(201,168,76,.72);
+  margin-top:24px; padding-top:20px;
+  border-top:1px solid rgba(245,237,216,.07);
+  line-height:1.5;
+}
+
+/* ─────────────────────────────────────────
+   MENU
+───────────────────────────────────────── */
+#menu {
+  background:var(--void);
+  padding:100px 48px;
+  position:relative;
+}
+
+#menu::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%,rgba(200,90,42,.05),transparent 60%),
+    radial-gradient(ellipse 40% 50% at 10% 90%,rgba(201,168,76,.04),transparent 50%);
+  pointer-events:none;
+}
+
+.menu-wrap {
+  max-width:860px; margin:0 auto;
+  position:relative; z-index:1;
+}
+
+.menu-top {
+  display:flex; justify-content:space-between; align-items:baseline;
+  flex-wrap:wrap; gap:12px;
+  margin-bottom:48px; padding-bottom:20px;
+  border-bottom:1px solid rgba(245,237,216,.07);
+}
+
+.menu-season {
+  font-family:'DM Mono',monospace;
+  font-size:.78rem; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--ember);
+}
+
+.menu-note {
+  font-size:.85rem;
+  color:var(--cream-40);
+  font-style:italic;
+}
+
+/* amuse */
+.amuse {
+  display:flex; justify-content:space-between;
+  align-items:center; flex-wrap:wrap; gap:12px;
+  background:rgba(200,90,42,.04);
+  border:1px solid rgba(200,90,42,.12);
+  padding:20px 22px;
+  margin-bottom:4px;
+}
+
+.amuse-label {
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--ember-60); margin-bottom:6px;
+}
+
+.amuse-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.7rem; font-weight:300;
+  color:var(--cream);
+}
+
+.amuse-note {
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--cream-40); font-style:italic;
+}
+
+/* dish row */
+.dish {
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:24px;
+  padding:22px 0;
+  border-bottom:1px solid rgba(245,237,216,.05);
+  transition:border-color .3s;
+}
+
+.dish:hover { border-bottom-color:rgba(200,90,42,.18); }
+.dish:last-child { border-bottom:none; }
+
+.dish-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.8rem; font-weight:300;
+  color:var(--cream); letter-spacing:-.01em;
+  margin-bottom:6px;
+  transition:opacity .3s;
+}
+
+.dish:hover .dish-name { opacity:.8; }
+
+.dish-desc {
+  font-size:.9rem;
+  color:var(--cream-60);
+  line-height:1.6;
+}
+
+.dish-right {
+  display:flex; flex-direction:column;
+  align-items:flex-end; gap:10px;
+  flex-shrink:0;
+}
+
+.dish-photo {
+  width:96px; height:96px;
+  object-fit:cover; border-radius:2px;
+  filter:brightness(.82) saturate(.9);
+  transition:filter .4s, transform .4s;
+  background:#2C1A0E;
+}
+
+.dish:hover .dish-photo {
+  filter:brightness(1) saturate(1.1);
+  transform:scale(1.05);
+}
+
+.wood-tag {
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ember);
+  border:1px solid rgba(200,90,42,.25);
+  padding:3px 10px;
+  white-space:nowrap;
+}
+
+/* ─────────────────────────────────────────
+   EXPERIENCE / SCARCITY
+───────────────────────────────────────── */
+#experience {
+  background:var(--void);
+  min-height:100vh;
+  position:relative;
+  display:flex; align-items:center;
+  overflow:hidden;
+}
+
+.exp-bg {
+  position:absolute; inset:0;
+  background:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80&fit=crop') center/cover no-repeat;
+  opacity:.22;
+}
+
+.exp-bg::after {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(14,10,6,.97) 0%,rgba(14,10,6,.78) 60%,rgba(44,26,14,.9));
+}
+
+.exp-body {
+  position:relative; z-index:2;
+  padding: 80px 48px;
+  width:100%; max-width:960px; margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px; align-items:center;
+}
+
+.big-num {
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(5rem,14vw,11rem);
+  line-height:.85;
+  color:var(--ember);
+  letter-spacing:-.04em;
+  opacity:.88;
+}
+
+.big-label {
+  font-family:'DM Mono',monospace;
+  font-size:.78rem; letter-spacing:.24em; text-transform:uppercase;
+  color:var(--cream-40);
+  margin-top:8px;
+}
+
+.exp-text { max-width:400px; }
+
+.facts {
+  display:flex; flex-direction:column; gap:10px;
+  margin-top:28px; padding-top:24px;
+  border-top:1px solid rgba(245,237,216,.07);
+}
+
+.fact {
+  font-family:'DM Mono',monospace;
+  font-size:.78rem; letter-spacing:.1em;
+  color:var(--cream-60);
+  display:flex; gap:10px; align-items:baseline;
+}
+
+.fact::before { content:'—'; color:var(--ember); flex-shrink:0; }
+
+/* ─────────────────────────────────────────
+   RESERVATION
+───────────────────────────────────────── */
+#reserve {
+  background:var(--coal);
+  min-height:100vh;
+  display:flex; align-items:center;
+  padding:100px 48px;
+  position:relative;
+}
+
+#reserve::before {
+  content:'';
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(200,90,42,.05),transparent 70%);
+  pointer-events:none;
+}
+
+.form-wrap {
+  max-width:680px; width:100%; margin:0 auto;
+  position:relative; z-index:1;
+}
+
+.form-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:3px; margin-top:36px;
+}
+
+.field {
+  background:rgba(245,237,216,.03);
+  border:1px solid rgba(245,237,216,.08);
+  padding:16px 18px;
+  transition:border-color .3s, background .3s;
+}
+
+.field:focus-within {
+  border-color:rgba(200,90,42,.4);
+  background:rgba(200,90,42,.03);
+}
+
+.field label {
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ember); display:block; margin-bottom:6px;
+}
+
+.field input, .field select {
+  background:transparent; border:none; outline:none;
+  font-family:'DM Sans',sans-serif; font-weight:300;
+  font-size:1rem; color:var(--cream); width:100%;
+}
+
+.field input::placeholder { color:var(--cream-20); }
+
+.field select { appearance:none; cursor:pointer; }
+
+.field-full { grid-column:span 2; }
+
+.form-submit {
+  grid-column:span 2;
+  background:var(--ember); border:none;
+  padding:18px; cursor:pointer;
+  font-family:'DM Mono',monospace;
+  font-size:.82rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--void); font-weight:500;
+  margin-top:3px;
+  transition:background .3s, transform .2s;
+}
+
+.form-submit:hover { background:var(--gold); transform:translateY(-1px); }
+
+.form-fine {
+  text-align:center; margin-top:14px;
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--cream-40);
+}
+
+#confirm-msg {
+  display:none;
+  margin-top:28px;
+  padding:22px 24px;
+  border:1px solid rgba(200,90,42,.25);
+  background:rgba(200,90,42,.04);
+}
+
+#confirm-msg .c-label {
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ember); margin-bottom:8px;
+}
+
+#confirm-msg .c-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem; font-weight:300; color:var(--cream);
+  margin-bottom:6px;
+}
+
+#confirm-msg .c-sub {
+  font-size:.9rem; color:var(--cream-60);
+}
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+footer {
+  background:var(--void);
+  border-top:1px solid rgba(245,237,216,.05);
+  padding:52px 48px;
+}
+
+.foot-grid {
+  max-width:900px; margin:0 auto;
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:36px;
+  margin-bottom:40px;
+}
+
+.foot-logo {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem; letter-spacing:.15em; text-transform:uppercase;
+  color:rgba(245,237,216,.8);
+  display:block; margin-bottom:10px;
+}
+
+.foot-tagline {
+  font-size:.88rem; color:var(--cream-40); line-height:1.8;
+}
+
+.foot-label {
+  font-family:'DM Mono',monospace;
+  font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ember); display:block; margin-bottom:12px;
+}
+
+.foot-col p {
+  font-size:.9rem; color:var(--cream-40); line-height:1.9;
+}
+
+.foot-bottom {
+  max-width:900px; margin:0 auto;
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:12px;
+  padding-top:20px;
+  border-top:1px solid rgba(245,237,216,.05);
+}
+
+.foot-mantra {
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--cream-40);
+}
+
+.foot-copy {
+  font-family:'DM Mono',monospace;
+  font-size:.7rem; letter-spacing:.1em;
+  color:var(--cream-20);
+}
+
+/* ─────────────────────────────────────────
+   SECTION LABEL UTILITY
+───────────────────────────────────────── */
+.sec-label {
+  font-family:'DM Mono',monospace;
+  font-size:.72rem; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--ember-60); margin-bottom:18px;
+  display:flex; align-items:center; gap:10px;
+}
+
+.sec-label::before {
+  content:''; width:18px; height:1px;
+  background:var(--ember); flex-shrink:0;
+}
+
+/* ─────────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────────── */
+.reveal {
+  opacity:0;
+  transform:translateY(22px);
+  transition:opacity .7s ease, transform .7s ease;
+}
+.reveal.on { opacity:1; transform:translateY(0); }
+.d1 { transition-delay:.1s; }
+.d2 { transition-delay:.22s; }
+.d3 { transition-delay:.36s; }
+.d4 { transition-delay:.5s; }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width:900px) {
+  nav { padding:18px 24px; }
+  nav.solid { padding:12px 24px; }
+  .nav-links { display:none; }
+  .nav-cta   { display:none; }
+  .nav-ham   { display:flex; }
+
+  .hero-body { padding:100px 24px 60px; }
+
+  .fire-grid { grid-template-columns:1fr; }
+  .fire-img-col { height:45vw; min-height:260px; }
+  .fire-text { padding:52px 24px; }
+  .body-text { max-width:100%; }
+
+  #menu { padding:72px 24px; }
+  .menu-top { flex-direction:column; align-items:flex-start; }
+
+  .dish { grid-template-columns:1fr auto; }
+  .dish-photo { width:76px; height:76px; }
+
+  .exp-body { grid-template-columns:1fr; padding:72px 24px; gap:36px; }
+  .exp-text { max-width:100%; }
+
+  #reserve { padding:72px 24px; }
+  .form-grid { grid-template-columns:1fr; }
+  .field-full { grid-column:span 1; }
+  .form-submit { grid-column:span 1; }
+
+  .foot-grid { grid-template-columns:1fr 1fr; gap:28px; }
+  footer { padding:44px 24px; }
+  .foot-bottom { flex-direction:column; align-items:flex-start; }
+}
+
+@media (max-width:520px) {
+  h1 { font-size:2.8rem; }
+  .hero-body { padding:90px 20px 52px; }
+  .wood-strip { flex-direction:column; gap:0; }
+  .wood-chip { border-right:none; border-bottom:1px solid rgba(245,237,216,.07); padding:0 0 10px; margin:0 0 10px; }
+  .wood-chip:last-child { border-bottom:none; margin-bottom:0; }
+  .hero-actions { flex-direction:column; }
+  .btn { width:100%; justify-content:center; }
+
+  .amuse { flex-direction:column; align-items:flex-start; }
+  .dish { grid-template-columns:1fr; gap:10px; }
+  .dish-right { flex-direction:row; align-items:center; justify-content:space-between; }
+  .dish-photo { width:64px; height:64px; }
+
+  .exp-body { padding:60px 20px; }
+  .big-num { font-size:4.5rem; }
+
+  #reserve { padding:60px 20px; }
+  .foot-grid { grid-template-columns:1fr; }
+  footer { padding:36px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR ELEMENTS (shown only on desktop) -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV DRAWER (mobile) -->
+<div class="nav-drawer" id="drawer">
+  <button class="nav-drawer-close" id="drawerClose">Close ✕</button>
+  <a href="#fire"       onclick="closeDrawer()">The fire</a>
+  <a href="#menu"       onclick="closeDrawer()">The menu</a>
+  <a href="#experience" onclick="closeDrawer()">The experience</a>
+  <a href="#reserve"    onclick="closeDrawer()" style="margin-top:12px;font-family:'DM Mono',monospace;font-size:1rem;background:var(--ember);color:var(--void);padding:14px 32px;font-weight:500;">Reserve a Table</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">Ember &amp; Oak</a>
+  <ul class="nav-links">
+    <li><a href="#fire">The fire</a></li>
+    <li><a href="#menu">The menu</a></li>
+    <li><a href="#experience">The experience</a></li>
+  </ul>
+  <a href="#reserve" class="nav-cta">Reserve a Table</a>
+  <button class="nav-ham" id="hamBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section id="hero">
+  <div class="hero-img"></div>
+
+  <div class="hero-body">
+    <p class="eyebrow">Bangalore · Est. 2026 · 28 guests each evening</p>
+
+    <h1>Where fire<br>meets <em>flavour.</em></h1>
+
+    <p class="hero-sub">
+      Wood-fired. Seasonal. Unhurried.<br>
+      The fire is lit at four. Dinner begins at seven.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#reserve" class="btn btn-fill">Reserve a Table &rarr;</a>
+      <a href="#menu"    class="btn btn-outline">View the menu</a>
+    </div>
+
+    <div class="wood-strip">
+      <div class="wood-chip"><strong>Hickory</strong>for the lamb</div>
+      <div class="wood-chip"><strong>Apple</strong>for the sea bass</div>
+      <div class="wood-chip"><strong>Cedar</strong>for the mushrooms</div>
+      <div class="wood-chip"><strong>Camphor</strong>for the dessert</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ THE FIRE ═══════════════ -->
+<section id="fire">
+  <div class="fire-grid">
+
+    <div class="fire-img-col">
+      <img
+        src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=900&q=80&fit=crop"
+        alt="Wood fire cooking"
+        loading="lazy"
+        onerror="this.src='https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80&fit=crop';this.onerror=()=>{this.parentElement.style.background='linear-gradient(135deg,#3D2010,#1C0E06)'}"
+      >
+    </div>
+
+    <div class="fire-text">
+      <p class="sec-label reveal">The fire</p>
+
+      <h2 class="reveal d1">Not every flame<br>cooks the same <em>way.</em></h2>
+
+      <p class="body-text reveal d2">
+        Hickory burns slow and dense — it is for proteins that need time. Apple burns clean and sweet — it is for delicate fish that must not be overwhelmed. Cedar carries a resinous depth that belongs only to the mushroom course. Camphor smokes from a distance and never touches the food directly.
+      </p>
+
+      <div class="pills reveal d3">
+        <span class="pill">Hickory</span>
+        <span class="pill">Apple</span>
+        <span class="pill">Cedar</span>
+        <span class="pill">Camphor Oak</span>
+      </div>
+
+      <p class="italic-close reveal d4">
+        Every wood is chosen before the menu is written. Not after.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ THE MENU ═══════════════ -->
+<section id="menu">
+  <div class="menu-wrap">
+
+    <div class="menu-top reveal">
+      <div>
+        <p class="sec-label" style="margin-bottom:10px;">The menu</p>
+        <p class="menu-season">Spring 2026</p>
+      </div>
+      <p class="menu-note">The menu changes when the season does. Not before.</p>
+    </div>
+
+    <!-- Amuse -->
+    <div class="amuse reveal">
+      <div>
+        <p class="amuse-label">To begin</p>
+        <p class="amuse-name">Amuse Bouche</p>
+      </div>
+      <p class="amuse-note">Three bites · changes nightly · not on the menu</p>
+    </div>
+
+    <!-- Dish 1 -->
+    <div class="dish reveal">
+      <div>
+        <p class="dish-name">Smoked Beetroot</p>
+        <p class="dish-desc">Cold-smoked for four hours · goat's cheese · compressed apple · walnut soil</p>
+      </div>
+      <div class="dish-right">
+        <img class="dish-photo"
+          src="https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=200&q=80&fit=crop"
+          alt="Smoked Beetroot"
+          loading="lazy"
+          onerror="this.style.display='none'">
+        <span class="wood-tag">Apple wood</span>
+      </div>
+    </div>
+
+    <!-- Dish 2 -->
+    <div class="dish reveal d1">
+      <div>
+        <p class="dish-name">Charcoal Bread</p>
+        <p class="dish-desc">Baked in the ember oven · cultured butter · smoked salt</p>
+      </div>
+      <div class="dish-right">
+        <img class="dish-photo"
+          src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=80&fit=crop"
+          alt="Charcoal Bread"
+          loading="lazy"
+          onerror="this.style.display='none'">
+        <span class="wood-tag">Oak ember</span>
+      </div>
+    </div>
+
+    <!-- Dish 3 -->
+    <div class="dish reveal d2">
+      <div>
+        <p class="dish-name">Nilgiri Sea Bass</p>
+        <p class="dish-desc">Plank-roasted · coconut broth · finger lime · herb oil</p>
+      </div>
+      <div class="dish-right">
+        <img class="dish-photo"
+          src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&q=80&fit=crop"
+          alt="Sea Bass"
+          loading="lazy"
+          onerror="this.style.display='none'">
+        <span class="wood-tag">Apple wood</span>
+      </div>
+    </div>
+
+    <!-- Dish 4 -->
+    <div class="dish reveal d3">
+      <div>
+        <p class="dish-name">Deccan Lamb Rack</p>
+        <p class="dish-desc">Slow-cooked six hours · black garlic · seasonal greens · jus</p>
+      </div>
+      <div class="dish-right">
+        <img class="dish-photo"
+          src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&q=80&fit=crop"
+          alt="Lamb Rack"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=200&q=80&fit=crop';this.onerror=()=>{this.style.display='none'}">
+        <span class="wood-tag">Hickory</span>
+      </div>
+    </div>
+
+    <!-- Dish 5 -->
+    <div class="dish reveal">
+      <div>
+        <p class="dish-name">Wild Mushroom</p>
+        <p class="dish-desc">Cedar-plank roasted · truffle · aged parmesan · brioche crumb</p>
+      </div>
+      <div class="dish-right">
+        <img class="dish-photo"
+          src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=80&fit=crop"
+          alt="Wild Mushroom"
+          loading="lazy"
+          onerror="this.style.display='none'">
+        <span class="wood-tag">Cedar</span>
+      </div>
+    </div>
+
+    <!-- Dish 6 -->
+    <div class="dish reveal d1">
+      <div>
+        <p class="dish-name">Camphor Panna Cotta</p>
+        <p class="dish-desc">Set overnight · camphor smoke · raw honey · seasonal fruit</p>
+      </div>
+      <div class="dish-right">
+        <img class="dish-photo"
+          src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&q=80&fit=crop"
+          alt="Panna Cotta"
+          loading="lazy"
+          onerror="this.style.display='none'">
+        <span class="wood-tag">Camphor smoke</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ EXPERIENCE ═══════════════ -->
+<section id="experience">
+  <div class="exp-bg"></div>
+
+  <div class="exp-body">
+
+    <div class="reveal">
+      <p class="big-num">28</p>
+      <p class="big-label">guests each evening</p>
+    </div>
+
+    <div class="exp-text">
+      <p class="sec-label reveal">The experience</p>
+      <h2 class="reveal d1">Twenty-eight seats.<br>One sitting.<br><em>Every evening.</em></h2>
+      <p class="body-text reveal d2">
+        There is no second sitting. No walk-ins. The kitchen does not scale. It simply does the same thing, at the same hour, for the same number of people — and it does it very well.
+      </p>
+      <div class="facts reveal d3">
+        <p class="fact">One chef's table for six</p>
+        <p class="fact">One private dining room for eight</p>
+        <p class="fact">All other tables for two or four</p>
+        <p class="fact">Reservations required · no walk-ins</p>
+      </div>
+      <div style="margin-top:32px;" class="reveal d4">
+        <a href="#reserve" class="btn btn-fill">Reserve a Table &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ RESERVATION ═══════════════ -->
+<section id="reserve">
+  <div class="form-wrap">
+
+    <p class="sec-label reveal">Reserve a table</p>
+    <h2 class="reveal d1">Your table.<br><em>When you're ready.</em></h2>
+    <p class="body-text reveal d2" style="max-width:100%;margin-top:12px;">
+      Reservations open 30 days in advance. Dietary requirements and special occasions can be noted below. The kitchen will be informed.
+    </p>
+
+    <form class="form-grid reveal d3" id="resForm" onsubmit="submitForm(event)">
+
+      <div class="field">
+        <label for="fDate">Date</label>
+        <input type="date" id="fDate" required>
+      </div>
+
+      <style>
+        #fDate::-webkit-calendar-picker-indicator { display: none; -webkit-appearance: none; }
+        #fDate::-webkit-inner-spin-button { display: none; }
+        #fDate { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+      </style>
+
+      <div class="field">
+        <label for="fGuests">Guests</label>
+        <select id="fGuests">
+          <option>2 guests</option>
+          <option>3 guests</option>
+          <option>4 guests</option>
+          <option>6 guests (Chef's table)</option>
+          <option>8 guests (Private dining)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="fName">Name</label>
+        <input type="text" id="fName" placeholder="Your name" required>
+      </div>
+
+      <div class="field">
+        <label for="fContact">Phone or email</label>
+        <input type="text" id="fContact" placeholder="How to reach you" required>
+      </div>
+
+      <div class="field field-full">
+        <label for="fNotes">Special occasions or dietary notes</label>
+        <input type="text" id="fNotes" placeholder="Optional">
+      </div>
+
+      <button type="submit" class="form-submit">Confirm Reservation &rarr;</button>
+
+    </form>
+
+    <p class="form-fine">Cancellations accepted up to 48 hours before your reservation</p>
+
+    <div id="confirm-msg">
+      <p class="c-label">Reservation received</p>
+      <p class="c-title">We'll be in touch to confirm your table.</p>
+      <p class="c-sub">The fire will be lit at four. We'll see you at seven.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <span class="foot-logo">Ember &amp; Oak</span>
+      <p class="foot-tagline">Wood-fired fine dining<br>Bangalore, India · Est. 2026</p>
+    </div>
+    <div class="foot-col">
+      <span class="foot-label">Visit</span>
+      <p>12, Lavelle Road<br>Bangalore 560 001<br>Valet available</p>
+    </div>
+    <div class="foot-col">
+      <span class="foot-label">Hours</span>
+      <p>Tuesday — Sunday<br>Dinner only · 7 pm<br>Monday closed</p>
+    </div>
+    <div class="foot-col">
+      <span class="foot-label">Contact</span>
+      <p>+91 98765 43210<br>hello@emberandoak.in<br>@emberandoak</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <p class="foot-mantra">The fire is lit at four · Dinner begins at seven · Twenty-eight guests each evening</p>
+    <p class="foot-copy">&copy; 2026 Ember &amp; Oak · Bangalore</p>
+  </div>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+/* ── NAV SCROLL ── */
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('solid', window.scrollY > 50);
+}, { passive:true });
+
+/* ── MOBILE DRAWER ── */
+const drawer   = document.getElementById('drawer');
+const hamBtn   = document.getElementById('hamBtn');
+const dClose   = document.getElementById('drawerClose');
+
+hamBtn.addEventListener('click', () => drawer.classList.add('open'));
+dClose.addEventListener('click', closeDrawer);
+
+function closeDrawer() { drawer.classList.remove('open'); }
+
+/* ── SCROLL REVEAL ── */
+const reveals = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+reveals.forEach(el => ro.observe(el));
+
+/* ── FIRE CURSOR (desktop only) ── */
+const isDesktop = window.matchMedia('(pointer:fine) and (min-width:900px)').matches;
+
+if (isDesktop) {
+  document.body.style.cursor = 'none';
+  const dot  = document.getElementById('cur-dot');
+  const ring = document.getElementById('cur-ring');
+  dot.style.display  = 'block';
+  ring.style.display = 'block';
+
+  let mx=0, my=0, rx=0, ry=0, frame=0, lx=0, ly=0;
+  const colors = [
+    ['#FFE566','#FF8C00'],
+    ['#FF8C00','#FF4500'],
+    ['#FF4500','#CC2200'],
+    ['#FFD700','#FF6A00'],
+  ];
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx+'px'; dot.style.top = my+'px';
+
+    const dx = mx-lx, dy = my-ly;
+    const spd = Math.sqrt(dx*dx+dy*dy);
+    frame++;
+
+    if (frame % 2 === 0) {
+      const n = Math.min(Math.ceil(spd/8)+1, 4);
+      for (let i=0;i<n;i++) spawnSpark(mx,my);
+    }
+    lx=mx; ly=my;
+  });
+
+  function spawnSpark(x,y) {
+    const p  = document.createElement('div');
+    p.className = 'fire-spark';
+    const sz  = 5 + Math.random()*9;
+    const col = colors[Math.floor(Math.random()*colors.length)];
+    const dur = 280 + Math.random()*350;
+    const ox  = (Math.random()-.5)*14;
+    const oy  = (Math.random()-.5)*10;
+    p.style.cssText = `
+      left:${x+ox}px; top:${y+oy}px;
+      width:${sz}px; height:${sz*1.4}px;
+      background:radial-gradient(circle at 50% 70%,${col[0]},${col[1]},transparent);
+      box-shadow:0 0 ${sz}px ${col[0]}88;
+      animation-duration:${dur}ms;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), dur);
+  }
+
+  (function animRing() {
+    rx += (mx-rx)*0.1;
+    ry += (my-ry)*0.1;
+    ring.style.left = rx+'px';
+    ring.style.top  = ry+'px';
+    requestAnimationFrame(animRing);
+  })();
+}
+
+/* ── PARALLAX HERO (desktop only, reduced motion check) ── */
+const prefersReduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if (isDesktop && !prefersReduced) {
+  const heroImg = document.querySelector('.hero-img');
+  window.addEventListener('scroll', () => {
+    heroImg.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+  }, { passive:true });
+}
+
+/* ── RESERVATION FORM ── */
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('resForm').style.display = 'none';
+  const msg = document.getElementById('confirm-msg');
+  msg.style.display = 'block';
+  msg.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+</script>
+
+</body>
+</html>

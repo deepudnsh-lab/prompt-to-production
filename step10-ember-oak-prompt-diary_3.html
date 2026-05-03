@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 10: Prompt Diary · Ember & Oak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+    --void: #0E0A06;
+    --cream: #F5EDD8;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--paper); font-family:'DM Sans',sans-serif; color:var(--ink); line-height:1.7; font-size:15px; }
+  .document { max-width:960px; margin:0 auto; padding:80px; background:#fff; }
+
+  /* COVER */
+  .cover-band { background:var(--ink); margin:-80px -80px 0; padding:56px 80px 48px; display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px; }
+  .project-series { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.25em; text-transform:uppercase; color:var(--accent-light); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .project-series::before { content:''; display:inline-block; width:28px; height:1px; background:var(--accent); }
+  .cover-title { font-family:'DM Serif Display',serif; font-size:44px; line-height:1.05; color:#fff; letter-spacing:-.02em; }
+  .cover-title em { font-style:italic; color:var(--accent-light); }
+  .cover-meta { text-align:right; }
+  .meta-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px; }
+  .meta-value { font-size:13px; color:#fff; font-weight:300; }
+  .meta-block { margin-bottom:20px; }
+  .meta-block:last-child { margin-bottom:0; }
+  .accent-rule { height:3px; background:linear-gradient(to right,var(--accent),var(--accent-light),transparent); margin:0 -80px; }
+  .doc-body { padding-top:64px; }
+  .section { margin-bottom:56px; }
+  .section-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--rule); }
+  .section-heading { font-family:'DM Serif Display',serif; font-size:32px; line-height:1.15; letter-spacing:-.01em; color:var(--ink); margin-bottom:20px; }
+  .section-heading em { font-style:italic; color:var(--accent); }
+  .body-text { font-size:15px; line-height:1.8; color:var(--ink-mid); margin-bottom:16px; }
+  .page-rule { height:1px; background:var(--rule); margin:56px -80px; }
+  .note-box { background:var(--tag-bg); border-left:3px solid var(--accent); padding:18px 22px; margin:24px 0; }
+  .note-box p { font-size:13px; color:var(--ink-mid); line-height:1.7; }
+  .note-box strong { color:var(--ink); }
+
+  /* PROMPT CARD */
+  .prompt-card { border:1px solid var(--rule); overflow:hidden; margin-bottom:3px; }
+
+  .prompt-card-header {
+    display:grid;
+    grid-template-columns:52px 1fr auto;
+    align-items:stretch;
+    border-bottom:1px solid var(--rule);
+    background:var(--tag-bg);
+  }
+
+  .card-num {
+    font-family:'DM Serif Display',serif;
+    font-size:24px;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-right:1px solid var(--rule);
+    padding:14px;
+    line-height:1;
+  }
+
+  .card-meta { padding:14px 18px; }
+
+  .card-step {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:3px;
+  }
+
+  .card-title {
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink);
+    line-height:1.3;
+  }
+
+  .card-tag {
+    display:flex;
+    align-items:center;
+    padding:14px 16px;
+  }
+
+  .tag {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    padding:3px 10px;
+    border-radius:2px;
+  }
+
+  .tag-direction  { background:#EEF0FF; color:#3D4AB7; }
+  .tag-refinement { background:#FEF0F0; color:#A02020; }
+  .tag-build      { background:var(--tag-bg); color:var(--ink-muted); border:1px solid var(--rule); }
+  .tag-vision     { background:#E8F5EE; color:#1A6B3A; }
+  .tag-fix        { background:#FFF4E6; color:#8B4A1C; }
+
+  /* The actual prompt */
+  .prompt-bubble {
+    background:var(--void);
+    padding:24px 28px;
+    border-bottom:1px solid rgba(245,237,216,.06);
+    position:relative;
+  }
+
+  .prompt-bubble::before {
+    content:'Deepu';
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:rgba(200,90,42,.6);
+    display:block;
+    margin-bottom:10px;
+  }
+
+  .prompt-quote {
+    font-family:'DM Mono',monospace;
+    font-size:13px;
+    color:var(--cream);
+    line-height:1.8;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+
+  /* Analysis */
+  .card-analysis {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:0;
+  }
+
+  .a-col {
+    padding:18px 20px;
+    border-right:1px solid var(--rule);
+    font-size:13px;
+    color:var(--ink-mid);
+    line-height:1.65;
+  }
+
+  .a-col:last-child { border-right:none; }
+
+  .a-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:8px;
+  }
+
+  .a-col strong { color:var(--ink); font-weight:500; }
+
+  /* STAT STRIP */
+  .stat-strip {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:2px;
+    margin:24px 0;
+  }
+
+  .stat-box {
+    background:var(--tag-bg);
+    padding:22px 18px;
+    text-align:center;
+  }
+
+  .stat-n {
+    font-family:'DM Serif Display',serif;
+    font-size:36px;
+    color:var(--accent);
+    line-height:1;
+    margin-bottom:6px;
+  }
+
+  .stat-l {
+    font-size:12px;
+    color:var(--ink-muted);
+    line-height:1.4;
+  }
+
+  /* PATTERNS TABLE */
+  .pattern-table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    margin-top:20px;
+  }
+
+  .pattern-table th {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:#fff;
+    padding:10px 14px;
+    text-align:left;
+  }
+
+  .pattern-table td {
+    padding:12px 14px;
+    border-bottom:1px solid var(--rule);
+    color:var(--ink-mid);
+    vertical-align:top;
+  }
+
+  .pattern-table td:first-child { font-weight:500; color:var(--ink); white-space:nowrap; }
+  .pattern-table tr:last-child td { border-bottom:none; }
+  .pattern-table tr:nth-child(even) td { background:var(--tag-bg); }
+
+  /* CLOSING DARK BOX */
+  .closing-box {
+    background:var(--ink);
+    padding:40px 48px;
+    margin-top:32px;
+  }
+
+  .closing-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--accent-light);
+    margin-bottom:14px;
+  }
+
+  .closing-text {
+    font-family:'DM Serif Display',serif;
+    font-size:26px;
+    color:#fff;
+    line-height:1.4;
+  }
+
+  .closing-text em { font-style:italic; color:var(--accent-light); }
+
+  /* FOOTER */
+  .doc-footer { margin-top:80px; padding-top:24px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; }
+  .footer-left { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; }
+  .footer-right { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; text-align:right; }
+
+  /* RESPONSIVE */
+  @media (max-width:640px) {
+    .document { padding:24px 20px; }
+    .cover-band { margin:-24px -20px 0; padding:40px 24px 32px; grid-template-columns:1fr; gap:20px; }
+    .cover-title { font-size:30px; }
+    .cover-meta { text-align:left; }
+    .accent-rule { margin:0 -20px; }
+    .page-rule { margin:40px -20px; }
+    .section-heading { font-size:24px; }
+    .prompt-card-header { grid-template-columns:44px 1fr; }
+    .card-tag { display:none; }
+    .card-analysis { grid-template-columns:1fr; }
+    .a-col { border-right:none; border-bottom:1px solid var(--rule); }
+    .a-col:last-child { border-bottom:none; }
+    .stat-strip { grid-template-columns:1fr 1fr; }
+    .closing-box { padding:28px 20px; }
+    .closing-text { font-size:20px; }
+    .doc-footer { flex-direction:column; gap:8px; align-items:flex-start; }
+    .footer-right { text-align:left; }
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Ember &amp; Oak · Brand 01 of 06</div>
+      <h1 class="cover-title">Prompt<br><em>Diary</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+      <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 10 — Prompt Diary</div></div>
+      <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Ember &amp; Oak</div></div>
+      <div class="meta-block"><div class="meta-label">AI</div><div class="meta-value">Claude · Anthropic</div></div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- INTRO -->
+    <div class="section">
+      <div class="section-label">01 — What this document is</div>
+      <h2 class="section-heading">The exact words.<br><em>Every time.</em></h2>
+
+      <p class="body-text">This is not a cleaned-up version of what was said. Every prompt in this document is the exact text typed during this project — unedited, including typos, mid-sentence direction changes, and single-line instructions that produced pages of output. That is the point.</p>
+
+      <p class="body-text">The prompts reveal how a designer with 13 years of experience thinks out loud. Some are long and structured. Some are four words. Some are corrections. Some are a vision stated plainly. The quality of what Claude produced was always a direct function of the clarity — or specificity — of the instruction.</p>
+
+      <div class="note-box">
+        <p><strong>How to read this document:</strong> Each entry shows the prompt exactly as typed, what it produced, what needed a follow-up, and the single most important thing it teaches about directing AI as a design tool. Prompts are colour-coded: Direction (blue) · Vision (green) · Build (grey) · Refinement (red) · Fix (orange).</p>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat-box">
+          <div class="stat-n">11</div>
+          <div class="stat-l">Key prompts documented in full</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-n">14</div>
+          <div class="stat-l">Steps in the complete process</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-n">0</div>
+          <div class="stat-l">Prompts that were edited before being used</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-n">1</div>
+          <div class="stat-l">Prompt that was 9 words and produced a perfect fix</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- THE PROMPTS -->
+    <div class="section">
+      <div class="section-label">02 — The prompts · in order</div>
+      <h2 class="section-heading">What was typed.<br>What <em>came back.</em></h2>
+
+      <!-- 01 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">01</div>
+          <div class="card-meta">
+            <div class="card-step">Step 01 · Project genesis</div>
+            <div class="card-title">The original brief — starting the entire project</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-direction">Direction</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">I want to create a new AI generated webpage portfolio for Behance. I have added my resume for context, the main aim of this project is to create very creatives, unique landing pages, which i can add to my porfolio.
+
+suggest me 5 hypothetical topics on which i can create websites (single page will do ) these 5 topic should show different types of industries. so that i can show the diversified nature of my porfolio,</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            5 industry suggestions. Then "suggest 10 more" was added, then "add a kids brand as well" — the final 16-industry list emerged across three short prompts, not one long one.
+          </div>
+          <div class="a-col">
+            <div class="a-label">What the typos reveal</div>
+            "porfolio" appears twice. The prompt was not polished before sending — it was a genuine first thought. Claude responded to the intent, not the spelling. This is the correct way to work with AI: rough input, refined output.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>Start with intent, not format.</strong> "Show the diversified nature of my portfolio" is the constraint that shapes everything. The AI calibrates the quality and scope of every document to that standard.
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">02</div>
+          <div class="card-meta">
+            <div class="card-step">Step 01 · Process design</div>
+            <div class="card-title">Rejecting the first approach and defining the real process</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-direction">Direction</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">no this is not right, since i want to add this to my portfolio, i want a proper flow of the whole process
+
+here is the flow that i want
+
+1.Ideation : researching on different categories of area and selection of 5 topics
+2. research on the topic
+3.Creating an ideal customer profile/persona for creating website (after doing intense research on the selected topic)
+creating
+3 create variations of mood boards for each topic
+4 create content for each website based on the research
+5 designing the</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            The entire 14-step process framework that became the backbone of this portfolio project. The prompt was incomplete — it trailed off mid-sentence — but the structure was clear enough that Claude completed the thinking and proposed all missing steps.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The "no" at the start</div>
+            Starting with "no this is not right" is the most important word in this prompt. It rejected a path before it went further. Knowing when to redirect is a design skill — it applies to directing AI exactly as it applies to directing a junior designer.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>An incomplete prompt with the right structure is more valuable than a complete prompt with the wrong structure.</strong> The numbered list — even with numbering errors — communicated the sequence. The AI filled the gaps correctly.
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">03</div>
+          <div class="card-meta">
+            <div class="card-step">Step 01 · Quality control</div>
+            <div class="card-title">Removing unverifiable claims from the project brief</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-refinement">Refinement</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">Do not add anything that is not true. Let's be factual about everything. Although this is a hypothetical situation, hypothetical case study, But based on research, this should make sense. And I do not want you to add anything that is fake. Add everything legitimate because this is my portfolio. And if I have to answer questions, I do not want to fall short.</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            Removal of the line "no other Behance project in India does this" which was unverifiable. All statistics in subsequent documents were sourced with named research firms and publication years. The project became defensible in a real interview context.
+          </div>
+          <div class="a-col">
+            <div class="a-label">Why this matters for portfolio work</div>
+            "If I have to answer questions, I do not want to fall short" — this is the most important standard a portfolio can be held to. Every claim in this project was stress-tested against the question: what happens if a hiring manager asks where this number came from?
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>Tell the AI your accountability standard, not just the output format.</strong> "This is my portfolio and I'll be asked about it" is a constraint that changes the quality of every subsequent document — not just this one.
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">04</div>
+          <div class="card-meta">
+            <div class="card-step">Step 01 · Scope definition</div>
+            <div class="card-title">Removing manual work from the process entirely</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-direction">Direction</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">And when talking about the stack, I'm not sure that I can make a real source screen recordings. So let's remove that. Part and make sure that every step that you are included is something that you can do your on your own. I will just be there as a domain expert who can tell you what you need to do. I do not want to do any kind of manual work like recording, screen recordings, or creating something. That's the part where I want to use the full potential of AI tools So remove any part that talks about manual work</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            Removal of screen recordings from the tools list. Reframing of the designer's role as "creative director and domain expert" rather than executor. Every step was confirmed to be something Claude could produce independently.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The clarity in this prompt</div>
+            "I will just be there as a domain expert who can tell you what you need to do" — this is a precise role definition. It is not "let AI do everything." It is "AI executes, I direct." That distinction is the entire thesis of this portfolio.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>Define the division of labour explicitly.</strong> What will you do? What will AI do? A prompt that answers both questions produces a much better process than one that assumes the split is obvious.
+          </div>
+        </div>
+      </div>
+
+      <!-- 05 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">05</div>
+          <div class="card-meta">
+            <div class="card-step">Step 02 · Scoring criteria</div>
+            <div class="card-title">Choosing the 4 scoring criteria for industry selection</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-direction">Direction</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">Q: What 4 criteria should we score each industry against? These need to reflect what matters to you as a designer and what will make the portfolio strongest.
+A: Visual diversity · Persona clarity · Design challenge · Emotional range</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            A complete industry scoring matrix with all 16 industries scored against these 4 criteria, totals calculated, top 6 selected, and 10 rejected with specific rationale. The criteria chosen reflected genuine design priorities — not generic business metrics.
+          </div>
+          <div class="a-col">
+            <div class="a-label">Why these 4 criteria specifically</div>
+            Visual diversity ensures the portfolio looks varied. Persona clarity ensures each site has a real audience. Design challenge ensures the work is technically interesting. Emotional range ensures different affective registers are represented. Together they produce a portfolio, not a collection.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>When the AI asks you a question, your answer is the prompt.</strong> "Visual diversity · Persona clarity · Design challenge · Emotional range" — 8 words that shaped the entire selection of 6 brands. The best prompts are sometimes answers, not questions.
+          </div>
+        </div>
+      </div>
+
+      <!-- 06 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">06</div>
+          <div class="card-meta">
+            <div class="card-step">Step 03 · Naming exercise</div>
+            <div class="card-title">Catching a process integrity error before it went further</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-refinement">Refinement</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">One thing that I'm not sure of is that we we have already revealed the names in the first step. Is that fine to do? Or should we use, like, dummy names or placeholder names in the first step and then decide on the names in third step. Maybe by maybe after having three or four name variations for each category. You can suggest.</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            Step 1 was rebuilt with industry categories only — no brand names. Step 3 was rebuilt as a genuine naming exercise with 4 candidates per brand, each using a different naming strategy, each scored and justified. The process became honest.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The instinct behind the question</div>
+            This prompt came from a designer's instinct that something felt off. The brand names appearing before the naming exercise was a process integrity problem — it made the naming exercise feel like a formality. Catching this saved the credibility of the entire case study.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>Trust the instinct that something feels wrong.</strong> "I'm not sure of" is the prompt. The AI can execute a fix, but only the designer can sense when the process has a hole in it. That sense is the 13 years of experience.
+          </div>
+        </div>
+      </div>
+
+      <!-- 07 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">07</div>
+          <div class="card-meta">
+            <div class="card-step">Step 07 · Moodboard</div>
+            <div class="card-title">Understanding what a moodboard actually is and redirecting the approach</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-vision">Vision</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">I Like the mood board document that you created. But what it is missing is the actual mood board, which generally has a lot of images, reference images, fonts color palate etc. you gave me three options to choose from in the mood board document. Instead of creating a mood board the way I want, why don't you give me a really good prompt to create these mood board images on any other AI platform. So the end result should have 1 prompt that can create mood board image for all 3 design direction you showed me in step 7 document</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            Three separate Midjourney prompts — one per direction — each specifying the 9-panel bento grid layout, the exact colour palette with hex values, the typography specimen, the atmosphere references, and the vibe word. You then ran them on Midjourney and got three full moodboard images.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The tool-switching insight</div>
+            This prompt recognised that Claude produces HTML/CSS documents well but image collages are better made by image generation AI. Routing the right task to the right tool is a skill — Claude for structure and analysis, Midjourney for visual collage. The designer made that call.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>Know which AI to use for which task.</strong> Claude for reasoning, structure, and code. Midjourney for image collage. The prompt that says "give me a prompt for another platform" is a sign of a designer who understands their tools rather than expecting one tool to do everything.
+          </div>
+        </div>
+      </div>
+
+      <!-- 08 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">08</div>
+          <div class="card-meta">
+            <div class="card-step">Step 11 · Build</div>
+            <div class="card-title">Choosing one layout concept and commissioning the final build</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-build">Build</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">no instead of building 3 layouts i will choose from the 3 concepts you have shared and build a final design on that
+
+please built concept 3. remember to add relevant images</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            The complete Ember &amp; Oak landing page — five full-viewport sections, Cormorant Garamond display type, ember-orange accent, real Unsplash images, custom fire cursor, scroll-reveal animations, and a working reservation form. All in a single HTML file.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The decision embedded in this prompt</div>
+            "I will choose" — the selection of Concept 3 (Immersive Scroll) over Concepts 1 and 2 is a design decision. Claude proposed three structural options; the designer selected one. That selection required knowing which layout would serve the Noir direction's cinematic, full-viewport ambition best.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>Let the AI propose options. You make the selection.</strong> Generating three layout concepts costs nothing. Choosing the right one requires design judgement. The prompt "I will choose" is the clearest expression of the designer-AI relationship in this entire project.
+          </div>
+        </div>
+      </div>
+
+      <!-- 09 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">09</div>
+          <div class="card-meta">
+            <div class="card-step">Step 11 · Refinement</div>
+            <div class="card-title">Three simultaneous refinements — parallax speed, dish images, fire cursor</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-refinement">Refinement</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">In the first section the hero section image at the background it taking too long to scroll up it should be faster to come to its place.
+
+i think we should add images for each dish in the menue
+
+on last thing since our heading is "where fire meets flavour" i want the mouse pointer to have some light fire effect when moving</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            Three targeted fixes in one pass: parallax multiplier changed from 0.25 to 0.55 (faster scroll), dish photo thumbnails added to all 6 menu items with hover brighten effect, and the basic cursor replaced with a fire particle system — sparks spawn on mouse movement, drift upward, and fade.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The "on last thing" pattern</div>
+            Three separate issues stated in sequence, each in plain language with no technical specification. "It taking too long" is enough to know the problem. "Some light fire effect" is enough to know the ambition. The AI translated intention into implementation without needing a technical brief.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>Describe the experience you want, not the code you need.</strong> "It taking too long to scroll up" is a user experience description. "Increase parallax multiplier from 0.25 to 0.55" is a technical specification. You only need to know the first one.
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">10</div>
+          <div class="card-meta">
+            <div class="card-step">Step 11 · Bug fix</div>
+            <div class="card-title">Diagnosing a completely broken page and requesting a full rebuild</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-fix">Fix</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">The whole thing is broken. Don't see the mouse at all. The bottom of the page half of the page is, visible. There are no images. Check the page thoroughly and fix the issues. Also, make sure that the page is mobile friendly.</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            A complete rebuild from scratch — diagnosing 4 root causes: z-index 1000 on body::after blocking all content, mix-blend-mode:screen making cursor invisible on dark backgrounds, background-attachment:fixed breaking mobile image rendering, and experience-content overflow cutting off the bottom half. All fixed in one clean file.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The value of "check the page thoroughly"</div>
+            Rather than fixing one symptom at a time, this prompt asked for a comprehensive audit. The AI read the entire 1,300-line file, identified all 4 root causes, and rebuilt cleanly. A symptom-by-symptom approach would have taken 4 separate prompts and likely introduced new bugs.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>When multiple things break, ask for a thorough check, not a single fix.</strong> "The whole thing is broken" is a better prompt than "fix the cursor." It signals the scale of the problem and gives the AI permission to look at everything rather than patch one thing.
+          </div>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="prompt-card">
+        <div class="prompt-card-header">
+          <div class="card-num">11</div>
+          <div class="card-meta">
+            <div class="card-step">Step 11 · Final refinement</div>
+            <div class="card-title">Removing the calendar icon from the date input — the 9-word fix</div>
+          </div>
+          <div class="card-tag"><span class="tag tag-fix">Fix</span></div>
+        </div>
+        <div class="prompt-bubble">
+          <div class="prompt-quote">remove the icon in the dates section in the reservation form</div>
+        </div>
+        <div class="card-analysis">
+          <div class="a-col">
+            <div class="a-label">What it produced</div>
+            A targeted CSS fix: <code style="font-family:'DM Mono',monospace;font-size:11px;background:var(--tag-bg);padding:1px 5px;">::-webkit-calendar-picker-indicator { display:none }</code> combined with <code style="font-family:'DM Mono',monospace;font-size:11px;background:var(--tag-bg);padding:1px 5px;">appearance:none</code>. The calendar icon was removed across Chrome, Safari, and Edge. The field still works functionally.
+          </div>
+          <div class="a-col">
+            <div class="a-label">Why this prompt is the most instructive</div>
+            9 words. No technical specification. No CSS knowledge required. The designer noticed something that looked wrong and named the thing they wanted changed. The AI knew the implementation. This is the clearest demonstration of the designer-AI division of labour in the entire project.
+          </div>
+          <div class="a-col">
+            <div class="a-label">The lesson</div>
+            <strong>You don't need to know how. You need to know what.</strong> The 13 years of experience is in knowing that a calendar icon in a premium fine dining reservation form breaks the aesthetic. The CSS that removes it is freely available. Your job is to notice the problem.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- PATTERNS -->
+    <div class="section">
+      <div class="section-label">03 — What the prompts reveal</div>
+      <h2 class="section-heading">Five things these<br>prompts <em>teach.</em></h2>
+
+      <table class="pattern-table">
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>What it means</th>
+            <th>The prompt that proves it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Start with intent, not format</td>
+            <td>The best opening prompts describe the job to be done and who it's for. Format follows automatically. "Help me get a new job" and "show the diversified nature of my portfolio" set the entire quality standard for the project.</td>
+            <td>Prompt 01 — the original brief</td>
+          </tr>
+          <tr>
+            <td>Say no early</td>
+            <td>Redirecting wrong output costs seconds. Continuing in the wrong direction costs hours. "No this is not right" followed by the correct structure is the most efficient prompt sequence in this project.</td>
+            <td>Prompt 02 — rejecting the first approach</td>
+          </tr>
+          <tr>
+            <td>State your accountability standard</td>
+            <td>Telling the AI that you'll be asked questions about this work changes what it produces. Every statistic gets sourced. Every claim becomes defensible. The portfolio becomes bulletproof.</td>
+            <td>Prompt 03 — removing unverifiable claims</td>
+          </tr>
+          <tr>
+            <td>Trust the sense that something feels wrong</td>
+            <td>Design experience expresses itself as a feeling before it becomes an articulation. "I'm not sure of" is enough to start the conversation. The AI can help diagnose once the instinct is surfaced.</td>
+            <td>Prompt 06 — catching the naming exercise error</td>
+          </tr>
+          <tr>
+            <td>Describe the experience, not the code</td>
+            <td>"It taking too long to scroll up" is a user experience description. "Some light fire effect when moving" is a visual ambition. Neither requires technical knowledge to prompt. Both produce technically correct output.</td>
+            <td>Prompt 09 — three simultaneous refinements</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- CLOSING -->
+    <div class="section">
+      <div class="section-label">04 — The conclusion</div>
+      <h2 class="section-heading">What this diary<br><em>actually proves.</em></h2>
+
+      <p class="body-text">None of the prompts in this document required technical knowledge to write. None specified CSS properties, JavaScript methods, or HTML structures. Every single one described an outcome, a standard, a feeling, or a direction — and the AI translated that into execution.</p>
+
+      <p class="body-text">What made the execution good was not the prompts. It was the judgement behind them. Knowing that brand names should not appear before the naming exercise. Knowing that a calendar icon breaks the premium aesthetic of the reservation form. Knowing that Concept 3 was the right layout for the Noir direction. Knowing when the whole thing was broken and needed a rebuild rather than a patch.</p>
+
+      <div class="closing-box">
+        <div class="closing-label">The thesis of this entire project</div>
+        <div class="closing-text">AI is fast. <em>Direction is rare.</em> This portfolio demonstrates the second one — using the first one to show it.</div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 10 — PROMPT DIARY · EMBER &amp; OAK</div>
+      <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

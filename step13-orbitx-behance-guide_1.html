@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 13: Behance Publish Guide · OrbitX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0E0E;--ink-mid:#3D3D3D;--ink-muted:#7A7A7A;--ink-faint:#B8B8B8;
+  --paper:#FAF8F4;--accent:#2563C8;--accent-light:#C8DAF7;
+  --rule:#E0DCD5;--tag-bg:#F0EDE8;
+  --space:#020916;--mission:#0A1E3D;--signal:#2563C8;--horizon:#60A5FA;
+  --good-bg:#E8F5EE;--good-text:#1A6B3A;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* COVER */
+.cover-band{background:var(--space);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(37,99,200,.25),transparent 65%);pointer-events:none;}
+.cover-band::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 10%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--accent-light);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--accent-light),transparent);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--accent);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+/* COPY BLOCK — dark terminal style */
+.copy-block{background:var(--space);border:1px solid rgba(37,99,200,.2);overflow:hidden;margin:20px 0;}
+.cb-header{padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;}
+.cb-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(96,165,250,.5);}
+.cb-note{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.2);letter-spacing:.08em;}
+.cb-text{font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.85;color:rgba(245,245,255,.85);padding:16px 18px;white-space:pre-wrap;word-break:break-word;}
+.cb-text em{font-style:normal;color:var(--horizon);}
+
+/* FIELD TABLE */
+.field-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.field-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:#fff;padding:10px 14px;text-align:left;}
+.field-table td{padding:13px 14px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink-mid);vertical-align:top;line-height:1.55;}
+.field-table td:first-child{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--accent);white-space:nowrap;width:160px;}
+.field-table tr:last-child td{border-bottom:none;}
+.field-table tr:nth-child(even) td{background:var(--tag-bg);}
+
+/* TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;}
+.tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:5px 12px;background:var(--tag-bg);border:1px solid var(--rule);color:var(--ink-mid);}
+.tag-primary{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+
+/* COVER SPEC */
+.cover-spec{background:var(--space);padding:32px 36px;margin:20px 0;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 200px;gap:36px;align-items:center;}
+.cover-spec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(37,99,200,.15),transparent 60%);pointer-events:none;}
+.cs-left{position:relative;z-index:1;}
+.cs-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-light);margin-bottom:12px;}
+.cs-title{font-family:'DM Serif Display',serif;font-size:20px;color:#fff;margin-bottom:16px;line-height:1.25;}
+.cs-row{display:flex;gap:8px;align-items:baseline;margin-bottom:7px;}
+.cs-k{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);width:88px;flex-shrink:0;}
+.cs-v{font-size:12px;color:rgba(232,244,253,.65);line-height:1.5;}
+.cs-preview{position:relative;z-index:1;}
+.cs-frame{background:var(--mission);border:1px solid rgba(37,99,200,.25);aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;}
+.cs-frame-logo{font-family:'DM Sans',sans-serif;font-weight:900;font-size:1rem;letter-spacing:.2em;text-transform:uppercase;color:#fff;}
+.cs-frame-logo span{color:var(--horizon);}
+.cs-frame-rule{width:36px;height:1px;background:rgba(37,99,200,.4);}
+.cs-frame-sub{font-family:'DM Mono',monospace;font-size:.42rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(96,165,250,.5);text-align:center;line-height:1.6;}
+
+/* ASSET LIST */
+.asset-list{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.asset-row{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:14px;padding:14px 16px;background:var(--tag-bg);border-left:3px solid transparent;transition:all .2s;}
+.asset-row:hover{background:#EDE8E0;border-left-color:var(--accent);}
+.asset-num{font-family:'DM Serif Display',serif;font-size:18px;color:var(--accent);line-height:1;}
+.asset-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;}
+.asset-desc{font-size:11px;color:var(--ink-muted);line-height:1.45;}
+.asset-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:2px;white-space:nowrap;flex-shrink:0;}
+.b-lead{background:#E8F5EE;color:#1A6B3A;}
+.b-detail{background:#FFF4E6;color:#8B4A1C;}
+.b-process{background:var(--accent-light);color:var(--accent);}
+.b-identity{background:var(--tag-bg);border:1px solid var(--rule);color:var(--ink-muted);}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.cl-item{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:14px 16px;background:var(--tag-bg);border-left:3px solid var(--rule);transition:border-color .2s;}
+.cl-item:hover{border-left-color:var(--accent);}
+.cl-box{width:18px;height:18px;border:1.5px solid var(--rule);border-radius:3px;flex-shrink:0;margin-top:2px;}
+.cl-text{font-size:13px;color:var(--ink-mid);line-height:1.6;}
+.cl-text strong{color:var(--ink);}
+.cl-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--ink-muted);margin-top:3px;}
+
+/* PUBLISH BOX */
+.publish-box{background:var(--space);padding:40px;margin-top:32px;position:relative;overflow:hidden;}
+.publish-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(37,99,200,.2),transparent 60%);pointer-events:none;}
+.publish-box::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 12% 25%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 78% 32%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 48% 72%,rgba(255,255,255,.35),transparent);pointer-events:none;}
+.pb-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent-light);margin-bottom:14px;position:relative;z-index:1;}
+.pb-text{font-family:'DM Serif Display',serif;font-size:24px;color:#fff;line-height:1.4;position:relative;z-index:1;}
+.pb-text em{font-style:italic;color:var(--accent-light);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:28px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .cover-spec{grid-template-columns:1fr;}
+  .cs-preview{display:none;}
+  .asset-row{grid-template-columns:28px 1fr;}
+  .asset-badge{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · OrbitX · Brand 02 of 06</div>
+    <h1 class="cover-title">Behance<br><em>Publish Guide</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 13 — Behance Publish Guide</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">OrbitX</div></div>
+    <div class="meta-block"><div class="meta-label">Platform</div><div class="meta-value">Behance · behance.net/deepudinesh</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 TITLE -->
+  <div class="section">
+    <div class="section-label">01 — Project title</div>
+    <h2 class="section-heading">What the project<br><em>is called on Behance.</em></h2>
+    <p class="body-text">The title must do two jobs: tell a recruiter what kind of work this is, and tell them which brand and industry this entry covers. It must also be consistent with the series naming convention used across all six brands.</p>
+
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-label">Primary title — use this exactly</div>
+        <div class="cb-note">Behance project title field</div>
+      </div>
+      <div class="cb-text">From Prompt to Production — OrbitX · Civilian Space Tourism · Brand 02 of 06</div>
+    </div>
+
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-label">Short title — for thumbnail display when full title truncates</div>
+        <div class="cb-note">Used in grid view</div>
+      </div>
+      <div class="cb-text">OrbitX — Space Tourism Branding · AI-Directed Design Process</div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 DESCRIPTION -->
+  <div class="section">
+    <div class="section-label">02 — Project description</div>
+    <h2 class="section-heading">The words that appear<br>below the <em>project.</em></h2>
+    <p class="body-text">The description is read by people who have already clicked in — they are interested. Answer three questions immediately: what is this, what was the process, what does it demonstrate. Under 250 words. Prose only — no bullet points.</p>
+
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-label">Full project description — paste into Behance description field</div>
+        <div class="cb-note">~210 words · prose · no bullet points</div>
+      </div>
+      <div class="cb-text">OrbitX is the second brand in "From Prompt to Production" — a self-initiated portfolio series that documents a complete, research-led web design process executed through AI direction. Six hypothetical brands. Six industries. Fourteen steps each. Every design decision is made by the designer. Every output is produced through a prompt.
+
+The brief: design a civilian space tourism brand targeting ultra-high-net-worth passengers in Asia-Pacific. Differentiate from Blue Origin, Virgin Galactic, and SpaceX using research — not taste.
+
+The central insight, discovered through a competitor visual audit: the passenger is invisible on every competitor website. Despite Blue Origin having flown 58 civilians and Virgin Galactic having 700+ on a waitlist, not a single named passenger appears on any homepage. That gap became the design thesis: <em>OrbitX builds the passenger.</em>
+
+The process spans industry research (sourced market data, competitor pricing, design trends), customer persona development (Arjun Mehta, 52, founder, Mumbai/Dubai/Singapore), three moodboard directions generated on Midjourney, and a production-quality landing page built with a full-viewport AI video hero, three colour-graded section images, and a CSS Three.js starfield.
+
+The information architecture is structured as a mission briefing document — not a hospitality experience. Every section answers a specific question Arjun has at 11pm on a laptop in a hotel room.
+
+Tools used: Claude (Anthropic) · Midjourney · AI video generation · HTML / CSS / JS</div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 TAGS -->
+  <div class="section">
+    <div class="section-label">03 — Tags · 13 total</div>
+    <h2 class="section-heading">How people<br><em>find it.</em></h2>
+    <p class="body-text">A mix of discipline, industry, tool, and style tags. The four primary tags are highest-traffic — Behance's search algorithm weights the first tags entered most heavily.</p>
+
+    <table class="field-table">
+      <thead><tr><th>Category</th><th>Tags</th></tr></thead>
+      <tbody>
+        <tr><td>Discipline</td><td>Web Design · Brand Identity · UI Design · Landing Page</td></tr>
+        <tr><td>Industry</td><td>Space Tourism · Luxury · Aviation</td></tr>
+        <tr><td>Tools</td><td>AI Design · Claude AI · Midjourney · HTML CSS</td></tr>
+        <tr><td>Style</td><td>Dark Theme · Cinematic · Research-Led Design</td></tr>
+      </tbody>
+    </table>
+
+    <p class="body-text">Enter in this order — primary tags first:</p>
+    <div class="tags-wrap">
+      <span class="tag tag-primary">Web Design</span>
+      <span class="tag tag-primary">Brand Identity</span>
+      <span class="tag tag-primary">AI Design</span>
+      <span class="tag tag-primary">Landing Page</span>
+      <span class="tag">Space Tourism</span>
+      <span class="tag">UI Design</span>
+      <span class="tag">Dark Theme</span>
+      <span class="tag">Midjourney</span>
+      <span class="tag">Luxury</span>
+      <span class="tag">Cinematic</span>
+      <span class="tag">Claude AI</span>
+      <span class="tag">HTML CSS</span>
+      <span class="tag">Research-Led Design</span>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 COVER IMAGE -->
+  <div class="section">
+    <div class="section-label">04 — Cover image · the first thing seen</div>
+    <h2 class="section-heading">What appears in<br>the <em>Behance grid.</em></h2>
+    <p class="body-text">The cover image is the single most important asset. It appears in grid view, search results, and profile thumbnails. It must communicate brand, quality, and dark-space aesthetic in one frame — before the viewer clicks in.</p>
+
+    <div class="cover-spec">
+      <div class="cs-left">
+        <div class="cs-label">Cover image specification</div>
+        <div class="cs-title">Hero frame from the OrbitX landing page — dark, centred, cinematic.</div>
+        <div class="cs-row"><span class="cs-k">Dimensions</span><span class="cs-v">1400 × 1050px minimum · 4:3 ratio</span></div>
+        <div class="cs-row"><span class="cs-k">Format</span><span class="cs-v">JPG · quality 90+ · under 5MB</span></div>
+        <div class="cs-row"><span class="cs-k">Content</span><span class="cs-v">Hero screenshot — ORBITX wordmark visible · "At 100km, the atmosphere disappears." centred · video frame behind</span></div>
+        <div class="cs-row"><span class="cs-k">Crop</span><span class="cs-v">Above the fold only · no scrolled content</span></div>
+        <div class="cs-row"><span class="cs-k">Fallback</span><span class="cs-v">If video screenshot blurs: use Vast.png moodboard — reads well at small sizes</span></div>
+      </div>
+      <div class="cs-preview">
+        <div class="cs-frame">
+          <div class="cs-frame-logo">ORBIT<span>X</span></div>
+          <div class="cs-frame-rule"></div>
+          <div class="cs-frame-sub">AT 100KM, THE ATMOSPHERE<br>DISAPPEARS.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 ASSET ORDER -->
+  <div class="section">
+    <div class="section-label">05 — Asset upload order · 12 assets</div>
+    <h2 class="section-heading">The sequence<br><em>tells the story.</em></h2>
+    <p class="body-text">Behance projects are read top-to-bottom. Lead with the output — the landing page. Then show the process. A recruiter scanning quickly sees the result first. A designer reading carefully follows the methodology. Both are served by this order.</p>
+
+    <div class="asset-list">
+      <div class="asset-row">
+        <div class="asset-num">01</div>
+        <div>
+          <div class="asset-name">Landing page — full-page screenshot</div>
+          <div class="asset-desc">Full-length screenshot of orbitx-landing.html from hero to footer · shows the complete output before any process</div>
+        </div>
+        <span class="asset-badge b-lead">Lead</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">02</div>
+        <div>
+          <div class="asset-name">Landing page — hero section close-up</div>
+          <div class="asset-desc">Cropped to hero only · ORBITX wordmark · centred headline · stat strip · video frame behind · shows the centred aerospace alignment</div>
+        </div>
+        <span class="asset-badge b-detail">Detail</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">03</div>
+        <div>
+          <div class="asset-name">Section images — colour grading detail</div>
+          <div class="asset-desc">Side-by-side crops of Vehicle · Helmet · Inside the Vehicle · shows the CSS filter grading system unifying three different source images</div>
+        </div>
+        <span class="asset-badge b-detail">Detail</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">04</div>
+        <div>
+          <div class="asset-name">Moodboard — Direction A · Vast.png · selected</div>
+          <div class="asset-desc">The chosen direction · 9-panel bento grid · deep space palette · the visual direction that produced the landing page</div>
+        </div>
+        <span class="asset-badge b-process">Process</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">05</div>
+        <div>
+          <div class="asset-name">Moodboard — Direction B · Silent.png · rejected</div>
+          <div class="asset-desc">Monochrome with gilt · Kubrickian restraint · shows the range explored before direction selection</div>
+        </div>
+        <span class="asset-badge b-process">Process</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">06</div>
+        <div>
+          <div class="asset-name">Moodboard — Direction C · Luminous.png · rejected</div>
+          <div class="asset-desc">Deep violet · orbital sunrise · completes the three-direction exploration · shows why Direction A was the correct choice for Arjun</div>
+        </div>
+        <span class="asset-badge b-process">Process</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">07</div>
+        <div>
+          <div class="asset-name">Competitor audit — gap summary table</div>
+          <div class="asset-desc">Screenshot of the universal gap analysis from step6-orbitx-audit.html · "OrbitX builds the passenger" thesis visible · shows the research source</div>
+        </div>
+        <span class="asset-badge b-process">Research</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">08</div>
+        <div>
+          <div class="asset-name">Annotated competitor screenshots — all three</div>
+          <div class="asset-desc">Blue Origin · Virgin Galactic · SpaceX · with V·P·W·R·M scores · shows category analysis depth and the passenger visibility gap</div>
+        </div>
+        <span class="asset-badge b-process">Research</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">09</div>
+        <div>
+          <div class="asset-name">Customer persona — Arjun Mehta</div>
+          <div class="asset-desc">Screenshot of step5-orbitx-persona.html · the six behaviours · "He does not want to be sold to" · shows the insight driving all design decisions</div>
+        </div>
+        <span class="asset-badge b-process">Process</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">10</div>
+        <div>
+          <div class="asset-name">Before &amp; After — two or three comparison rows</div>
+          <div class="asset-desc">Category average vs OrbitX · hero alignment · headline · CTA language · shows the design rationale at a glance</div>
+        </div>
+        <span class="asset-badge b-process">Process</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">11</div>
+        <div>
+          <div class="asset-name">Colour &amp; typography system</div>
+          <div class="asset-desc">Palette swatches with hex codes · Barlow Condensed headline specimen · DM Mono label specimen · from the Step 12 case study</div>
+        </div>
+        <span class="asset-badge b-identity">Identity</span>
+      </div>
+      <div class="asset-row">
+        <div class="asset-num">12</div>
+        <div>
+          <div class="asset-name">Landing page — mobile view at 390px</div>
+          <div class="asset-desc">Responsive screenshot · centred hero stack · section images full width · shows mobile behaviour is considered and clean</div>
+        </div>
+        <span class="asset-badge b-detail">Detail</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 06 CHECKLIST -->
+  <div class="section">
+    <div class="section-label">06 — Pre-publish checklist · 10 items</div>
+    <h2 class="section-heading">Check every item<br>before you <em>publish.</em></h2>
+
+    <div class="checklist">
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Cover image reads clearly at thumbnail size.</strong> Resize browser to Behance grid width (~300px) — ORBITX wordmark legible, dark aesthetic communicates instantly.</div>
+          <div class="cl-sub">Minimum 1400px wide · JPG · 4:3 ratio preferred</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Title follows the exact format:</strong> "From Prompt to Production — OrbitX · Civilian Space Tourism · Brand 02 of 06"</div>
+          <div class="cl-sub">Consistent with Ember & Oak · do not vary the format across the series</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>All 13 tags entered</strong> with primary tags (Web Design, Brand Identity, AI Design, Landing Page) first.</div>
+          <div class="cl-sub">Check spelling — a misspelled tag is invisible in search</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Description is complete, under 250 words, and contains the phrase "OrbitX builds the passenger."</strong></div>
+          <div class="cl-sub">No bullet points · prose only · reads in under 90 seconds</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>All 12 assets uploaded in the correct order.</strong> Landing page full screenshot leads. Process documents follow.</div>
+          <div class="cl-sub">Check each asset renders at full width — no white gaps, no missing images</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Landing page external link added.</strong> Paste the live URL (Netlify or equivalent) into the Behance "External link" field.</div>
+          <div class="cl-sub">Test the link before publishing — must open the live page, not a 404</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Series context is clear.</strong> "Brand 02 of 06" in the title. Series description in the body. Link to Ember & Oak (Brand 01) if already published.</div>
+          <div class="cl-sub">A viewer should be able to find the full series from this project</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Contact details are current.</strong> Behance profile shows correct email, phone, and LinkedIn. A recruiter must be able to contact you within two clicks.</div>
+          <div class="cl-sub">deepudnsh@gmail.com · +91 9711903328 · Bangalore</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Portfolio hub updated.</strong> OrbitX card on portfolio-hub.html shows "● Live" status with correct Behance URL. Re-deploy hub to Netlify.</div>
+          <div class="cl-sub">Hub progress strip reads "2 of 6 complete · 4 in progress"</div>
+        </div>
+      </div>
+      <div class="cl-item">
+        <div class="cl-box"></div>
+        <div>
+          <div class="cl-text"><strong>Preview before publishing.</strong> Use Behance's preview mode — check asset order, cover crop, description formatting, and mobile view.</div>
+          <div class="cl-sub">The preview is exactly what a visitor sees — check it on your phone too</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="publish-box">
+      <div class="pb-label">When every checklist item is confirmed</div>
+      <div class="pb-text">Cover image sharp at thumbnail. Description reads in under 90 seconds. Twelve assets in order. Landing page link live. <em>Publish.</em></div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 13 — BEHANCE PUBLISH GUIDE · ORBITX</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

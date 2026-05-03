@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 10: Prompt Diary · Bumblebee World</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Nunito+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#FFD000;--sun-deep:#F5A800;--sun-pale:#FFF8D6;
+  --honey:#FF8C00;--honey-light:#FFE0A0;
+  --bee:#1A1200;--bee-dark:#0D0D00;
+  --leaf:#2E7D32;--leaf-light:#E8F5E9;
+  --marigold:#FF6B35;
+  --sky:#E3F2FD;--sky-deep:#1565C0;
+  --paper:#FFFEF7;
+  --ink:#1A1200;--ink-mid:#4A3F00;--ink-muted:#8A7A00;--ink-faint:#BFB060;
+  --rule:#F0E890;--tag-bg:#FFF8D6;
+  --good-bg:#E8F5E9;--good-text:#1B5E20;
+  --warn-bg:#FFF3E0;--warn-text:#E65100;
+  --fix-bg:#FFF8D6;--fix-text:#7A4A00;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'Nunito Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--sun);
+  margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;
+}
+.cover-band::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 30%,var(--honey) 0%,transparent 55%),
+             radial-gradient(circle at 10% 80%,rgba(255,255,255,.3) 0%,transparent 40%);
+  pointer-events:none;
+}
+.cover-band::after{
+  content:'';position:absolute;inset:0;opacity:.12;
+  background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);
+  background-size:24px 24px;pointer-events:none;
+}
+.cover-emoji{
+  font-size:3.5rem;position:absolute;right:280px;top:44px;z-index:2;
+  animation:wobble 3s ease-in-out infinite;
+}
+@keyframes wobble{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+.project-series{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--bee);opacity:.55;
+  margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;
+}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--bee);opacity:.4;}
+.cover-title{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:52px;
+  line-height:.95;color:var(--bee);letter-spacing:-.02em;position:relative;z-index:1;
+}
+.cover-title em{font-style:normal;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.15);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:4px;
+}
+.meta-value{font-size:13px;color:var(--bee);font-weight:700;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:4px;background:linear-gradient(to right,var(--honey),var(--sun),transparent);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--honey);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:2px;background:var(--rule);}
+.section-heading{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:32px;
+  line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;
+}
+.section-heading em{font-style:normal;color:var(--honey);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:2px;background:var(--rule);margin:56px -80px;}
+
+/* ── NOTE BOX ── */
+.note-box{
+  background:var(--tag-bg);border-left:4px solid var(--sun-deep);
+  padding:18px 22px;margin:24px 0;border-radius:0 4px 4px 0;
+}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:28px 0;}
+.stat-card{background:var(--sun);padding:22px 18px;border-radius:4px;position:relative;overflow:hidden;}
+.stat-card::before{
+  content:'';position:absolute;bottom:-10px;right:-10px;
+  width:60px;height:60px;background:rgba(255,255,255,.2);border-radius:50%;
+}
+.stat-num{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:2.2rem;
+  color:var(--bee);line-height:1;margin-bottom:5px;position:relative;z-index:1;
+}
+.stat-label{font-size:11px;color:rgba(26,18,0,.55);line-height:1.4;font-weight:600;position:relative;z-index:1;}
+
+/* ── WORKFLOW DIAGRAM ── */
+.workflow-row{display:grid;grid-template-columns:1fr 32px 1fr 32px 1fr;align-items:center;gap:0;margin:24px 0;}
+.wf-step{background:var(--bee);padding:18px 16px;text-align:center;border-radius:4px;}
+.wf-step-tool{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--sun);margin-bottom:6px;
+}
+.wf-step-name{font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:#fff;margin-bottom:4px;}
+.wf-step-sub{font-size:10px;color:rgba(255,255,255,.35);line-height:1.4;}
+.wf-arrow{text-align:center;font-size:20px;color:var(--honey);}
+
+/* ── TOOL CALLOUT ── */
+.tool-callout{
+  background:var(--sky);
+  border:1px solid #90CAF9;border-left:4px solid var(--sky-deep);
+  padding:20px 24px;margin:20px 0;border-radius:0 4px 4px 0;
+}
+.tool-callout-label{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--sky-deep);margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.tool-callout-label::before{content:'⚙';font-size:12px;}
+.tool-callout-text{font-size:13px;color:#1A3A6B;line-height:1.7;}
+.tool-callout-text strong{color:#0D1F40;}
+
+/* ── GEMINI BAND ── */
+.gemini-band{
+  background:var(--bee);padding:40px;
+  margin:32px 0;position:relative;overflow:hidden;border-radius:4px;
+}
+.gemini-band::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 70% at 20% 50%,rgba(66,133,244,.18),transparent 60%),
+             radial-gradient(ellipse 40% 50% at 80% 80%,rgba(255,208,0,.08),transparent 55%);
+  pointer-events:none;
+}
+.gemini-band::after{
+  content:'';position:absolute;inset:0;opacity:.06;
+  background-image:radial-gradient(circle,rgba(255,208,0,.8) 1.5px,transparent 1.5px);
+  background-size:24px 24px;pointer-events:none;
+}
+.gb-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(66,133,244,.7);
+  margin-bottom:16px;position:relative;z-index:1;
+  display:flex;align-items:center;gap:10px;
+}
+.gb-label::after{content:'';flex:1;height:1px;background:rgba(66,133,244,.2);}
+.gb-heading{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:26px;
+  color:#fff;margin-bottom:16px;position:relative;z-index:1;line-height:1.2;
+}
+.gb-heading em{font-style:normal;color:var(--sun);}
+.gb-body{font-size:14px;color:rgba(255,255,255,.65);line-height:1.85;position:relative;z-index:1;}
+.gb-body strong{color:#fff;}
+
+/* ── PROMPT ENTRIES ── */
+.prompt-entry{border:2px solid var(--rule);overflow:hidden;margin-bottom:3px;border-radius:4px;}
+.pe-header{
+  background:var(--bee);padding:14px 20px;
+  display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.pe-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 80% at 85% 50%,rgba(255,208,0,.07),transparent);
+  pointer-events:none;
+}
+.pe-num{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:20px;
+  color:var(--sun);line-height:1;position:relative;z-index:1;
+}
+.pe-step{position:relative;z-index:1;}
+.pe-step-name{font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;margin-bottom:2px;}
+.pe-step-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.3);}
+.pe-badge{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;
+  text-transform:uppercase;padding:3px 10px;border-radius:20px;position:relative;z-index:1;
+}
+.badge-worked{background:rgba(30,107,58,.35);color:#5DC889;border:1px solid rgba(30,107,58,.3);}
+.badge-iterated{background:rgba(255,140,0,.2);color:#FFB74D;border:1px solid rgba(255,140,0,.25);}
+.badge-key{background:rgba(255,208,0,.18);color:var(--sun);border:1px solid rgba(255,208,0,.25);}
+.badge-pivot{background:rgba(255,107,53,.18);color:#FF8C5A;border:1px solid rgba(255,107,53,.25);}
+.badge-gemini{background:rgba(66,133,244,.22);color:#7DB3F7;border:1px solid rgba(66,133,244,.3);}
+
+.prompt-box{background:rgba(26,18,0,.97);border-bottom:2px solid var(--rule);padding:0;}
+.pb-label{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(245,168,0,.4);padding:12px 20px 8px;
+}
+.pb-text{
+  font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.75;
+  color:rgba(255,248,214,.82);padding:0 20px 16px;white-space:pre-wrap;word-break:break-word;
+}
+.pb-text em{font-style:normal;color:var(--sun);}
+
+.pe-analysis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.pa-col{padding:16px 18px;border-right:2px solid var(--rule);}
+.pa-col:last-child{border-right:none;}
+.pa-label{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;
+  text-transform:uppercase;padding:3px 8px;border-radius:20px;
+  display:inline-block;margin-bottom:8px;
+}
+.label-worked{background:var(--good-bg);color:var(--good-text);}
+.label-issue{background:var(--warn-bg);color:var(--warn-text);}
+.label-lesson{background:var(--sun-pale);color:var(--fix-text);}
+.pa-text{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.pa-text strong{color:var(--ink);font-weight:700;}
+.pa-text code{
+  font-family:'DM Mono',monospace;font-size:10.5px;
+  background:var(--tag-bg);padding:1px 5px;border-radius:3px;
+}
+
+/* ── KEY LESSON ── */
+.key-lesson{
+  background:var(--sun);padding:32px 36px;
+  margin-top:3px;position:relative;overflow:hidden;border-radius:4px;
+}
+.key-lesson::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 90% 50%,var(--honey) 0%,transparent 55%);
+  pointer-events:none;
+}
+.key-lesson::after{
+  content:'';position:absolute;inset:0;opacity:.1;
+  background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);
+  background-size:20px 20px;pointer-events:none;
+}
+.kl-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(26,18,0,.45);
+  margin-bottom:10px;position:relative;z-index:1;
+}
+.kl-text{
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;
+  color:var(--bee);line-height:1.55;position:relative;z-index:1;
+}
+.kl-text em{font-style:normal;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.15);}
+
+/* ── FOOTER ── */
+.doc-footer{
+  margin-top:80px;padding-top:24px;
+  border-top:2px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .cover-emoji{display:none;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .workflow-row{grid-template-columns:1fr;gap:6px;}
+  .wf-arrow{transform:rotate(90deg);display:block;text-align:center;}
+  .pe-analysis{grid-template-columns:1fr;}
+  .pa-col{border-right:none;border-bottom:2px solid var(--rule);}
+  .pa-col:last-child{border-bottom:none;}
+  .pe-header{grid-template-columns:28px 1fr;}
+  .pe-badge{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div class="cover-emoji">🐝</div>
+  <div>
+    <div class="project-series">From Prompt to Production · Bumblebee World · Brand 03 of 06</div>
+    <h1 class="cover-title">Prompt<br><em>Diary</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 10 — Prompt Diary</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Bumblebee World</div></div>
+    <div class="meta-block"><div class="meta-label">Prompts documented</div><div class="meta-value">12 prompts · 6 steps · 2 tools</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — What this document is</div>
+    <h2 class="section-heading">The actual prompts.<br><em>Verbatim.</em></h2>
+    <p class="body-text">This document records every significant prompt used to build Bumblebee World — the exact words sent at each step, what came back, what needed fixing, and what lesson applies to the remaining three brands. Nothing is reconstructed or cleaned up. These are the actual instructions that produced the final output.</p>
+    <p class="body-text">Bumblebee World introduced something the first two brands did not: <strong>a multi-tool workflow.</strong> Claude handled all research and strategy documents (Steps 4–9). A separate HTML file built in Gemini — with AI-generated forest illustrations and book cover mockups — was then brought back to Claude for brand alignment, palette correction, image embedding, and responsive fixes. The prompt diary documents both halves of that workflow in full.</p>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Total prompts documented across all steps</div></div>
+      <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">AI tools used — Claude for strategy, Gemini for initial build</div></div>
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">Landing page iterations before direction was locked</div></div>
+      <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Key lessons extracted that apply to remaining brands</div></div>
+    </div>
+
+    <div class="note-box">
+      <p><strong>On the multi-tool workflow:</strong> Brands 01 and 02 were built entirely within Claude. For Brand 03, a separate HTML file was generated in Gemini — with AI-generated illustrations baked in — then brought back to Claude for brand alignment, copy correction, image embedding, and dark/light theme fixes. The prompts for both tools are documented in full below.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">02 — The Bumblebee World workflow</div>
+    <h2 class="section-heading">Two tools.<br><em>One brand.</em></h2>
+    <p class="body-text">For the first time in this series, the landing page originated outside Claude. Here is exactly how the two-tool workflow operated for Brand 03:</p>
+
+    <div class="workflow-row">
+      <div class="wf-step">
+        <div class="wf-step-tool">Claude</div>
+        <div class="wf-step-name">Steps 4–9</div>
+        <div class="wf-step-sub">Research · Persona · Audit · Moodboard · Copy</div>
+      </div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">
+        <div class="wf-step-tool">Gemini</div>
+        <div class="wf-step-name">Initial HTML Build</div>
+        <div class="wf-step-sub">Forest illustrations · AI imagery · Dark/light toggle</div>
+      </div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">
+        <div class="wf-step-tool">Claude</div>
+        <div class="wf-step-name">Correction &amp; Refinement</div>
+        <div class="wf-step-sub">Brand alignment · Image embedding · Palette fix · Responsiveness</div>
+      </div>
+    </div>
+
+    <div class="tool-callout">
+      <div class="tool-callout-label">What Gemini contributed</div>
+      <div class="tool-callout-text">The Gemini-built file brought three things Claude's iterations had not produced: a <strong>compelling forest illustration system</strong> — parallax jungle layers with tiger, peacock, deer, and butterflies at a quality level Claude's CSS could not match; <strong>illustrated book cover mockups</strong> with characters specific to the Bumblebee World story universe; and a <strong>working dark/light theme toggle</strong>. The visual ambition was immediately higher than anything Claude had produced. Bringing this file back to Claude rather than rebuilding from scratch saved hours and preserved the project's strongest visual asset.</div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — The prompt diary · all twelve entries</div>
+    <h2 class="section-heading">What was typed.<br>What <em>happened.</em></h2>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">01</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 04 — Industry Research · Brief locked</div>
+          <div class="pe-step-sub">Three questions · ten words · research begins</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompts sent to Claude — locking the brief</div>
+        <div class="pb-text">Q: What age group is Bumblebee World targeting?
+A: <em>Early learners (3–6 years)</em>
+
+Q: Who is the primary buyer persona — who actually pays?
+A: <em>Parents (urban, aspirational)</em>
+
+Q: What is the core product type?
+A: <em>books and toys</em></div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Three answers, ten words total, produced a complete and correctly-framed research brief. Claude identified the key distinction immediately: <strong>the buyer is the parent, not the child.</strong> The research correctly oriented around urban Indian mothers aged 28–38. The design thesis — "Every competitor is either beautiful or Indian or educational. Bumblebee World is all three" — arrived fully formed in the first draft.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing significant. The research was well-sourced — ₹4,200 Cr books, ₹18,500 Cr toys, 62% gifting purchases, all named with sources and years. The competitor gap analysis was sharp. The document required no correction pass before being approved.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">The three-question brief format works across any industry. Answering <em>who pays</em>, <em>who uses</em>, and <em>what is the product</em> is sufficient to unlock a complete research document. Making the buyer/user distinction explicit at the outset is the single most important brief decision for a children's brand.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">02</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Steps 05, 06, 08 — The three one-line approvals</div>
+          <div class="pe-step-sub">Persona · Audit · Copy · each approved in one sentence</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompts sent to Claude</div>
+        <div class="pb-text">looks good move on to the next step
+
+look good lets move on to the next step now
+
+looks good whats the next step</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Steps 5 (Persona), 6 (Audit), and 8 (Copy) were each approved with one sentence. Priya Sharma's persona was complete and accurate on the first pass. The audit gap table was sharp. The copy document delivered all seven sections with the correct voice. <strong>Three steps approved in three sentences.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing. The quality of the research phase was high enough that all three documents required no correction before approval. The investment in a precise brief at Step 4 — especially the buyer/user distinction — paid off across every subsequent step without any rework.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">A precise brief at Step 4 eliminates correction rounds at Steps 5, 6, and 8. The three-question format is not a shortcut — it is the complete brief. When the brief is right, subsequent documents are right. Time spent on the brief is recovered across every step that follows.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">03</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 06 — Competitor swap · Cupcake &amp; Co.</div>
+          <div class="pe-step-sub">Site unavailable · four words · complete replacement</div>
+        </div>
+        <span class="pe-badge badge-iterated">One iteration</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">cupcakeandco.in is not opening</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Four words produced a complete competitor replacement. Claude searched and identified Tulika Books — 25+ years, multilingual, Indian, D2C webshop — as a direct comparable and rebuilt the entire audit section. Tulika's D:2 I:5 S:1 score <strong>sharpened the gap analysis more than Cupcake &amp; Co. would have:</strong> an award-winning Indian publisher with an un-Instagrammable website is the clearest proof of Bumblebee World's territory.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The swap needed to be documented transparently in the document itself — a note reading "replaces Cupcake &amp; Co. (site unavailable at time of audit)" so a portfolio reviewer reading the document in isolation understands the change was deliberate, not an error.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When a source becomes unavailable mid-project, document the swap explicitly in the deliverable — not just in the conversation. A portfolio reviewer reading the audit in isolation must be able to understand why the third competitor differs from the one named in the brief.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">04</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 07 — Midjourney moodboard prompts</div>
+          <div class="pe-step-sub">Three directions · all usable on first generation</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude — requesting the Midjourney prompts</div>
+        <div class="pb-text">lets do the moodboard now, remember you have to give me prompts to create the mooboards too</div>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Midjourney prompt · Direction A (Bloom) — as used verbatim</div>
+        <div class="pb-text">Create a professional brand moodboard for an Indian children's books and toys 
+brand called Bumblebee World targeting early learners aged 3 to 6. Layout: 
+bento-box grid collage of 9 panels at 16:9 landscape ratio, like a real 
+designer's client presentation. Include: a close-up of beautifully illustrated 
+Indian children's books with warm sunshine yellow covers stacked on a wooden 
+surface, a smiling Indian girl aged 4 holding a handcrafted wooden toy bee, 
+marigold flowers and yellow turmeric powder arranged as a flat lay on cream 
+linen, a premium gift box in sunshine yellow with a kraft paper ribbon being 
+unwrapped by small brown hands, illustrated Indian characters in a storybook 
+page with warm earthy colours, a colour palette strip showing Sunshine <em>#FFD000</em> 
+· Honey <em>#F5A800</em> · Leaf Green <em>#2E7D32</em> · Marigold <em>#FF6B35</em> · Cream <em>#FFF8D6</em>, 
+typography specimen "Every child is a world." in bold rounded sans-serif in 
+dark brown on sunshine yellow, a wooden toy shelf styled with yellow and green 
+children's products in a warm Indian home interior, and the word "Bloom" large 
+in bold rounded uppercase in deep brown on sunshine yellow. 
+--ar 16:9 --style raw --v 6</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">All three moodboards came back usable on first generation — no regeneration needed. The bento-box grid instruction (carried from OrbitX) reliably produces a 9-panel design presentation. Naming hex codes caused Midjourney to include a colour palette strip panel. The Indian girl holding the wooden bee toy and the marigold flat lay appeared in Direction A exactly as briefed.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing significant on any of the three directions. The OrbitX lesson — "include the use context in Midjourney prompts" — was applied here and produced the correct professional presentation register first time, with no regeneration required.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">The bento-box grid instruction is now standard for every Midjourney moodboard prompt in this series. Name the hex codes. Describe all 9 panels. Include "like a real designer's client presentation." These three elements together consistently produce a professional moodboard, not a mood illustration.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">05</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — Landing page · First attempt</div>
+          <div class="pe-step-sub">Animated honeycomb hero · layout too conventional</div>
+        </div>
+        <span class="pe-badge badge-iterated">Multiple iterations</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompts sent to Claude — deciding the hero approach</div>
+        <div class="pb-text">Q: Do you have images to upload for the landing page sections, or should I 
+build it with CSS illustrations and placeholder zones?
+A: <em>can u use https://unsplash.com/</em>
+
+Q: For the hero section — what should the background be?
+A: <em>Animated CSS — honeycomb pattern, floating bees, sunshine yellow</em></div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The first build correctly applied the Direction A palette, all seven sections from Step 8 copy, and the animated floating bees with honeycomb SVG pattern. The bee emoji cursor was a strong micro-interaction detail. Unsplash images loaded correctly via embedded CDN URLs.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The layout felt too conventional — standard rectangular cards, predictable grid, e-commerce template with brand colours applied. The brief called for a page that attracts young kids and the first version read as a functional shop, not a world for children to enter.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">For a children's brand, the layout IS the message. A grid-based e-commerce structure communicates "shop" not "world." Visual ambition — organic shapes, wavy dividers, illustration-forward — must be declared in the brief before the build, not corrected after it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">06</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — The creative direction correction</div>
+          <div class="pe-step-sub">Reference image upload · the prompt that changed everything</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude — verbatim, with reference image attached</div>
+        <div class="pb-text">You are getting it wrong. I want a different direction altogether. Colors and 
+fonts are fine. I like the content as well. The pattern is not good. Want you 
+to use illustrations and images which are more kid friendly from Unsplash the 
+current layout that you did is not good enough. I want a very good looking 
+layout that's and or that attracts young kids.
+
+[Reference image uploaded: pencil-sketch watercolour style — Indian mother 
+and child under a mango tree, child's thought bubble filled with fantasy worlds]
+
+The first initial home page banner should be a sketch done sketch style Indian 
+illustration in which we can see a child and a mother under under a mango tree. 
+And a child's thought bubble has all the fantasies and ideas inside it. The 
+same style should reflect all across the page. And the card section on the 
+third section should show illustrations instead of images. These illustrations 
+should reflect the description of each book. Make this website more interactive 
+Each element should have some sort of interaction in it. Use cool animation. 
+That attracts kids a lot more. I'm also attaching a reference image the hero 
+banner. This reference image should reflect all across the page.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The reference image upload was the most effective single prompt in this brand's entire build. A reference image communicates illustration style, colour temperature, layout density, and visual ambition simultaneously. <strong>The pencil-sketch watercolour style with Indian characters, mango tree, and thought bubble became the definitive visual language that anchored every subsequent decision.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The rebuild applied the illustration style to CSS-generated elements — but emoji as book card characters over gradients were not convincing as actual cover art. The illustration quality needed was beyond what CSS alone could produce, which eventually drove the pivot to the Gemini-built file.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>Upload the reference before writing the description.</strong> For visually ambiguous briefs, a reference image replaces 200 words of written direction and is more precise. If you have a visual reference for illustration style or layout ambition, use it as the prompt — not the footnote.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">07</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — The cloud dive experiment</div>
+          <div class="pe-step-sub">Right concept · four failed implementations · correct instinct</div>
+        </div>
+        <span class="pe-badge badge-pivot">Pivot moment</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">No. This is, again, not looking good. Okay. Now let me rearrange the flow of 
+the whole website. Instead of having a horizontal I mean, a vertical scroll 
+from top to bottom. Let us create a very three d and interactive website in 
+which we show all the content in clouds. So the the whole home page hero 
+banner should be a plus of beautiful looking clouds. And as the user scrolls, 
+they move deeper and deeper inside the clouds. With each section appearing 
+from within the cloud itself. And when they scroll back up, they can reach 
+back to the first hero section again. So the first I mean, so it instead of 
+going down, you go deeper into the website, and each section unfolds in a very 
+cool and very animated way. As we go deeper into the clouds. The clouds will 
+appear and disappear as we go deeper into the website.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">The concept was right</span>
+          <div class="pa-text">Scrolling inward through clouds — sections emerging from mist as you dive deeper — is exactly the magical, childlike interaction that separates Bumblebee World from a generic D2C site. The instinct to replace vertical scrolling with a sense of entering a world was correct. A children's brand should feel like opening a storybook, not scrolling a shop.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">The execution failed four times</span>
+          <div class="pa-text">Four separate cloud implementations were attempted: Three.js volumetric clouds, GLSL fragment shader, CSS 3D perspective, SVG Ghibli-style. Each produced clouds that were either too heavy, static, not convincing, or visually wrong. <strong>The gap between the concept and what CSS/Canvas could deliver in a single HTML file was too wide.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When four implementations of the same concept all fail, the concept is not achievable at the required quality within a single HTML file. Abandon the approach — not the brand. Add "is this achievable in a single self-contained HTML file?" as a feasibility question before committing to any technically complex interaction.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">08</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — The reset · back to simplicity</div>
+          <div class="pe-step-sub">After seven iterations — the direction that finally worked</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">Ditch the inward wings scroll interaction. And create a simple static website. 
+Which has top to bottom vertical scroll Let's use bright, vibrant colors. Add 
+s v g clouds two d SVG Ghibli style clouds, throughout the scroll. Have 
+parallax effect on it. So when the users scrolls, these cloud should move 
+slightly. And each element should have a cool interaction that is eye catchy. 
+All the sections will remain the same. Make make this website minimalistic. 
+And full of vibrant colors. AND MODERN</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Returning to a simple vertical scroll was the correct decision. "AND MODERN" — capitalised, emphatic — was the most important word in this entire prompt. It ruled out the risk of the page reading as generic clip art and anchored the build toward a contemporary D2C aesthetic. The direction was right. The execution still needed the Gemini file to reach the required visual quality.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The build came back with correct structure and palette but insufficient illustration quality. At this point the decision was made to bring in the Gemini-built HTML file rather than continuing iterations in Claude. The Gemini file had the visual quality Claude's CSS was not reaching.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Know when to switch tools. Persistence in one tool past the point of diminishing returns is not creativity — it is stubbornness. The Gemini file was the right tool for this visual problem at this moment. The designer's job is to find the best output by any means available.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="gemini-band">
+    <div class="gb-label">The multi-tool moment · a new workflow for the series</div>
+    <h3 class="gb-heading">Gemini built it.<br><em>Claude fixed it.</em></h3>
+    <div class="gb-body">
+      After seven landing page iterations in Claude, a separate HTML file built in Gemini was introduced into the workflow. The Gemini file brought three things Claude's attempts had not produced: a <strong>compelling forest illustration system</strong> with parallax jungle layers (tiger, peacock, deer, butterflies) at a visual quality level Claude's CSS could not match; <strong>illustrated book cover mockups</strong> with characters specific to the Bumblebee World story universe; and a <strong>fully working dark/light theme toggle</strong>. The visual ambition was immediately higher — but the file had the wrong brand name ("Bumblebee Wild"), wrong copy, wrong colour palette (dark forest green instead of Direction A Sunny/Bloom), and AI-generated image slots requiring a Google Imagen API key to load.<br><br>
+      The correct workflow: bring the Gemini file back to Claude, triage what is structurally right (keep), content-wrong (replace), and technically broken (fix). Replace all copy, remap the palette to Direction A, embed all five images as base64, fix responsive behaviour, and lock the dark/light theme. Neither tool alone produced the final output. The combination did.
+    </div>
+  </div>
+
+  <div class="section" style="margin-top:32px;">
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">09</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Gemini file brought to Claude for correction</div>
+          <div class="pe-step-sub">Brand name wrong · wrong copy · API images blank · palette off</div>
+        </div>
+        <span class="pe-badge badge-gemini">Gemini → Claude</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude — with Gemini HTML pasted in full</div>
+        <div class="pb-text">preview this html website
+
+[HTML file pasted — Gemini-generated "Bumblebee Wild" forest/jungle concept 
+with Google Imagen API image generation, dark forest green palette <em>#0D2B0D</em>, 
+parallax illustration layers, illustrated book cards with tiger/elephant/mango 
+characters, working dark/light theme toggle — brand name wrong throughout,
+all images requiring a Google Imagen API key to load]</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What the Gemini file got right</span>
+          <div class="pa-text">The forest parallax illustration system — layered jungle depth with multiple illustrated elements — was significantly better than anything Claude had built. Illustrated book cards showed characters as cover art, not stock photography. The dark/light theme toggle was fully implemented. <strong>The visual quality justified bringing this file back rather than rebuilding from scratch.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Brand name "Bumblebee Wild" throughout — global replacement needed. All copy wrong — different character names, different products. Palette was dark forest green, Direction B territory, not Direction A Sunny/Bloom. All images API-dependent — blank loading skeletons without a Google Imagen key. Responsiveness untested.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When importing a file from another tool, triage it immediately: structurally right (keep) / content-wrong (replace) / technically broken (fix). The Gemini file was structurally excellent and content-wrong everywhere else. Clear triage made the correction efficient rather than a full rebuild.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">10</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Image embedding — five images uploaded</div>
+          <div class="pe-step-sub">Hero · three book covers · lifestyle · all base64 embedded</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude — with five images attached</div>
+        <div class="pb-text">so instead on 3 images on the hero banner iam adding 1 image lets just use 
+1 image to create a simple paralax effect on mouse hover, i am also adding 
+the rest of the images please update the this html file with all these image 
+and fix any other issues u find, check for responsiveness as well
+
+[Images uploaded: Hero Banner image.png · bumblebee-world-book-1-img.png 
+· bumblebee-world-book-2-img.png · bumblebee-world-book-3-img.png 
+· bumblebee-world-lifestyle-img.png]</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">All five images were base64-encoded and embedded in a single pass — hero (~325KB), three book covers (~216–327KB each), lifestyle (~189KB). Total ~1.3MB. <strong>The file loads instantly with no external requests, no API keys, no CDN dependencies.</strong> Mouse-hover parallax on the hero (22px max, 6% lerp for liquid feel) worked correctly on the first implementation.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Book card flip animations needed refinement after embedding to ensure the full illustration was visible on hover rather than clipped. Minor — caught and corrected in the same pass alongside all responsiveness corrections.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Base64 embedding is the correct approach for a portfolio HTML file. No CDN dependency, no broken images when shared offline, no external requests that can fail. ~2MB total weight is acceptable for a portfolio context. For production: image CDN. For Behance and local preview: self-contained.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">11</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Palette correction — Direction A locked throughout</div>
+          <div class="pe-step-sub">Dark forest green → cream and sunshine · full remap</div>
+        </div>
+        <span class="pe-badge badge-iterated">One iteration</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompts sent to Claude</div>
+        <div class="pb-text">ok now tell me is the color palette is different than what we decided earlier.
+
+[Claude confirmed the drift: background was <em>#0D2B0D</em> dark forest green — 
+Direction B territory. Correct palette is Direction A Sunny/Bloom:
+background <em>#FFF8D6</em> cream · Sunshine <em>#FFD000</em> · Honey <em>#F5A800</em>
+Leaf <em>#2E7D32</em> · Marigold <em>#FF6B35</em>]
+
+Yes do it</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Asking the palette audit question triggered a full systematic remap. After correction: cream background, sunshine yellow accents, leaf green for tags, marigold for CTAs — exactly Direction A. Dark mode was remapped to a deep forest green/gold variant that felt on-brand rather than generic dark mode.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The dark theme required a second targeted correction pass. Light mode was fixed correctly in the first remap, but dark mode had inconsistent hardcoded values — card titles reverted to dark, benefit boxes disappeared into the background. Required an explicit sweep across all dark mode hardcoded colour overrides.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>Always audit the colour palette immediately after importing from another tool.</strong> Palette drift is the most silent error — the layout looks right, the copy is right, but the brand is wrong. "Confirm CSS variables match the locked direction" should be the first check in any cross-tool correction pass.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">12</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Light theme hero text — the final fix</div>
+          <div class="pe-step-sub">Hero text turning dark in light mode · one line locked it</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">This looks good. I noticed that on the light theme, the hero text turns dark. 
+On the light theme, ideally, it should be all white.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What this fixed</span>
+          <div class="pa-text">All hero text — headline, eyebrow, sub-copy, trust pills, secondary button — was locked to white in both themes. The issue was <code>var(--firefly-gold)</code> inside the hero headline remapping to a dark value in light mode. Hardcoding the gold to <code>#FFD700</code> within the hero section resolved it. The hero sits over the forest illustration, so white always reads correctly.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">Why it happened</span>
+          <div class="pa-text">The dark/light toggle remaps CSS variables globally — correct for body text and backgrounds, but wrong for elements overlaid on a fixed dark image. The hero illustration provides its own fixed dark contrast context, independent of the page theme. Elements over images need hardcoded values, not theme-variable tokens.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Elements overlaying images must use hardcoded colour values, not CSS variable tokens. A hero section with a fixed dark illustration is not subject to theme switching — its contrast is always against the image, not the page background. Hardcode white. Never inherit it from a token that will remap.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">04 — Four key lessons · apply to remaining brands</div>
+    <h2 class="section-heading">What Bumblebee World<br><em>taught</em> the series.</h2>
+
+    <div class="key-lesson">
+      <div class="kl-label">Lesson 01 — On reference images</div>
+      <div class="kl-text">A reference image is more precise than a written description for visual direction. <em>Upload the reference before writing the brief.</em> Illustration style, colour temperature, and layout ambition communicate in one image what 200 words cannot match with the same precision.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 02 — On knowing when to switch tools</div>
+      <div class="kl-text">Seven iterations in one tool not reaching the required quality is a signal — not to try again, but to change approach. <em>The designer's job is to find the best output, not to stay loyal to one tool.</em> Switching to Gemini was the correct creative direction decision for this brand.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 03 — On cross-tool palette drift</div>
+      <div class="kl-text">Every imported file carries the aesthetic assumptions of the tool that built it. <em>Always audit palette, brand name, and copy against the locked brief immediately after import.</em> The layout can look correct while the brand is entirely wrong. Palette drift is silent — catch it first.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 04 — On abandoning a technically ambitious concept</div>
+      <div class="kl-text">Four failed implementations of the same interaction is a feasibility problem, not a prompting problem. <em>The scroll-inward cloud dive was the right creative instinct and the wrong technical choice</em> for a self-contained HTML file. Ask "is this achievable in a single HTML file?" before committing to any complex scroll interaction.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 10 — PROMPT DIARY · BUMBLEBEE WORLD</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

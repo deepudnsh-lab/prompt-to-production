@@ -1,0 +1,106 @@
+COMPLETE FILE LIST FOR UPLOAD
+All 74 files ready at: /home/claude/prompt-to-production/
+
+MAIN FILE (1):
+1. index.html
+
+README (1):
+2. README.md
+
+COMMON STEPS (3):
+3. step1-project-brief_8.html
+4. step2-industry-scoring_10.html
+5. step3-brand-naming_5.html
+
+BRAND 01: EMBER & OAK (10 files):
+6. step4-ember-oak-research_2.html
+7. step5-ember-oak-persona.html
+8. step6-ember-oak-audit.html
+9. step7-ember-oak-moodboard.html
+10. step8-ember-oak-copy.html
+11. step10-ember-oak-prompt-diary_3.html
+12. step11-ember-oak-before-after_2.html
+13. step12-ember-oak-design-system_2.html
+14. step13-ember-oak-behance-guide_1.html
+15. ember-and-oak-landing_5.html
+
+BRAND 02: ORBITX (10 files):
+16. step4-orbitx-research_1.html
+17. step5-orbitx-persona_1.html
+18. step6-orbitx-audit.html
+19. step7-orbitx-moodboard.html
+20. step8-orbitx-copy.html
+21. step10-orbitx-prompt-diary_3.html
+22. step11-orbitx-before-after.html
+23. step12-orbitx-design-system.html
+24. step13-orbitx-behance-guide.html
+25. orbitx-landing_5.html
+
+BRAND 03: BUMBLEBEE WORLD (11 files):
+26. step4-bumblebee-research.html
+27. step5-bumblebee-persona.html
+28. step6-bumblebee-audit.html
+29. step7-bumblebee-moodboard.html
+30. step8-bumblebee-copy.html
+31. step10-bumblebee-prompt-diary.html
+32. step10-bumblebee-prompt-diary_1.html
+33. step11-bumblebee-before-after.html
+34. step12-bumblebee-design-system.html
+35. step13-bumblebee-behance.html
+36. bumblebee-landing_19.html
+
+BRAND 04: NEURALDESK (10 files):
+37. step5-neuraldesk-persona_1.html
+38. step6-neuraldesk-audit.html
+39. step7-neuraldesk-moodboard.html
+40. step8-neuraldesk-copy.html
+41. step10-neuraldesk-prompt-diary.html
+42. step11-neuraldesk-before-after.html
+43. step12-neuraldesk-design-system.html
+44. step13-neuraldesk-behance.html
+45. neuraldesk-landing_6.html
+46. neuraldesk-landing.html
+
+BRAND 05: VERDANA (10 files):
+47. step4-verdana-research.html
+48. step5-verdana-persona.html
+49. step6-verdana-audit.html
+50. step7-verdana-moodboard.html
+51. step8-verdana-copy.html
+52. step10-verdana-prompt-diary.html
+53. step11-verdana-before-after.html
+54. step12-verdana-design-system.html
+55. step13-verdana-behance-guide.html
+56. verdana-landing_1.html
+
+BRAND 06: PAWSIDE (12 files):
+57. step4-pawside-research.html
+58. step5-pawside-persona.html
+59. step6-pawside-audit.html
+60. step7-pawside-moodboard.html
+61. step8-pawside-copy.html
+62. step9-pawside-landing.html
+63. step10-pawside-prompt-diary.html
+64. step11-pawside-before-after.html
+65. step12-pawside-design-system.html
+66. step13-pawside-behance-guide.html
+67. pawside-landing_3.html
+68. pawside-landing.html
+
+ADDITIONAL LANDING PAGES (2):
+69. verdana-landing.html
+
+TOTAL: 74 FILES
+
+═══════════════════════════════════════════════════════════════════════════════
+HOW TO USE THIS LIST:
+
+1. Download all 74 files from /home/claude/prompt-to-production/
+2. Create folder on your computer: "prompt-to-production"
+3. Put all files in the folder
+4. Go to GitHub: https://github.com/deepudnsh-lab/prompt-to-production
+5. Click "Add files" → "Upload files"
+6. Drag all 74 files into GitHub
+7. Commit to main branch
+8. Enable GitHub Pages in Settings
+9. Your portfolio goes LIVE! 🚀

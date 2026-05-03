@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 02: Industry Selection</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --accent-dark: #8B3A18;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+    --selected-bg: #FDF6F2;
+    --selected-border: #C85A2A;
+    --rejected-bg: #F7F7F7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .document {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 80px;
+    background: #fff;
+    min-height: 100vh;
+  }
+
+  /* ── COVER BAND ── */
+  .cover-band {
+    background: var(--ink);
+    margin: -80px -80px 0;
+    padding: 56px 80px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .project-series {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-series::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .cover-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    line-height: 1.0;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .cover-title em { font-style: italic; color: var(--accent-light); }
+
+  .cover-meta { text-align: right; }
+
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .meta-value { font-size: 13px; color: #fff; font-weight: 300; }
+  .meta-block { margin-bottom: 20px; }
+  .meta-block:last-child { margin-bottom: 0; }
+
+  .accent-rule {
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light), transparent);
+    margin: 0 -80px;
+  }
+
+  .doc-body { padding-top: 64px; }
+
+  .section { margin-bottom: 56px; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .section-heading em { font-style: italic; color: var(--accent); }
+
+  .body-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--ink-mid);
+    margin-bottom: 16px;
+  }
+
+  .page-rule {
+    height: 1px;
+    background: var(--rule);
+    margin: 56px -80px;
+  }
+
+  /* ── CRITERIA GRID ── */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 28px;
+  }
+
+  .criterion {
+    background: var(--tag-bg);
+    padding: 24px 20px;
+  }
+
+  .criterion-letter {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .criterion-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .criterion-desc {
+    font-size: 12px;
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+
+  .criterion-scale {
+    margin-top: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── SCORING TABLE ── */
+  .scoring-wrap {
+    overflow-x: auto;
+    margin-top: 28px;
+  }
+
+  .scoring-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .scoring-table thead tr {
+    background: var(--ink);
+  }
+
+  .scoring-table thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 500;
+  }
+
+  .scoring-table thead th.center { text-align: center; }
+
+  .scoring-table tbody tr {
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.1s;
+  }
+
+  /* Selected rows */
+  .scoring-table tbody tr.selected {
+    background: var(--selected-bg);
+    border-left: 3px solid var(--accent);
+  }
+
+  /* Rejected rows */
+  .scoring-table tbody tr.rejected td {
+    color: var(--ink-faint);
+  }
+
+  .scoring-table td {
+    padding: 13px 16px;
+    vertical-align: middle;
+  }
+
+  .scoring-table td.center { text-align: center; }
+
+  .industry-name {
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .industry-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  .rejected .industry-name { color: var(--ink-faint); font-weight: 400; }
+  .rejected .industry-brand { display: none; }
+
+  /* Score dots */
+  .score-cell { display: flex; justify-content: center; gap: 3px; align-items: center; }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--rule);
+    flex-shrink: 0;
+  }
+
+  .dot.filled { background: var(--accent); }
+  .dot.half { background: var(--accent-light); }
+
+  /* Total score badge */
+  .total-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 2px;
+    min-width: 38px;
+    text-align: center;
+  }
+
+  .total-high { background: var(--accent); color: #fff; }
+  .total-mid { background: var(--tag-bg); color: var(--ink-mid); }
+  .total-low { background: var(--rejected-bg); color: var(--ink-faint); }
+
+  .status-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .status-selected { background: var(--accent); color: #fff; }
+  .status-rejected { background: var(--rejected-bg); color: var(--ink-faint); border: 1px solid var(--rule); }
+
+  /* ── SELECTED 6 CARDS ── */
+  .selected-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 28px;
+  }
+
+  .selected-card {
+    border: 1px solid var(--rule);
+    padding: 28px;
+    background: #fff;
+    position: relative;
+  }
+
+  .selected-card-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    color: var(--accent-light);
+    line-height: 1;
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-weight: 400;
+  }
+
+  .selected-card-industry {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .selected-card-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .selected-card-reason {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .score-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .score-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    background: var(--tag-bg);
+    color: var(--ink-muted);
+    border-radius: 2px;
+  }
+
+  .score-pill strong { color: var(--accent); }
+
+  /* ── REJECTED SECTION ── */
+  .rejected-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    margin-top: 24px;
+  }
+
+  .rejected-card {
+    padding: 16px;
+    background: var(--rejected-bg);
+    border: 1px solid var(--rule);
+  }
+
+  .rejected-card-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .rejected-card-reason {
+    font-size: 11px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .note-box {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    margin-top: 28px;
+  }
+
+  .note-box p {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  .note-box strong { color: var(--ink); }
+
+  /* ── RESPONSIVE · MOBILE FIRST ──────────────────────────── */
+  @media (max-width: 640px) {
+
+    /* Core document spacing */
+    .document { padding: 24px 20px !important; }
+
+    /* Cover band — remove negative margins, restack */
+    .cover-band {
+      margin: -24px -20px 0 !important;
+      padding: 40px 24px 32px !important;
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+
+    .cover-title { font-size: 32px !important; }
+    .cover-meta  { text-align: left !important; }
+
+    /* Accent rule full bleed */
+    .accent-rule { margin: 0 -20px !important; }
+
+    /* Page rule full bleed */
+    .page-rule { margin: 40px -20px !important; }
+
+    /* Section headings */
+    .section-heading { font-size: 26px !important; }
+
+    /* ── Grids → single column ── */
+    .two-col,
+    .stat-grid,
+    .trend-grid,
+    .split-grid,
+    .behaviour-grid,
+    .criteria-grid,
+    .criteria-row,
+    .candidates-grid,
+    .selected-grid,
+    .rejected-grid,
+    .implications-grid,
+    .deliverables-grid,
+    .trust-breakdown,
+    .opp-three-col,
+    .gap-grid,
+    .brand-card-body,
+    .comp-attr,
+    .audit-body,
+    .persona-summary,
+    .insight-block,
+    .process-steps,
+    .timeline,
+    .tools-row,
+    .score-row,
+    .reveal-voice
+    { grid-template-columns: 1fr !important; }
+
+    /* Rejected grid needs more breathing room */
+    .rejected-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Cover band meta stacking ── */
+    .meta-block { margin-bottom: 12px !important; }
+
+    /* ── Stat/criteria pills ── */
+    .stat-grid { grid-template-columns: 1fr 1fr !important; }
+    .criteria-row { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Persona hero ── */
+    .persona-hero { grid-template-columns: 1fr !important; }
+    .persona-avatar { padding: 28px 20px !important; }
+    .persona-summary {
+      grid-template-columns: 1fr 1fr !important;
+      padding: 20px !important;
+    }
+
+    /* ── Insight block ── */
+    .insight-block { grid-template-columns: 1fr !important; }
+    .insight-num {
+      padding: 16px !important;
+      font-size: 24px !important;
+    }
+
+    /* ── Brand card ── */
+    .brand-card-header {
+      grid-template-columns: 1fr !important;
+      flex-direction: column !important;
+    }
+    .brand-wordmark-preview {
+      border-left: none !important;
+      border-top: 1px solid var(--rule) !important;
+      padding: 16px 20px !important;
+      text-align: left !important;
+    }
+    .brand-num { display: none !important; }
+
+    /* ── Audit cards ── */
+    .audit-header {
+      grid-template-columns: 1fr !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .audit-scores {
+      padding: 12px 16px !important;
+      flex-wrap: wrap !important;
+      border-left: none !important;
+      border-top: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    .audit-title-block { padding: 14px 16px !important; }
+
+    /* ── Annotation grid → stack ── */
+    .annotation-grid,
+    .competitor-body,
+    .visual-zone
+    { grid-template-columns: 1fr !important; }
+
+    .annotation-col,
+    .comp-attr,
+    .audit-col
+    { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    .annotation-col:last-child,
+    .comp-attr:last-child,
+    .audit-col:last-child
+    { border-bottom: none !important; }
+
+    /* ── Tables → scrollable ── */
+    .scoring-wrap,
+    .gap-table,
+    .compare-table,
+    .device-table,
+    .summary-table,
+    .website-table
+    { overflow-x: auto !important; display: block !important; }
+
+    /* ── Process steps ── */
+    .process-step { grid-template-columns: 40px 1fr !important; }
+
+    /* ── Timeline ── */
+    .timeline-row { grid-template-columns: 60px 1fr !important; gap: 12px !important; }
+
+    /* ── Opportunity / gap / hypothesis boxes ── */
+    .opportunity-box,
+    .hypothesis,
+    .gap-box,
+    .trust-box
+    { padding: 28px 20px !important; }
+
+    .opportunity-statement,
+    .hypothesis-text,
+    .gap-text,
+    .trust-statement
+    { font-size: 20px !important; }
+
+    /* ── Name cards (Step 3) ── */
+    .name-card-top { flex-direction: column !important; gap: 8px !important; }
+    .naming-strategy { align-self: flex-start !important; }
+
+    /* ── Selected reveal ── */
+    .selected-reveal {
+      grid-template-columns: 1fr !important;
+      padding: 20px !important;
+      gap: 16px !important;
+    }
+    .reveal-name { font-size: 24px !important; }
+
+    /* ── Industry header ── */
+    .industry-header { flex-wrap: wrap !important; gap: 8px !important; }
+    .industry-category { margin-left: 0 !important; }
+
+    /* ── Score chips in audit header ── */
+    .score-chip-val { width: 26px !important; height: 26px !important; font-size: 11px !important; }
+
+    /* ── Drop zones ── */
+    .drop-zone { height: auto !important; min-height: 200px !important; padding: 24px 16px !important; }
+    .drop-steps { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; }
+    .drop-legend { position: static !important; margin-top: 16px !important; flex-wrap: wrap !important; }
+
+    /* ── Competitor block ── */
+    .competitor-header { grid-template-columns: 1fr !important; }
+    .comp-tags { justify-content: flex-start !important; border-left: none !important; border-top: 1px solid var(--rule) !important; }
+    .comp-num { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    /* ── Hero / section headings ── */
+    .section-heading { font-size: 24px !important; line-height: 1.2 !important; }
+    .body-text { font-size: 14px !important; }
+
+    /* ── Note box ── */
+    .note-box { padding: 14px 16px !important; }
+    .note-box p { font-size: 12px !important; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      flex-direction: column !important;
+      gap: 10px !important;
+      align-items: flex-start !important;
+    }
+    .footer-right { text-align: left !important; }
+
+    /* ── Step 1 specific ── */
+    .manifesto { padding: 16px 18px !important; }
+    .manifesto-text { font-size: 18px !important; }
+    .card { padding: 16px !important; }
+    .deliverables-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Step 2 specific ── */
+    .selected-card { padding: 20px !important; }
+    .selected-card-num { font-size: 36px !important; top: 16px !important; right: 16px !important; }
+
+    /* ── Step 4 specific ── */
+    .stat-num { font-size: 28px !important; }
+    .insight-block { display: flex !important; flex-direction: column !important; }
+    .opp-three-col { grid-template-columns: 1fr !important; }
+
+    /* ── Step 5 specific ── */
+    .trust-breakdown { grid-template-columns: 1fr !important; }
+    .behaviour-grid { grid-template-columns: 1fr !important; }
+
+    /* ── Step 6 specific ── */
+    .gap-grid { grid-template-columns: 1fr !important; }
+    .criteria-bar { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  @media (max-width: 400px) {
+    .cover-title { font-size: 26px !important; }
+    .section-heading { font-size: 22px !important; }
+    .stat-grid { grid-template-columns: 1fr !important; }
+    .persona-summary { grid-template-columns: 1fr !important; }
+    .deliverables-grid { grid-template-columns: 1fr !important; }
+    .rejected-grid { grid-template-columns: 1fr !important; }
+  }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+  <!-- COVER BAND -->
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Case Study Series · 2026</div>
+      <h1 class="cover-title">Industry<br><em>Selection</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block">
+        <div class="meta-label">Designer</div>
+        <div class="meta-value">Deepu Dinesh</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Document</div>
+        <div class="meta-value">Step 02 — Scoring Matrix</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Scope</div>
+        <div class="meta-value">16 considered · 6 selected</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1: WHY THIS MATTERS -->
+    <div class="section">
+      <div class="section-label">01 — Why selection matters</div>
+      <h2 class="section-heading">A portfolio that covers<br>six random industries<br>proves <em>nothing.</em></h2>
+
+      <p class="body-text">The industries chosen for this project needed to satisfy a specific set of conditions — not personal preference, and not what happens to look impressive in a thumbnail. They needed to collectively demonstrate that the AI-directed design workflow can produce meaningfully different visual results across meaningfully different contexts.</p>
+
+      <p class="body-text">If two chosen industries share the same audience, emotional tone, and visual language, they're redundant in a portfolio. The goal was to find six industries that sit as far apart from each other as possible on every design dimension — so each case study teaches the viewer something the others don't.</p>
+
+      <p class="body-text">16 industries were considered. Each was scored against four criteria. The six highest scorers — with the most distinct combination of scores — were selected. The process is documented below exactly as it happened.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: SCORING CRITERIA -->
+    <div class="section">
+      <div class="section-label">02 — The four scoring criteria</div>
+      <h2 class="section-heading">What we scored<br>against — and <em>why.</em></h2>
+
+      <p class="body-text">Each criterion was chosen because it reflects a real skill a design recruiter or creative director looks for. Together, the four criteria measure whether a case study demonstrates design range, audience understanding, technical challenge, and real-world applicability.</p>
+
+      <div class="criteria-grid">
+        <div class="criterion">
+          <div class="criterion-letter">A</div>
+          <div class="criterion-name">Visual diversity</div>
+          <div class="criterion-desc">How distinct is this industry's visual language from the others in the set? Does it bring a different palette, typographic voice, layout density, and aesthetic direction — or does it duplicate territory already covered?</div>
+          <div class="criterion-scale">Score 1–5</div>
+        </div>
+        <div class="criterion">
+          <div class="criterion-letter">B</div>
+          <div class="criterion-name">Persona clarity</div>
+          <div class="criterion-desc">How sharply defined is the person this website is speaking to? A well-defined persona produces sharper copy, more considered UX decisions, and a more defensible case study. Broad or undefined audiences score lower.</div>
+          <div class="criterion-scale">Score 1–5</div>
+        </div>
+        <div class="criterion">
+          <div class="criterion-letter">C</div>
+          <div class="criterion-name">Design challenge</div>
+          <div class="criterion-desc">How much does this industry push the designer's craft? Does it require solving real layout problems, navigating a complex content hierarchy, or handling a nuanced brand tone that AI alone cannot resolve without strategic direction?</div>
+          <div class="criterion-scale">Score 1–5</div>
+        </div>
+        <div class="criterion">
+          <div class="criterion-letter">D</div>
+          <div class="criterion-name">Emotional range</div>
+          <div class="criterion-desc">How wide and distinct is the emotional register this industry asks the designer to work in? Does it require a feeling — warmth, luxury, excitement, trust, wonder, playfulness — that none of the other selected industries already occupy?</div>
+          <div class="criterion-scale">Score 1–5</div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <p><strong>On scoring:</strong> Scores reflect how well each industry serves the portfolio's overall purpose — demonstrating range across a directed AI workflow. A score of 3 on visual distinctiveness doesn't mean the industry is uninteresting; it means another selected industry already occupies that visual territory and adding this one would be redundant.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: FULL SCORING MATRIX -->
+    <div class="section">
+      <div class="section-label">03 — Full scoring matrix · all 16 industries</div>
+      <h2 class="section-heading">Every industry<br>scored <em>honestly.</em></h2>
+
+      <p class="body-text">All 16 industries from the initial brainstorm are scored below. Each score is out of 5. Total is out of 20. Industries are sorted by total score, with the 6 selected highlighted.</p>
+
+      <div class="scoring-wrap">
+        <table class="scoring-table">
+          <thead>
+            <tr>
+              <th style="width:220px;">Industry</th>
+              <th class="center" style="width:80px;">A · Visual diversity</th>
+              <th class="center" style="width:80px;">B · Persona clarity</th>
+              <th class="center" style="width:80px;">C · Design challenge</th>
+              <th class="center" style="width:80px;">D · Emotional range</th>
+              <th class="center" style="width:72px;">Total</th>
+              <th class="center" style="width:90px;">Decision</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="selected">
+              <td>
+                <div class="industry-name">Fine dining / hospitality</div>
+                <div class="industry-brand">→ Named in Step 03</div>
+              </td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><span class="total-badge total-high">19</span></td>
+              <td class="center"><span class="status-badge status-selected">Selected</span></td>
+            </tr>
+            <tr class="selected">
+              <td>
+                <div class="industry-name">Kids entertainment / EdTech</div>
+                <div class="industry-brand">→ Named in Step 03</div>
+              </td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><span class="total-badge total-high">19</span></td>
+              <td class="center"><span class="status-badge status-selected">Selected</span></td>
+            </tr>
+            <tr class="selected">
+              <td>
+                <div class="industry-name">Space tourism / aerospace</div>
+                <div class="industry-brand">→ Named in Step 03</div>
+              </td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><span class="total-badge total-high">19</span></td>
+              <td class="center"><span class="status-badge status-selected">Selected</span></td>
+            </tr>
+            <tr class="selected">
+              <td>
+                <div class="industry-name">Luxury skincare / beauty</div>
+                <div class="industry-brand">→ Named in Step 03</div>
+              </td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><span class="total-badge total-high">18</span></td>
+              <td class="center"><span class="status-badge status-selected">Selected</span></td>
+            </tr>
+            <tr class="selected">
+              <td>
+                <div class="industry-name">Pet care / consumer D2C</div>
+                <div class="industry-brand">→ Named in Step 03</div>
+              </td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><span class="total-badge total-high">17</span></td>
+              <td class="center"><span class="status-badge status-selected">Selected</span></td>
+            </tr>
+            <tr class="selected">
+              <td>
+                <div class="industry-name">AI SaaS / B2B tech</div>
+                <div class="industry-brand">→ Named in Step 03</div>
+              </td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-high">17</span></td>
+              <td class="center"><span class="status-badge status-selected">Selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Gaming / esports</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">16</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Music streaming / entertainment</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">15</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">HealthTech / women's health</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">15</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Architecture / real estate</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">14</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Fintech / neobanking</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">15</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Health &amp; fitness / gym</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">13</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Language learning / EdTech</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">13</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Boutique hotel / travel</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-mid">13</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Art supply / D2C retail</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-low">11</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+            <tr class="rejected">
+              <td><div class="industry-name">Professional e-learning</div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><div class="score-cell"><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></td>
+              <td class="center"><span class="total-badge total-low">10</span></td>
+              <td class="center"><span class="status-badge status-rejected">Not selected</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="dot filled" style="width:9px;height:9px;"></div> Scored point
+        </div>
+        <div class="legend-item">
+          <div class="dot" style="width:9px;height:9px;"></div> Not scored
+        </div>
+        <div class="legend-item">
+          <span class="total-badge total-high" style="font-size:10px;">17–20</span> Selected range
+        </div>
+        <div class="legend-item">
+          <span class="total-badge total-mid" style="font-size:10px;">13–16</span> Considered
+        </div>
+        <div class="legend-item">
+          <span class="total-badge total-low" style="font-size:10px;">≤12</span> Set aside
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: THE SELECTED 6 — RATIONALE -->
+    <div class="section">
+      <div class="section-label">04 — Selection rationale · the chosen six</div>
+      <h2 class="section-heading">Why each of the six<br>earned its <em>place.</em></h2>
+
+      <p class="body-text">Scoring alone doesn't tell the full story. The six selected industries also needed to work as a set — covering the widest possible spread of visual tone, audience type, and content structure between them.</p>
+
+      <div class="selected-grid">
+
+        <div class="selected-card">
+          <div class="selected-card-num">01</div>
+          <div class="selected-card-industry">Fine dining · hospitality</div>
+          <div class="selected-card-brand">Fine dining / hospitality</div>
+          <div class="selected-card-reason">Scored highest overall. Fine dining demands a sophisticated, editorial visual language — dark palettes, cinematic imagery, restrained typography, and a clear conversion goal (reservation). It sets a high bar at the start of the series and tests whether AI can produce a genuinely premium feel without generic stock aesthetics.</div>
+          <div class="score-row">
+            <div class="score-pill">Visual <strong>5/5</strong></div>
+            <div class="score-pill">Audience <strong>5/5</strong></div>
+            <div class="score-pill">Complexity <strong>4/5</strong></div>
+            <div class="score-pill">Emotional <strong>5/5</strong></div>
+          </div>
+        </div>
+
+        <div class="selected-card">
+          <div class="selected-card-num">02</div>
+          <div class="selected-card-industry">Space tourism · aerospace</div>
+          <div class="selected-card-brand">Space tourism / aerospace</div>
+          <div class="selected-card-reason">The most visually extreme case in the set. Space tourism requires a cinematic, full-bleed dark UI with dramatic type and a sense of scale that few other industries demand. It sits at the opposite end of the visual spectrum from the fine dining brand and tests the AI's ability to produce futuristic, high-stakes design language.</div>
+          <div class="score-row">
+            <div class="score-pill">Visual <strong>5/5</strong></div>
+            <div class="score-pill">Audience <strong>4/5</strong></div>
+            <div class="score-pill">Complexity <strong>5/5</strong></div>
+            <div class="score-pill">Emotional <strong>4/5</strong></div>
+          </div>
+        </div>
+
+        <div class="selected-card">
+          <div class="selected-card-num">03</div>
+          <div class="selected-card-industry">Kids entertainment · EdTech</div>
+          <div class="selected-card-brand">Kids entertainment / EdTech</div>
+          <div class="selected-card-reason">The most visually distinct from every other case in the set. Kids brands use rounded forms, bright saturated palettes, playful typography, and a dual audience (children as users, parents as decision-makers) that requires two separate layers of communication on one page. No other industry in the list demands this kind of tonal shift.</div>
+          <div class="score-row">
+            <div class="score-pill">Visual <strong>5/5</strong></div>
+            <div class="score-pill">Audience <strong>5/5</strong></div>
+            <div class="score-pill">Complexity <strong>4/5</strong></div>
+            <div class="score-pill">Emotional <strong>4/5</strong></div>
+          </div>
+        </div>
+
+        <div class="selected-card">
+          <div class="selected-card-num">04</div>
+          <div class="selected-card-industry">AI SaaS · B2B tech</div>
+          <div class="selected-card-brand">AI SaaS / B2B tech</div>
+          <div class="selected-card-reason">The most commercially relevant case for a design lead seeking work with tech companies. B2B SaaS landing pages have specific structural conventions — feature grids, social proof, pricing tables, and a CTA architecture — that require design systems thinking, not just aesthetic judgement. It also directly reflects the industry context of Deepu's last two roles.</div>
+          <div class="score-row">
+            <div class="score-pill">Visual <strong>4/5</strong></div>
+            <div class="score-pill">Audience <strong>5/5</strong></div>
+            <div class="score-pill">Complexity <strong>5/5</strong></div>
+            <div class="score-pill">Emotional <strong>5/5</strong></div>
+          </div>
+        </div>
+
+        <div class="selected-card">
+          <div class="selected-card-num">05</div>
+          <div class="selected-card-industry">Luxury skincare · beauty</div>
+          <div class="selected-card-brand">Luxury skincare / beauty</div>
+          <div class="selected-card-reason">Beauty and skincare have one of the most refined and well-established visual languages in consumer design — extreme whitespace, muted palettes, editorial photography, and a tone of quiet authority. It tests the AI's ability to produce restraint rather than decoration, and sits in deliberate contrast to the expressive energy of the space tourism and kids entertainment brands.</div>
+          <div class="score-row">
+            <div class="score-pill">Visual <strong>4/5</strong></div>
+            <div class="score-pill">Audience <strong>5/5</strong></div>
+            <div class="score-pill">Complexity <strong>4/5</strong></div>
+            <div class="score-pill">Emotional <strong>5/5</strong></div>
+          </div>
+        </div>
+
+        <div class="selected-card">
+          <div class="selected-card-num">06</div>
+          <div class="selected-card-industry">Pet care · consumer D2C</div>
+          <div class="selected-card-brand">Pet care / consumer D2C</div>
+          <div class="selected-card-reason">Pet care closes the set with warmth and emotional accessibility — the tonal opposite of the AI SaaS and space tourism brands. Consumer D2C brands in this space rely on trust, community, and visual friendliness. It also has a clearly defined, data-supported audience (urban pet owners, typically 25–40) which makes the persona exercise highly grounded and defensible.</div>
+          <div class="score-row">
+            <div class="score-pill">Visual <strong>4/5</strong></div>
+            <div class="score-pill">Audience <strong>5/5</strong></div>
+            <div class="score-pill">Complexity <strong>3/5</strong></div>
+            <div class="score-pill">Emotional <strong>5/5</strong></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 5: WHY THE REST DIDN'T MAKE IT -->
+    <div class="section">
+      <div class="section-label">05 — The ten that didn't make the cut</div>
+      <h2 class="section-heading">Why they were<br><em>set aside.</em></h2>
+
+      <p class="body-text">None of the ten industries below are weak design subjects. Each was set aside for a specific, portfolio-level reason — either because another selected industry already covers similar visual territory, or because it didn't add enough range to the overall set.</p>
+
+      <div class="rejected-grid">
+        <div class="rejected-card">
+          <div class="rejected-card-name">Fintech / neobanking</div>
+          <div class="rejected-card-reason">Overlaps with the selected AI SaaS entry in visual language and audience type — both are dark-mode, trust-led, tech-facing interfaces. Also scores low on emotional range: financial services design is deliberately unemotional, and that register is already covered by the B2B tech selection.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Architecture / real estate</div>
+          <div class="rejected-card-reason">Shares the restrained, aspirational editorial tone of the selected luxury skincare brand. Both industries use whitespace, muted palettes, and understated typography — adding architecture would duplicate visual territory without expanding emotional range.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Music streaming</div>
+          <div class="rejected-card-reason">Audience definition is too broad — music streaming speaks to everyone, making persona work less precise. Shares the bold, expressive emotional register of the selected space tourism brand (excitement, energy, escapism) without adding a new emotional dimension to the set.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Gaming / esports</div>
+          <div class="rejected-card-reason">Visually very strong and emotionally rich. Set aside because persona clarity is lower — the gaming audience is broad and fragmented, making it harder to build a precise, defensible ICP. The emotional register (excitement, competition) is also partially covered by the space tourism entry.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Language learning</div>
+          <div class="rejected-card-reason">Sits between two selected industries without matching either's distinctiveness. Visually it shares brightness with the kids entertainment brand; structurally it resembles the AI SaaS entry. The emotional register — gentle encouragement, progress — doesn't add a new dimension to the set.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Health & fitness / gym</div>
+          <div class="rejected-card-reason">The emotional register — motivation, ambition, physical transformation — partially overlaps with the space tourism brand's sense of ambition and scale. Visually, the bold type and high-contrast aesthetic is also covered. Doesn't expand the emotional map of the portfolio.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">HealthTech / women's health</div>
+          <div class="rejected-card-reason">The emotional register — reassurance, clinical trust, vulnerability — is distinct and interesting. Set aside because the visual language overlaps significantly with the luxury skincare brand's soft, trust-led palette, and the content complexity (medical sensitivity, regulatory tone) goes beyond what a single landing page case study can demonstrate well.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Art supply / D2C retail</div>
+          <div class="rejected-card-reason">Playful and colourful — emotional territory already covered more distinctly by the kids entertainment brand. The adult creative audience is harder to pin down precisely than the kids entertainment brand's dual audience (child + parent), weakening the persona exercise.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Boutique hotel / travel</div>
+          <div class="rejected-card-reason">Shares both the visual language and the emotional register of the selected fine dining brand — warmth, sensory indulgence, aspirational escapism. Two hospitality-adjacent brands would look like a repeat, not a demonstration of range.</div>
+        </div>
+        <div class="rejected-card">
+          <div class="rejected-card-name">Professional e-learning</div>
+          <div class="rejected-card-reason">Scored lowest overall. Shares both the visual structure of the AI SaaS entry and the low emotional range of functional B2B design. Professional e-learning pages solve a real problem but rarely ask for a distinctive visual or emotional register — making them a weak case study subject.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+      <div class="footer-left">
+        FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>
+        STEP 02 — INDUSTRY SELECTION & SCORING MATRIX
+      </div>
+      <div class="footer-right">
+        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="513534342124353f223911363c30383d7f32

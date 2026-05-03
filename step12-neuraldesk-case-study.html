@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 12: Case Study · NeuralDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF;--surface:#F7F7F9;--cool:#F0F4F8;--cool-mid:#E2E8F0;--border:#E8ECF0;
+  --red:#E8000D;--red-hover:#FF1A26;--red-tint:#FFF0F0;--red-soft:#FFD6D8;
+  --slate:#64748B;--slate-light:#94A3B8;--navy:#0F172A;
+  --ink:#0A0A0F;--ink-mid:#3D3D4A;--ink-muted:#7A7A8C;--ink-faint:#B8B8C8;
+  --rule:#EFEFEF;--tag-bg:#F7F7F9;
+  --good-bg:#F0FBF4;--good-text:#1B5E20;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--surface);font-family:'Space Grotesk',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--white);margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;border-bottom:1px solid var(--rule);
+}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--red);opacity:.5;}
+.cover-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;line-height:.95;color:var(--ink);letter-spacing:-.03em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:var(--red);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--rule);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;line-height:1.1;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--red);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--red-tint);border-left:3px solid var(--red);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── BRAND NAMEPLATE ── */
+.brand-plate{background:var(--navy);padding:36px 40px;margin:28px 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;position:relative;overflow:hidden;}
+.brand-plate::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.brand-plate::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.06) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;}
+.bp-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.6rem;color:var(--red-soft);line-height:1;position:relative;z-index:1;}
+.bp-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:8px;position:relative;z-index:1;}
+.bp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;position:relative;z-index:1;}
+.bp-stat{background:rgba(255,255,255,.05);padding:14px 16px;text-align:center;}
+.bp-stat-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.5rem;color:var(--red-soft);line-height:1;margin-bottom:4px;}
+.bp-stat-label{font-size:10px;color:rgba(255,255,255,.3);line-height:1.4;}
+
+/* ── BRIEF GRID ── */
+.brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--rule);border:1px solid var(--rule);margin:24px 0;overflow:hidden;}
+.brief-cell{background:var(--white);padding:20px 22px;}
+.brief-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.brief-value{font-size:13px;color:var(--ink-mid);line-height:1.65;}
+.brief-value strong{color:var(--ink);}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:24px 0;}
+.stat-card{background:var(--surface);border:1px solid var(--rule);padding:22px 18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.9rem;color:var(--red);line-height:1;margin-bottom:5px;}
+.stat-label{font-size:11px;color:var(--ink-muted);line-height:1.4;font-weight:400;}
+
+/* ── INSIGHT BOX ── */
+.insight-box{background:var(--navy);padding:36px 40px;margin:28px 0;position:relative;overflow:hidden;}
+.insight-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.insight-box::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.06) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+.ib-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,0,13,.5);margin-bottom:12px;position:relative;z-index:1;}
+.ib-text{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:var(--white);line-height:1.5;position:relative;z-index:1;}
+.ib-text em{font-style:normal;color:var(--red-soft);}
+
+/* ── PROCESS TIMELINE ── */
+.process-list{display:flex;flex-direction:column;gap:1px;margin:24px 0;}
+.pt-row{display:grid;grid-template-columns:56px 1fr;border:1px solid var(--rule);border-bottom:none;}
+.pt-row:first-child{border-radius:2px 2px 0 0;}
+.pt-row:last-child{border-bottom:1px solid var(--rule);border-radius:0 0 2px 2px;}
+.pt-row:hover .pt-content{background:var(--tag-bg);}
+.pt-num{background:var(--navy);display:flex;align-items:center;justify-content:center;padding:16px 8px;border-right:1px solid var(--rule);align-self:stretch;}
+.pt-num span{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red-soft);letter-spacing:.1em;}
+.pt-content{background:var(--white);padding:14px 20px;}
+.pt-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.pt-desc{font-size:12px;color:var(--ink-muted);line-height:1.6;}
+.pt-badge{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:20px;display:inline-block;margin-left:8px;vertical-align:middle;}
+.badge-series{background:var(--tag-bg);color:var(--ink-faint);border:1px solid var(--rule);}
+.badge-done{background:var(--good-bg);color:var(--good-text);}
+.badge-key{background:var(--red-tint);color:var(--red);border:1px solid var(--red-soft);}
+
+/* ── DECISION CARDS ── */
+.decision-card{border:1px solid var(--rule);margin-bottom:3px;overflow:hidden;}
+.dc-header{background:var(--navy);padding:12px 20px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;}
+.dc-step{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);}
+.dc-title{font-size:13px;font-weight:600;color:var(--white);}
+.dc-source{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;background:rgba(232,0,13,.15);color:var(--red-soft);padding:2px 8px;border-radius:20px;}
+.dc-body{background:var(--tag-bg);padding:18px 22px;}
+.dc-body p{font-size:13px;color:var(--ink-mid);line-height:1.75;}
+.dc-body strong{color:var(--ink);}
+
+/* ── PALETTE ── */
+.palette-row{display:flex;gap:0;height:52px;margin:16px 0;overflow:hidden;}
+.pal{flex:1;display:flex;align-items:flex-end;padding:6px 8px;}
+.pal span{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:.05em;mix-blend-mode:screen;color:rgba(255,255,255,.7);}
+
+/* ── TYPE SPECIMEN ── */
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:16px 0;}
+.type-card{background:var(--tag-bg);border:1px solid var(--rule);padding:20px;}
+.type-card-dark{background:var(--navy);padding:20px;position:relative;overflow:hidden;}
+.type-card-dark::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.07) 1px,transparent 1px);background-size:18px 18px;pointer-events:none;}
+.type-role{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;}
+.type-role-lt{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:8px;}
+.type-specimen{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.5rem;letter-spacing:-.02em;line-height:1.1;color:var(--ink);}
+.type-specimen em{font-style:normal;color:var(--red);}
+.type-specimen-lt{font-family:'Space Grotesk',sans-serif;font-weight:300;font-size:1.4rem;letter-spacing:.04em;line-height:1.2;color:var(--white);}
+.type-specimen-lt em{font-style:normal;color:var(--red-soft);font-weight:600;}
+.type-mono{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--red);letter-spacing:.1em;margin-top:8px;display:block;}
+
+/* ── INSIGHT PAIRS ── */
+.insight-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:24px 0;}
+.insight-card{background:var(--tag-bg);padding:22px 20px;border-left:3px solid var(--red);}
+.insight-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.insight-text{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.insight-text strong{color:var(--ink);}
+
+/* ── OUTPUT BOX ── */
+.output-box{background:var(--navy);padding:36px 40px;margin-top:28px;position:relative;overflow:hidden;}
+.output-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.output-box::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.06) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+.ob-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,0,13,.45);margin-bottom:12px;position:relative;z-index:1;}
+.ob-heading{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:var(--white);line-height:1.4;margin-bottom:20px;position:relative;z-index:1;}
+.ob-heading em{font-style:normal;color:var(--red-soft);}
+.ob-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;position:relative;z-index:1;}
+.ob-card{background:rgba(255,255,255,.05);padding:16px 18px;}
+.ob-card-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(232,0,13,.45);margin-bottom:8px;}
+.ob-card-text{font-size:12px;color:rgba(255,255,255,.5);line-height:1.65;}
+.ob-card-text strong{color:rgba(255,255,255,.85);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .brief-grid,.type-row,.insight-row,.ob-grid{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .brand-plate{grid-template-columns:1fr;}
+  .bp-stats{grid-template-columns:1fr 1fr 1fr;}
+  .dc-header{grid-template-columns:1fr;gap:6px;}
+  .dc-source{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · NeuralDesk · Brand 04 of 06</div>
+    <h1 class="cover-title">Case<br><em>Study</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 12 — Case Study</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">NeuralDesk</div></div>
+    <div class="meta-block"><div class="meta-label">Industry</div><div class="meta-value">AI SaaS · Data analysis & reporting</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 THE BRIEF -->
+  <div class="section">
+    <div class="section-label">01 — The brief</div>
+    <h2 class="section-heading">A self-serve AI analytics product<br><em>built for one person.</em></h2>
+
+    <p class="body-text">NeuralDesk is the fourth of six hypothetical brands built as part of <strong>From Prompt to Production</strong> — a self-initiated portfolio series by Deepu Dinesh, Graphic Design Lead with 13 years of experience. The project demonstrates a complete, research-led web design process executed through AI direction. Claude (Anthropic) is the execution engine. The designer is the creative director.</p>
+
+    <p class="body-text">The brief: design a complete landing page for a hypothetical self-serve AI data analytics SaaS product. The buyer is Marcus Webb — a 33-year-old Product Manager at a Series B startup in Austin, TX. He has one analyst on his team, always at capacity. He needs answers from data today. He will sign up in the same session he discovers the product — or not at all.</p>
+
+    <div class="brand-plate">
+      <div>
+        <div class="bp-name">NeuralDesk</div>
+        <div class="bp-sub">AI data analysis · Self-serve · No SQL · Brand 04 of 06</div>
+      </div>
+      <div class="bp-stats">
+        <div class="bp-stat"><div class="bp-stat-num">$33.4B</div><div class="bp-stat-label">AI analytics market size 2024 — GVR Jan 2026</div></div>
+        <div class="bp-stat"><div class="bp-stat-num">27.6%</div><div class="bp-stat-label">CAGR projected through 2030</div></div>
+        <div class="bp-stat"><div class="bp-stat-num">04</div><div class="bp-stat-label">of 06 brands in the series</div></div>
+      </div>
+    </div>
+
+    <div class="brief-grid">
+      <div class="brief-cell">
+        <div class="brief-label">The gap to close</div>
+        <div class="brief-value">The AI analytics category is bifurcated: <strong>enterprise tools with high design quality and no self-serve access</strong> (Tableau, ThoughtSpot) versus <strong>self-serve tools with low design quality and full access</strong> (Looker Studio, Polymer). No product at this moment occupies ThoughtSpot-quality design at a self-serve price point — with pricing visible on the homepage and no demo gate.</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-label">What makes this case study defensible</div>
+        <div class="brief-value">Every market statistic has a named source and year. Every design decision traces to a specific research finding or persona insight. The landing page is a single, <strong>fully responsive HTML file</strong> — no framework, no backend, no build tooling. Works offline. Competitor screenshots annotated and embedded. Direction C selected on documented rationale.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 THE INSIGHT -->
+  <div class="section">
+    <div class="section-label">02 — The insight that drove everything</div>
+    <h2 class="section-heading">The landing page<br><em>is the sales team.</em></h2>
+
+    <p class="body-text">The Step 5 persona established the most important constraint for the entire product: Marcus Webb makes his purchase decision in the same session he discovers NeuralDesk — or not at all. There is no follow-up call. There is no demo to handle objections. The landing page must do everything a sales team would normally do, in the time it takes Marcus to read seven sections on a Wednesday afternoon with three competitor tabs open.</p>
+
+    <div class="insight-box">
+      <div class="ib-label">The central design thesis · NeuralDesk</div>
+      <div class="ib-text">Tableau has the trust. Looker Studio has the access. ThoughtSpot has the design. <em>NeuralDesk is the first to have all three</em> — at a price point Marcus can approve without a meeting, with an onboarding flow he can complete before his next standup.</div>
+    </div>
+
+    <div class="insight-row" style="margin-top:28px;">
+      <div class="insight-card">
+        <div class="insight-label">Marcus does not want a platform</div>
+        <div class="insight-text">He wants the answer to a specific question he has right now. <strong>The hero headline "One question. One answer. Now." is not a tagline</strong> — it is a direct response to the pain identified in Step 5: three hours per week lost waiting for a report that should take 60 seconds. Every word on the landing page was written to speak to that specific frustration.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Skepticism is Marcus's default state</div>
+        <div class="insight-text">Marcus has been burned by tools that promised "AI-powered insights" and delivered rebranded pivot tables. <strong>The landing page never claims AI as a feature.</strong> It shows a specific query, a specific result, a specific metric. The product UI demonstrated on the hero panel is more persuasive than any feature description — because Marcus can see exactly what he would type and exactly what he would get back.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 THE PROCESS -->
+  <div class="section">
+    <div class="section-label">03 — The process · nine steps documented</div>
+    <h2 class="section-heading">Research to<br><em>production.</em></h2>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num">9</div><div class="stat-label">Steps from brief to live landing page</div></div>
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Competitor sites audited with annotated screenshots</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Moodboard directions generated on Midjourney</div></div>
+      <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Design decisions made without a research source</div></div>
+    </div>
+
+    <div class="process-list">
+      <div class="pt-row">
+        <div class="pt-num"><span>01–03</span></div>
+        <div class="pt-content">
+          <div class="pt-title">Project Brief · Industry Scoring · Brand Naming <span class="pt-badge badge-series">Series level</span></div>
+          <div class="pt-desc">Series manifesto. 16 industries scored across 4 criteria — AI SaaS selected for Brand 04, chosen specifically because it reflects Deepu's last two professional roles and tests design-systems thinking under a credibility constraint. "NeuralDesk" selected from 4 naming candidates for technical precision without alienating non-technical buyers.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><span>04</span></div>
+        <div class="pt-content">
+          <div class="pt-title">Deep Industry Research <span class="pt-badge badge-done">Complete</span></div>
+          <div class="pt-desc">$33.4B market (2024) · 27.6% CAGR · Self-serve segment $9.4B growing fastest. Five competitors audited: Tableau, Looker Studio, Power BI, Polymer Search, ThoughtSpot. Universal gap identified: no competitor has both premium design AND self-serve access AND visible pricing simultaneously. The design opportunity was confirmed by data, not by preference.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><span>05</span></div>
+        <div class="pt-content">
+          <div class="pt-title">Customer Persona — Marcus Webb <span class="pt-badge badge-done">Complete</span></div>
+          <div class="pt-desc">33 · Austin TX · Product Manager · Series B SaaS · $115K salary · 3 hours per week lost waiting for reports. Six defining behaviours. The session-based decision pattern — he signs up in the session he discovers the product or not at all. The buyer thesis: <em>"Marcus does not buy data analytics software. He buys back three hours of his week."</em></div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><span>06</span></div>
+        <div class="pt-content">
+          <div class="pt-title">Competitor Visual Audit <span class="pt-badge badge-done">Complete</span></div>
+          <div class="pt-desc">Tableau (19/25) · Looker Studio (17/25) · ThoughtSpot (13/25) — all three annotated screenshots embedded. Scoring across 5 dimensions: Design quality · Clarity of value prop · Self-serve ease · Trust signals · Visual differentiation. ThoughtSpot scored lowest (S:1/5) despite having the best design — the demo gate makes it completely inaccessible to Marcus.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><span>07</span></div>
+        <div class="pt-content">
+          <div class="pt-title">Moodboard — 3 Directions, Direction C selected <span class="pt-badge badge-done">Complete</span></div>
+          <div class="pt-desc">Direction A (Precision/Signal) · Direction B (Editorial/Momentum) · Direction C (Arctic/Clarity). All three Midjourney moodboards generated and embedded. Direction C selected: ultra-minimal, cool blue-grey, Space Grotesk 300, wide tracking — Linear/Vercel register. Pure white dominant with pure red #E8000D as the sole accent. The most distinctive direction in the category.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><span>08</span></div>
+        <div class="pt-content">
+          <div class="pt-title">Content & Copywriting <span class="pt-badge badge-done">Complete</span></div>
+          <div class="pt-desc">All copy written before any layout decision. Seven sections, each answering one of Marcus's questions in the order he asks them. Six voice rules. Hero headline: "One question. One answer. Now." Two CTAs at hero level: "Start free — no card needed" for the ready buyer and "See how it works" to retain the buyer who needs one more piece of evidence.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><span>09</span></div>
+        <div class="pt-content">
+          <div class="pt-title">Landing Page Build <span class="pt-badge badge-key">Key step</span></div>
+          <div class="pt-desc">Centre-aligned hero with animated typewriter query bar. Four stacked-to-tab UI screens (Overview · Funnels · Channels · Retention) — each a fully built NeuralDesk dashboard with metric cards, SVG charts, and a contextual query. Bento product grid. Dark social proof section with sparkline metrics. Four-chart analytics suite (line · bar · donut · multi-line cohort). Fully responsive — hamburger nav, collapsing sidebar, 2-column mobile grids.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 KEY DECISIONS -->
+  <div class="section">
+    <div class="section-label">04 — Four key design decisions</div>
+    <h2 class="section-heading">The choices that<br><em>define the brand.</em></h2>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 01 · Step 05</div>
+        <div class="dc-title">The seven-question IA — every section answers Marcus's next question</div>
+        <div class="dc-source">Persona</div>
+      </div>
+      <div class="dc-body">
+        <p>The Step 5 persona revealed that Marcus evaluates three tools simultaneously in three browser tabs. The landing page that wins is the one that communicates its value fastest — because he is context-switching constantly. The IA was designed as Marcus's sequential evaluation session: <strong>What does this do? → Is it legitimate? → What do I actually do? → What will the output look like? → Has someone like me used this? → Can I afford this? → How do I start?</strong> Each section answers exactly one question — no more. Pricing is the sixth section because Marcus must see the product demonstrated before he'll read the price. The final CTA section has one button — not two — because if Marcus has scrolled through all seven sections, he is ready. A second CTA at that point introduces doubt.</p>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 02 · Step 07</div>
+        <div class="dc-title">Direction C — Arctic / Clarity · pure red on white · the most minimal direction</div>
+        <div class="dc-source">Moodboard</div>
+      </div>
+      <div class="dc-body">
+        <p>The three moodboard directions were genuinely distinct: Direction A (Bloomberg-meets-SaaS, authoritative, tight) · Direction B (editorial serif, warm, startup energy) · Direction C (Linear/Vercel register, ultra-minimal, wide-tracked, maximum white space). <strong>Direction C was selected because it is the only direction in the category that no competitor currently occupies.</strong> Tableau and ThoughtSpot are dark and technical. Looker Studio is light but generic Material. No product at this price point has the restraint, the typographic precision, and the confident white-space approach of Direction C. The pure red accent — used on CTAs, data highlights, and the brand mark only — earns its full visual weight because it appears so rarely.</p>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 03 · Step 09</div>
+        <div class="dc-title">The hero UI — four full dashboard screens, tab-switched, not a screenshot</div>
+        <div class="dc-source">Landing page</div>
+      </div>
+      <div class="dc-body">
+        <p>Most SaaS landing pages show a static product screenshot in the hero — a frozen image of the UI that communicates nothing about how the product actually works. The NeuralDesk hero shows four complete, functional dashboard screens — Overview, Funnel Analysis, Channel Report, and Retention Cohorts — each with real metric cards, SVG charts, and a contextual query bar at the bottom with an animated typewriter cycling through five real PM questions. <strong>Marcus can click each tab and see exactly which questions the product answers.</strong> The UI is built in CSS — no images required — which means it loads instantly and scales correctly at any viewport size. The dashboard demonstrates the product; it does not merely illustrate it.</p>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 04 · Step 08</div>
+        <div class="dc-title">Visible pricing with a "justify to your manager" one-pager link</div>
+        <div class="dc-source">Copy + Persona</div>
+      </div>
+      <div class="dc-body">
+        <p>The Step 4 research confirmed that Tableau, Power BI, and ThoughtSpot all hide pricing behind a demo gate. The Step 5 persona confirmed that "Contact sales for pricing" is an immediate exit for Marcus. <strong>Pricing is visible on the NeuralDesk homepage.</strong> Three tiers — Free ($0), Pro ($29/month), Team ($79/month) — with the Pro tier highlighted in red because it is the one Marcus will choose. The most consequential line on the pricing section is not the price: it is "Need to justify this to your manager? Generate a one-pager →" The Team plan at $79/month requires Marcus to send a message to his manager. That link generates the ammunition he needs for that message — removing the last conversion barrier between solo approval and team adoption.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 VISUAL IDENTITY -->
+  <div class="section">
+    <div class="section-label">05 — Visual identity system</div>
+    <h2 class="section-heading">Direction C — Arctic / Clarity.<br><em>Applied.</em></h2>
+
+    <p class="body-text">Direction C was locked at Step 7. The identity system it established was applied consistently across every subsequent document and the final landing page.</p>
+
+    <div class="palette-row">
+      <div class="pal" style="background:#FFFFFF;border:1px solid #eee;"><span style="color:#ccc;">#FFFFFF</span></div>
+      <div class="pal" style="background:#F7F7F9;"><span style="color:#bbb;">#F7F7F9</span></div>
+      <div class="pal" style="background:#F0F4F8;"><span style="color:#aaa;">#F0F4F8</span></div>
+      <div class="pal" style="background:#E2E8F0;"><span style="color:#999;">#E2E8F0</span></div>
+      <div class="pal" style="background:#E8000D;"><span>#E8000D</span></div>
+      <div class="pal" style="background:#FFD6D8;"><span style="color:#E8000D;">#FFD6D8</span></div>
+      <div class="pal" style="background:#64748B;"><span>#64748B</span></div>
+      <div class="pal" style="background:#0F172A;"><span>#0F172A</span></div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-card-dark">
+        <div class="type-role-lt">Display · Space Grotesk 300 · wide tracking</div>
+        <div class="type-specimen-lt">One question.<br><em>One answer.</em> Now.</div>
+        <span class="type-mono" style="color:rgba(232,0,13,.4);">IBM Plex Mono · data labels</span>
+      </div>
+      <div class="type-card">
+        <div class="type-role">Data callout · IBM Plex Mono 500</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:2rem;color:var(--red);font-weight:500;line-height:1;">98.4%</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate-light);margin-top:6px;">Query accuracy rate · Q1 2026</div>
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-card">
+        <div class="type-role">Body copy · Space Grotesk 300</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:300;line-height:1.75;color:var(--ink-mid);">Ask NeuralDesk anything about your data. Get a chart, a table, or a number — in under 60 seconds.</div>
+      </div>
+      <div class="type-card-dark">
+        <div class="type-role-lt">CTA system · primary and secondary</div>
+        <div style="display:inline-block;background:var(--red);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:11px 22px;margin-top:4px;">Start free — no card needed</div>
+        <div style="margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);">→ See how it works</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 06 WHAT THIS DEMONSTRATES -->
+  <div class="section">
+    <div class="section-label">06 — What this demonstrates</div>
+    <h2 class="section-heading">The skill<br><em>being shown.</em></h2>
+
+    <div class="insight-row">
+      <div class="insight-card">
+        <div class="insight-label">Research producing design decisions</div>
+        <div class="insight-text">The pricing transparency, the outcome-led copy, the non-technical buyer language, the light theme at premium quality — none of these were aesthetic preferences. Every decision traces to a specific finding in the Step 4 research or the Step 5 persona. <strong>The design is defensible because the process was honest.</strong> If a hiring manager asks why the CTA says "Start free" and not "Get a demo," the answer is in the Step 5 persona document. If they ask why the pricing is on the homepage, the answer is in the Step 4 competitor table.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Technical execution across the stack</div>
+        <div class="insight-text">The landing page is a single HTML file — no framework, no build tooling, no CDN. <strong>Four complete dashboard UIs built entirely in CSS and SVG.</strong> Animated typewriter. Scroll-reveal system. Tab switcher. Hamburger menu. Responsive at every breakpoint from 320px to 1440px. Custom cursor. The technical execution demonstrates that AI direction can produce production-quality frontend work — not a proof of concept, not a wireframe, but a deployable file.</div>
+      </div>
+    </div>
+
+    <div class="insight-row">
+      <div class="insight-card">
+        <div class="insight-label">Category intelligence as design strategy</div>
+        <div class="insight-text">NeuralDesk's landing page is structurally different from every competitor because the Step 4 research identified specifically what every competitor does and where every competitor fails. <strong>"No competitor has both premium design AND self-serve access AND visible pricing"</strong> — that gap, confirmed by the Step 6 audit, produced the entire brand positioning. The competitor audit is not background research. It is the brief.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Hypothetical but portfolio-grade</div>
+        <div class="insight-text">NeuralDesk does not exist. Marcus Webb is a composite persona. But the market it sits in does. The buyer it targets does. The competitor landscape it navigates does. <strong>Every statistic has a named source and year. Every design decision has a document.</strong> The case study is bulletproof because the process was documented in real time, not reconstructed after the fact. This is what separates portfolio work from personal projects.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-box">
+    <div class="ob-label">The output · what was built</div>
+    <div class="ob-heading">One brand. Eight documents.<br><em>One production-quality landing page.</em></div>
+    <div class="ob-grid">
+      <div class="ob-card">
+        <div class="ob-card-label">The landing page</div>
+        <div class="ob-card-text">Single HTML file · <strong>four interactive UI screens</strong> (tab-switched) · animated typewriter hero · bento product grid · dark proof section · four-chart analytics suite · three-tier pricing · hamburger nav · fully responsive down to 320px · works offline · no framework</div>
+      </div>
+      <div class="ob-card">
+        <div class="ob-card-label">The process documents</div>
+        <div class="ob-card-text">8 individual HTML files · industry research · persona · visual audit (3 annotated screenshots embedded) · moodboard (3 Midjourney images embedded) · copywriting · case study · each standalone and cross-reference-free</div>
+      </div>
+      <div class="ob-card">
+        <div class="ob-card-label">The tools used</div>
+        <div class="ob-card-text"><strong>Claude (Anthropic)</strong> — all strategy documents, copywriting, landing page build · <strong>Midjourney</strong> — three moodboard images · Space Grotesk + IBM Plex Mono · Pure HTML / CSS / JS · No libraries</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 12 — CASE STUDY · NEURALDESK</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

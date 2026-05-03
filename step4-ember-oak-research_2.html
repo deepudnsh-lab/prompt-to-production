@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 04: Industry Research · Ember & Oak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --accent-dark: #8B3A18;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .document {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 80px;
+    background: #fff;
+    min-height: 100vh;
+  }
+
+  /* COVER */
+  .cover-band {
+    background: var(--ink);
+    margin: -80px -80px 0;
+    padding: 56px 80px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .project-series {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-series::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .cover-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 44px;
+    line-height: 1.05;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .cover-title em { font-style: italic; color: var(--accent-light); }
+
+  .cover-meta { text-align: right; }
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .meta-value { font-size: 13px; color: #fff; font-weight: 300; }
+  .meta-block { margin-bottom: 20px; }
+  .meta-block:last-child { margin-bottom: 0; }
+
+  .accent-rule {
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light), transparent);
+    margin: 0 -80px;
+  }
+
+  .doc-body { padding-top: 64px; }
+  .section { margin-bottom: 56px; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .section-heading em { font-style: italic; color: var(--accent); }
+
+  .body-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--ink-mid);
+    margin-bottom: 16px;
+  }
+
+  .page-rule {
+    height: 1px;
+    background: var(--rule);
+    margin: 56px -80px;
+  }
+
+  /* STAT CARDS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 28px;
+  }
+
+  .stat-card {
+    background: var(--tag-bg);
+    padding: 24px 20px;
+  }
+
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+
+  .stat-source {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+  }
+
+  /* TREND CARDS */
+  .trend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 24px;
+  }
+
+  .trend-card {
+    border: 1px solid var(--rule);
+    padding: 24px;
+    background: #fff;
+  }
+
+  .trend-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .trend-tag-rising    { background: #E8F5EE; color: #1A6B3A; }
+  .trend-tag-dominant  { background: #FFF4E6; color: #8B4A1C; }
+  .trend-tag-declining { background: #FEF0F0; color: #A02020; }
+  .trend-tag-emerging  { background: #EEF0FF; color: #3D4AB7; }
+
+  .trend-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .trend-desc {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .trend-design-implication {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--accent-dark);
+    line-height: 1.5;
+  }
+
+  .trend-design-implication::before {
+    content: 'Design implication → ';
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* COMPETITOR TABLE */
+  .competitor-block {
+    margin-bottom: 2px;
+    border: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
+  .competitor-header {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 0;
+    background: var(--tag-bg);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .comp-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--accent);
+    text-align: center;
+    padding: 16px;
+    border-right: 1px solid var(--rule);
+    line-height: 1;
+  }
+
+  .comp-name-block { padding: 14px 20px; }
+
+  .comp-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .comp-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .comp-tags {
+    padding: 14px 20px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .comp-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: var(--tag-bg);
+    color: var(--ink-muted);
+    border: 1px solid var(--rule);
+  }
+
+  .competitor-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+
+  .comp-attr {
+    padding: 18px 20px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .comp-attr:last-child { border-right: none; }
+
+  .comp-attr-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+
+  .comp-attr-content {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .comp-attr-content strong {
+    color: var(--ink);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* INSIGHT CARDS */
+  .insight-block {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin-bottom: 2px;
+    overflow: hidden;
+  }
+
+  .insight-num {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    line-height: 1;
+  }
+
+  .insight-content { padding: 24px 28px; }
+
+  .insight-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+
+  .insight-desc {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .insight-evidence {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+    padding: 8px 12px;
+    background: var(--tag-bg);
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* OPPORTUNITY BOX */
+  .opportunity-box {
+    background: var(--ink);
+    padding: 40px 48px;
+    margin-top: 32px;
+  }
+
+  .opportunity-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+  }
+
+  .opportunity-statement {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: #fff;
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+
+  .opportunity-statement em {
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  .opportunity-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .opportunity-bullets li {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+  }
+
+  .opportunity-bullets li::before {
+    content: '→';
+    color: var(--accent-light);
+    flex-shrink: 0;
+  }
+
+  /* SOURCE NOTE */
+  .source-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    margin-top: 24px;
+    line-height: 1.8;
+  }
+
+  .note-box {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--accent);
+    padding: 18px 22px;
+    margin: 24px 0;
+  }
+
+  .note-box p {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  .note-box strong { color: var(--ink); }
+
+  /* FOOTER */
+  .doc-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  /* ── RESPONSIVE · MOBILE FIRST ──────────────────────────── */
+  @media (max-width: 640px) {
+
+    /* Core document spacing */
+    .document { padding: 24px 20px !important; }
+
+    /* Cover band — remove negative margins, restack */
+    .cover-band {
+      margin: -24px -20px 0 !important;
+      padding: 40px 24px 32px !important;
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+
+    .cover-title { font-size: 32px !important; }
+    .cover-meta  { text-align: left !important; }
+
+    /* Accent rule full bleed */
+    .accent-rule { margin: 0 -20px !important; }
+
+    /* Page rule full bleed */
+    .page-rule { margin: 40px -20px !important; }
+
+    /* Section headings */
+    .section-heading { font-size: 26px !important; }
+
+    /* ── Grids → single column ── */
+    .two-col,
+    .stat-grid,
+    .trend-grid,
+    .split-grid,
+    .behaviour-grid,
+    .criteria-grid,
+    .criteria-row,
+    .candidates-grid,
+    .selected-grid,
+    .rejected-grid,
+    .implications-grid,
+    .deliverables-grid,
+    .trust-breakdown,
+    .opp-three-col,
+    .gap-grid,
+    .brand-card-body,
+    .comp-attr,
+    .audit-body,
+    .persona-summary,
+    .insight-block,
+    .process-steps,
+    .timeline,
+    .tools-row,
+    .score-row,
+    .reveal-voice
+    { grid-template-columns: 1fr !important; }
+
+    /* Rejected grid needs more breathing room */
+    .rejected-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Cover band meta stacking ── */
+    .meta-block { margin-bottom: 12px !important; }
+
+    /* ── Stat/criteria pills ── */
+    .stat-grid { grid-template-columns: 1fr 1fr !important; }
+    .criteria-row { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Persona hero ── */
+    .persona-hero { grid-template-columns: 1fr !important; }
+    .persona-avatar { padding: 28px 20px !important; }
+    .persona-summary {
+      grid-template-columns: 1fr 1fr !important;
+      padding: 20px !important;
+    }
+
+    /* ── Insight block ── */
+    .insight-block { grid-template-columns: 1fr !important; }
+    .insight-num {
+      padding: 16px !important;
+      font-size: 24px !important;
+    }
+
+    /* ── Brand card ── */
+    .brand-card-header {
+      grid-template-columns: 1fr !important;
+      flex-direction: column !important;
+    }
+    .brand-wordmark-preview {
+      border-left: none !important;
+      border-top: 1px solid var(--rule) !important;
+      padding: 16px 20px !important;
+      text-align: left !important;
+    }
+    .brand-num { display: none !important; }
+
+    /* ── Audit cards ── */
+    .audit-header {
+      grid-template-columns: 1fr !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .audit-scores {
+      padding: 12px 16px !important;
+      flex-wrap: wrap !important;
+      border-left: none !important;
+      border-top: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    .audit-title-block { padding: 14px 16px !important; }
+
+    /* ── Annotation grid → stack ── */
+    .annotation-grid,
+    .competitor-body,
+    .visual-zone
+    { grid-template-columns: 1fr !important; }
+
+    .annotation-col,
+    .comp-attr,
+    .audit-col
+    { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    .annotation-col:last-child,
+    .comp-attr:last-child,
+    .audit-col:last-child
+    { border-bottom: none !important; }
+
+    /* ── Tables → scrollable ── */
+    .scoring-wrap,
+    .gap-table,
+    .compare-table,
+    .device-table,
+    .summary-table,
+    .website-table
+    { overflow-x: auto !important; display: block !important; }
+
+    /* ── Process steps ── */
+    .process-step { grid-template-columns: 40px 1fr !important; }
+
+    /* ── Timeline ── */
+    .timeline-row { grid-template-columns: 60px 1fr !important; gap: 12px !important; }
+
+    /* ── Opportunity / gap / hypothesis boxes ── */
+    .opportunity-box,
+    .hypothesis,
+    .gap-box,
+    .trust-box
+    { padding: 28px 20px !important; }
+
+    .opportunity-statement,
+    .hypothesis-text,
+    .gap-text,
+    .trust-statement
+    { font-size: 20px !important; }
+
+    /* ── Name cards (Step 3) ── */
+    .name-card-top { flex-direction: column !important; gap: 8px !important; }
+    .naming-strategy { align-self: flex-start !important; }
+
+    /* ── Selected reveal ── */
+    .selected-reveal {
+      grid-template-columns: 1fr !important;
+      padding: 20px !important;
+      gap: 16px !important;
+    }
+    .reveal-name { font-size: 24px !important; }
+
+    /* ── Industry header ── */
+    .industry-header { flex-wrap: wrap !important; gap: 8px !important; }
+    .industry-category { margin-left: 0 !important; }
+
+    /* ── Score chips in audit header ── */
+    .score-chip-val { width: 26px !important; height: 26px !important; font-size: 11px !important; }
+
+    /* ── Drop zones ── */
+    .drop-zone { height: auto !important; min-height: 200px !important; padding: 24px 16px !important; }
+    .drop-steps { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; }
+    .drop-legend { position: static !important; margin-top: 16px !important; flex-wrap: wrap !important; }
+
+    /* ── Competitor block ── */
+    .competitor-header { grid-template-columns: 1fr !important; }
+    .comp-tags { justify-content: flex-start !important; border-left: none !important; border-top: 1px solid var(--rule) !important; }
+    .comp-num { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    /* ── Hero / section headings ── */
+    .section-heading { font-size: 24px !important; line-height: 1.2 !important; }
+    .body-text { font-size: 14px !important; }
+
+    /* ── Note box ── */
+    .note-box { padding: 14px 16px !important; }
+    .note-box p { font-size: 12px !important; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      flex-direction: column !important;
+      gap: 10px !important;
+      align-items: flex-start !important;
+    }
+    .footer-right { text-align: left !important; }
+
+    /* ── Step 1 specific ── */
+    .manifesto { padding: 16px 18px !important; }
+    .manifesto-text { font-size: 18px !important; }
+    .card { padding: 16px !important; }
+    .deliverables-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Step 2 specific ── */
+    .selected-card { padding: 20px !important; }
+    .selected-card-num { font-size: 36px !important; top: 16px !important; right: 16px !important; }
+
+    /* ── Step 4 specific ── */
+    .stat-num { font-size: 28px !important; }
+    .insight-block { display: flex !important; flex-direction: column !important; }
+    .opp-three-col { grid-template-columns: 1fr !important; }
+
+    /* ── Step 5 specific ── */
+    .trust-breakdown { grid-template-columns: 1fr !important; }
+    .behaviour-grid { grid-template-columns: 1fr !important; }
+
+    /* ── Step 6 specific ── */
+    .gap-grid { grid-template-columns: 1fr !important; }
+    .criteria-bar { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  @media (max-width: 400px) {
+    .cover-title { font-size: 26px !important; }
+    .section-heading { font-size: 22px !important; }
+    .stat-grid { grid-template-columns: 1fr !important; }
+    .persona-summary { grid-template-columns: 1fr !important; }
+    .deliverables-grid { grid-template-columns: 1fr !important; }
+    .rejected-grid { grid-template-columns: 1fr !important; }
+  }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Ember &amp; Oak · Brand 01 of 06</div>
+      <h1 class="cover-title">Deep Industry<br><em>Research</em><br>Fine Dining / Hospitality</h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block">
+        <div class="meta-label">Designer</div>
+        <div class="meta-value">Deepu Dinesh</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Document</div>
+        <div class="meta-value">Step 04 — Industry Research</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Brand</div>
+        <div class="meta-value">Ember &amp; Oak</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Research date</div>
+        <div class="meta-value">April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1: MARKET CONTEXT -->
+    <div class="section">
+      <div class="section-label">01 — Market context</div>
+      <h2 class="section-heading">The fine dining<br>industry in <em>numbers.</em></h2>
+
+      <p class="body-text">Fine dining operates within a growing global full-service restaurant market. Understanding the market context grounds the design brief — it tells us who is spending, how much, and what they expect for that spend. These figures are sourced from publicly available industry research published in 2025–2026.</p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-num">$191B</div>
+          <div class="stat-label">Global fine dining market value in 2025</div>
+          <div class="stat-source">TechSci Research, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">7.2%</div>
+          <div class="stat-label">CAGR — global fine dining growth through 2031</div>
+          <div class="stat-source">TechSci Research, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">$85B</div>
+          <div class="stat-label">India restaurant industry value in 2025</div>
+          <div class="stat-source">Restroworks, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">11%</div>
+          <div class="stat-label">CAGR — India full-service restaurant growth 2026–2031</div>
+          <div class="stat-source">Mordor Intelligence, 2026</div>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="margin-top:2px;">
+        <div class="stat-card">
+          <div class="stat-num">77%</div>
+          <div class="stat-label">Diners who visit a restaurant website before deciding where to eat</div>
+          <div class="stat-source">UpMenu, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">68%</div>
+          <div class="stat-label">Diners discouraged from visiting due to a poor website</div>
+          <div class="stat-source">Pravaah Consulting, 2026</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">71%</div>
+          <div class="stat-label">Asia-Pacific high-net-worth individuals who have increased luxury dining spend</div>
+          <div class="stat-source">BusinessDojo, 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">73%</div>
+          <div class="stat-label">Consumers who prefer eco-conscious, source-transparent restaurants</div>
+          <div class="stat-source">Pravaah Consulting, 2026</div>
+        </div>
+      </div>
+
+      <p class="source-note">
+        Sources: TechSci Research (2025) · Mordor Intelligence (2026) · Restroworks (2025) · BusinessDojo (2025) · Pravaah Consulting (2026) · UpMenu (2025)<br>
+        All statistics reflect publicly available published research. Market projections are estimates from third-party research firms and may vary across sources.
+      </p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: VISUAL TRENDS -->
+    <div class="section">
+      <div class="section-label">02 — Visual & design trends</div>
+      <h2 class="section-heading">What fine dining<br>websites look like<br><em>right now.</em></h2>
+
+      <p class="body-text">This section identifies the dominant visual patterns observed across leading fine dining websites in 2025–2026. Each trend is assessed for its relevance to Ember & Oak and translated into a direct design implication. Sources are cited where trends are backed by data; observations are noted where they reflect pattern analysis.</p>
+
+      <div class="trend-grid">
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-dominant">Dominant</span>
+          <div class="trend-title">Dark mode as the default fine dining register</div>
+          <div class="trend-desc">Dark backgrounds — charcoal, near-black, deep navy — have become the primary visual signal for premium dining across the web. Sites including Atomix, Fat Cow, Bar Isabel, Margot Restaurant, and Eleven Madison Park all use dark palettes as the foundation. The convention communicates intimacy, sophistication, and editorial restraint without needing to state it in copy.</div>
+          <div class="trend-design-implication">Ember & Oak will use a deep charcoal base. This is not trend-chasing — it is the established visual language of the category and departing from it would require a deliberate rationale.</div>
+        </div>
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-dominant">Dominant</span>
+          <div class="trend-title">Full-bleed atmospheric photography over illustrated or decorative elements</div>
+          <div class="trend-desc">Leading fine dining sites prioritise large-format, atmosphere-first photography. The best examples (Canlis, Noma, Atelier Crenn) use images that communicate the experience rather than just the food — light, texture, space, human presence. This is the "show, don't tell" principle applied to digital dining. Sites using stock imagery or decorative illustrations register as less credible immediately.</div>
+          <div class="trend-design-implication">Ember & Oak will use SVG-illustrated food compositions and atmospheric visual language since actual photography is unavailable in a hypothetical context. These will be designed to feel intentional rather than compensatory.</div>
+        </div>
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-rising">Rising</span>
+          <div class="trend-title">Editorial serif typography as the primary display choice</div>
+          <div class="trend-desc">High-contrast serif typefaces with strong italics are displacing geometric sans-serifs as the primary display choice in fine dining. The serif communicates craft, age, and intentionality — values that align with the positioning of restaurants built around a philosophy rather than just a menu. Sans-serifs remain for body and functional copy but are typically at light weight.</div>
+          <div class="trend-design-implication">Ember & Oak's display typography will use a high-contrast editorial serif. Body copy will be a geometric sans at light weight. Monospace is reserved for metadata (opening times, location, reservations data).</div>
+        </div>
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-rising">Rising</span>
+          <div class="trend-title">Reservation as a primary conversion goal — always visible</div>
+          <div class="trend-desc">Across the best-performing fine dining sites, the reservation CTA is persistent, prominent, and never more than one click away. The design pattern reflects a real business reality: a fine dining website exists primarily to convert browser visits into bookings. Sites that bury the reservation flow behind multiple pages or present it only in the footer are losing revenue. Canlis and Eleven Madison Park both make the reservation action the clearest call to action on every viewport.</div>
+          <div class="trend-design-implication">Ember & Oak will carry a persistent "Reserve a Table" CTA in the fixed navigation. The reservation section will be a full-page module, not a footer widget.</div>
+        </div>
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-rising">Rising</span>
+          <div class="trend-title">Storytelling as a structural principle, not a section</div>
+          <div class="trend-desc">The strongest fine dining websites use the entire page as a single narrative — the chef's philosophy, the ingredient sourcing, the cooking method, and the dining experience are woven through the layout rather than isolated in an "About" section. This approach, visible in Noma's site, Canlis, and Atelier Crenn, creates emotional investment before the visitor has even seen a menu item.</div>
+          <div class="trend-design-implication">The Ember & Oak layout will be structured as a narrative flow: brand statement → philosophy → fire ritual → seasonal menu → experience → reservation. No isolated "About" page.</div>
+        </div>
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-declining">Declining</span>
+          <div class="trend-title">PDF menus and static menu pages</div>
+          <div class="trend-desc">PDF menus are increasingly recognised as a significant friction point and a credibility signal for outdated operations. They cannot be indexed by search engines, do not resize for mobile, and require a download action that interrupts the browsing experience. Industry sources consistently note this as a practice to move away from in 2025–2026. Menu content should be native HTML, readable on any device, and updatable without a rebuild.</div>
+          <div class="trend-design-implication">Ember & Oak's menu will be built as native HTML within the landing page. No PDF links. Menu items will be displayed as structured content in a visually styled grid.</div>
+        </div>
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-emerging">Emerging</span>
+          <div class="trend-title">Sustainability and ingredient provenance as a trust signal</div>
+          <div class="trend-desc">73% of consumers prefer restaurants that communicate eco-conscious and sustainable practices (Pravaah Consulting, 2026). In fine dining specifically, ingredient provenance — named farms, regional sourcing, seasonal availability — functions as both a quality signal and a differentiator. The best fine dining sites in 2025–2026 weave sourcing into the narrative rather than confining it to a separate sustainability page.</div>
+          <div class="trend-design-implication">Ember & Oak's philosophy section will reference the type of wood used for different dishes and the provenance rationale behind it. This is the specific form provenance storytelling takes in a wood-fire dining context.</div>
+        </div>
+
+        <div class="trend-card">
+          <span class="trend-tag trend-tag-emerging">Emerging</span>
+          <div class="trend-title">Extreme restraint in copy density</div>
+          <div class="trend-desc">Fine dining websites that perform well visually use less copy than casual dining sites — not more. The principle is that copy density signals anxiety about convincing the visitor, while restraint signals confidence. Noma's website is the clearest example: minimal text, maximum atmosphere. This is a counter-intuitive principle that many fine dining sites still fail to apply, defaulting to long paragraphs where a single sentence would communicate more.</div>
+          <div class="trend-design-implication">Ember & Oak's copy will be short, precise, and unhurried. Each section will have one headline and a maximum of three sentences. No feature lists. No paragraph blocks beyond the philosophy section.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: COMPETITORS -->
+    <div class="section">
+      <div class="section-label">03 — Competitor reference analysis</div>
+      <h2 class="section-heading">Five real websites.<br>Annotated for <em>design decisions.</em></h2>
+
+      <p class="body-text">The following five websites represent the current benchmark for fine dining web design. These are real, publicly accessible sites observed and analysed in April 2026. Each is assessed for what it does well, where it falls short, and what Ember & Oak can learn or deliberately diverge from.</p>
+
+      <div class="note-box">
+        <p><strong>How to read this section:</strong> These are design references, not direct competitors to a hypothetical brand. They are analysed to understand the visual and structural conventions of the category — so that Ember & Oak can make informed decisions about where to follow convention and where to break it purposefully.</p>
+      </div>
+
+      <!-- Competitor 1 -->
+      <div class="competitor-block">
+        <div class="competitor-header">
+          <div class="comp-num">01</div>
+          <div class="comp-name-block">
+            <div class="comp-name">Canlis — Seattle, USA</div>
+            <div class="comp-category">Fine dining · Family-owned · Heritage storytelling</div>
+          </div>
+          <div class="comp-tags">
+            <span class="comp-tag">Dark palette</span>
+            <span class="comp-tag">Editorial serif</span>
+            <span class="comp-tag">Story-first</span>
+          </div>
+        </div>
+        <div class="competitor-body">
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does well</div>
+            <div class="comp-attr-content">Weaves 75 years of family history into the design without feeling like a museum. Large atmospheric photography leads; minimal text competes. Reservation flow is seamless and prominent. Warm storytelling balances the exclusivity of a $180-per-person tasting menu without feeling cold or intimidating.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does less well</div>
+            <div class="comp-attr-content">The site occasionally loses visual rhythm when transitioning between sections — the design is confident overall but some interior pages feel less considered than the homepage. Mobile experience is strong but not as refined as the desktop version.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">Lesson for Ember &amp; Oak</div>
+            <div class="comp-attr-content"><strong>Heritage does not require age.</strong> Ember & Oak is a hypothetical new brand, but a philosophy-first narrative (the fire ritual, the wood selection, the unhurried approach) can stand in for heritage and create the same sense of conviction and groundedness.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competitor 2 -->
+      <div class="competitor-block" style="margin-top:2px;">
+        <div class="competitor-header">
+          <div class="comp-num">02</div>
+          <div class="comp-name-block">
+            <div class="comp-name">Atomix — New York, USA</div>
+            <div class="comp-category">Two-Michelin-star · Korean fine dining · Reservation-only</div>
+          </div>
+          <div class="comp-tags">
+            <span class="comp-tag">Muted palette</span>
+            <span class="comp-tag">Generous whitespace</span>
+            <span class="comp-tag">Counter-seating</span>
+          </div>
+        </div>
+        <div class="competitor-body">
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does well</div>
+            <div class="comp-attr-content">Muted tones and generous whitespace create a sense of exclusivity that perfectly matches the intimate, counter-seating-only dining concept. Every element feels intentional — from typography choices to the restrained colour palette. The site communicates scarcity (few covers, reservation-only) without being explicit about it.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does less well</div>
+            <div class="comp-attr-content">The extreme restraint, while correct for Atomix's positioning, can feel cold on first visit for an audience that is not already familiar with the brand. The site rewards people who already know what Atomix is — it does less work to convert curious first-time visitors.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">Lesson for Ember &amp; Oak</div>
+            <div class="comp-attr-content"><strong>Restraint must be warm, not cold.</strong> Ember & Oak shares the intimacy positioning (28 covers nightly) but its brand voice is "sensory and assured" not "austere." The design needs whitespace and restraint without sacrificing the warmth implied by fire, wood, and the phrase "where fire meets flavour."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competitor 3 -->
+      <div class="competitor-block" style="margin-top:2px;">
+        <div class="competitor-header">
+          <div class="comp-num">03</div>
+          <div class="comp-name-block">
+            <div class="comp-name">Noma — Copenhagen, Denmark</div>
+            <div class="comp-category">Fine dining · Nordic · Ingredient-first storytelling</div>
+          </div>
+          <div class="comp-tags">
+            <span class="comp-tag">Minimal copy</span>
+            <span class="comp-tag">Art-gallery feel</span>
+            <span class="comp-tag">Foraging narrative</span>
+          </div>
+        </div>
+        <div class="competitor-body">
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does well</div>
+            <div class="comp-attr-content">Noma's website functions as an art gallery rather than a restaurant page. Full-screen visuals, wide spacing, clean lines, and soft transitions make the visitor feel the restaurant before booking a table. The foraging-focused philosophy is woven into the visual language — natural, earthy, unhurried. Storytelling visuals replace copy everywhere they can.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does less well</div>
+            <div class="comp-attr-content">The site is designed for an audience who already knows Noma exists. For a new visitor with no prior awareness, the restraint can read as inaccessible. The reservation path requires several clicks and is not as prominent as it should be for a restaurant where availability is extremely limited.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">Lesson for Ember &amp; Oak</div>
+            <div class="comp-attr-content"><strong>Let the philosophy do visual work.</strong> Ember & Oak's wood-fire philosophy — naming the specific wood for each dish — is visually and narratively as strong as Noma's foraging narrative. It should carry the same structural weight in the layout: a dedicated section, not a footnote.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competitor 4 -->
+      <div class="competitor-block" style="margin-top:2px;">
+        <div class="competitor-header">
+          <div class="comp-num">04</div>
+          <div class="comp-name-block">
+            <div class="comp-name">Atelier Crenn — San Francisco, USA</div>
+            <div class="comp-category">Three-Michelin-star · Poetic fine dining · Immersive gallery feel</div>
+          </div>
+          <div class="comp-tags">
+            <span class="comp-tag">Full-screen imagery</span>
+            <span class="comp-tag">Minimal nav</span>
+            <span class="comp-tag">Poetic identity</span>
+          </div>
+        </div>
+        <div class="competitor-body">
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does well</div>
+            <div class="comp-attr-content">Full-screen imagery, minimal navigation, and artful presentation make the site feel more like an immersive gallery than a restaurant homepage. This perfectly fits its poetic fine-dining identity. The site communicates that eating here is a cultural experience, not just a meal — which is exactly the positioning it needs at three Michelin stars.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does less well</div>
+            <div class="comp-attr-content">The gallery approach occasionally sacrifices functional clarity for aesthetic purity. Finding practical information (hours, location, the specific reservation process) requires more navigation than it should for a site with this level of sophistication.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">Lesson for Ember &amp; Oak</div>
+            <div class="comp-attr-content"><strong>Functional and atmospheric are not opposites.</strong> Ember & Oak should achieve the immersive quality of Atelier Crenn without sacrificing the functional clarity that converts browsers into reservation holders. The reservation CTA should be accessible at all times — even within an atmospheric, gallery-quality layout.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Competitor 5 -->
+      <div class="competitor-block" style="margin-top:2px;">
+        <div class="competitor-header">
+          <div class="comp-num">05</div>
+          <div class="comp-name-block">
+            <div class="comp-name">Eleven Madison Park — New York, USA</div>
+            <div class="comp-category">Three-Michelin-star · Plant-based fine dining · Dark mode</div>
+          </div>
+          <div class="comp-tags">
+            <span class="comp-tag">Dark mode</span>
+            <span class="comp-tag">Bold typography</span>
+            <span class="comp-tag">Reservation-prominent</span>
+          </div>
+        </div>
+        <div class="competitor-body">
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does well</div>
+            <div class="comp-attr-content">Blends dark mode with bright food photography to create a cinematic effect. The homepage feels like a quiet evening in the city — focused, calm, sophisticated. Navigation stays minimal. The reservation button is clear, bold, and consistently prominent across every viewport. The interactive menu section reveals small, intentional hints of what to expect without overwhelming.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">What it does less well</div>
+            <div class="comp-attr-content">The shift to plant-based dining means the brand must work harder to communicate warmth and indulgence — which are naturally associated with animal proteins in fine dining. Some sections of the site feel slightly cooler in tone than the experience itself reportedly delivers.</div>
+          </div>
+          <div class="comp-attr">
+            <div class="comp-attr-label">Lesson for Ember &amp; Oak</div>
+            <div class="comp-attr-content"><strong>Dark mode + warmth is achievable.</strong> EMP demonstrates that a dark background does not mean a cold brand. Ember & Oak's ember-orange accent, the candlelight gold tones, and the fire-focused photography language can inject genuine warmth into a dark-mode layout without undermining the premium register.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: KEY DESIGN INSIGHTS -->
+    <div class="section">
+      <div class="section-label">04 — Key design insights</div>
+      <h2 class="section-heading">Three things the<br>research tells us to<br><em>do differently.</em></h2>
+
+      <p class="body-text">The competitor analysis and trend research converge on three specific insights that will directly shape Ember & Oak's design decisions. These are not generic best practices — they are conclusions drawn from examining where the category benchmark sites succeed and where the gap remains.</p>
+
+      <div class="insight-block">
+        <div class="insight-num">01</div>
+        <div class="insight-content">
+          <div class="insight-title">Most fine dining sites are cold when they should be warm — dark palette does not have to mean emotionally distant</div>
+          <div class="insight-desc">The dark-mode convention in fine dining produces sites that are visually sophisticated but occasionally feel inaccessible or intimidating to a first-time visitor. The best sites (Canlis, EMP) solve this with warm storytelling and photography that shows human presence — diners, chefs, the social context of the meal. Ember & Oak's fire-and-wood identity is an inherently warm narrative. The amber and orange tones, the ritual of the fire being lit at 4pm, the finite number of covers each night — these are emotionally warm details that should be designed into the visual language from the first screen.</div>
+          <div class="insight-evidence">Evidence: Canlis and EMP both score highest for converting first-time visitors despite dark palettes — both use warmth through storytelling and human-presence imagery.</div>
+        </div>
+      </div>
+
+      <div class="insight-block" style="margin-top:2px;">
+        <div class="insight-num">02</div>
+        <div class="insight-content">
+          <div class="insight-title">Scarcity is underused as a design element — the finite nature of fine dining should be visible, not implied</div>
+          <div class="insight-desc">Fine dining's core product is scarcity: a limited number of seats, a specific window of time, a menu that changes with the season. Yet most fine dining websites design as if inventory were infinite — there is rarely any visual or copy signal that conveys "this is hard to book." Atomix communicates scarcity through visual restraint alone (counter seating for a few, reservation-only access). Ember & Oak should make scarcity explicit and intentional: "Only 28 guests each evening" as a design element, not a footnote. This converts browsers into bookers by introducing genuine urgency without manufactured pressure.</div>
+          <div class="insight-evidence">Evidence: OpenTable data (2025) shows an 11% increase in group dining of 6+ people — indicating growing demand for bookable, exclusive experiences. Making scarcity visible accelerates booking decisions.</div>
+        </div>
+      </div>
+
+      <div class="insight-block" style="margin-top:2px;">
+        <div class="insight-num">03</div>
+        <div class="insight-content">
+          <div class="insight-title">The cooking method is a largely untapped visual and narrative asset in fine dining web design</div>
+          <div class="insight-desc">Most fine dining websites focus on the output (the plated dish, the tasting menu) rather than the method (the preparation, the heat source, the time). Yet the method is increasingly what differentiates serious restaurants in a category where ingredient quality is table stakes. Wood-fired cooking, fermentation, foraging — these processes are visually compelling, narratively rich, and signal craft in a way that a beautiful plate photograph alone cannot. Noma is the clearest exception: their foraging narrative is structurally central to the site. For Ember & Oak, the wood-fire ritual — the specific wood selected for each protein, the fire lit at 4pm, the single-evening commitment — is the design asset that differentiates it from every other dark-palette fine dining website.</div>
+          <div class="insight-evidence">Evidence: Noma's site, structured around foraging philosophy rather than menu items, is consistently cited as the benchmark for fine dining web design globally. Method-first storytelling is the pattern to follow.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 5: DESIGN OPPORTUNITY STATEMENT -->
+    <div class="section">
+      <div class="section-label">05 — Design opportunity statement</div>
+      <h2 class="section-heading">The gap this<br>design will <em>fill.</em></h2>
+
+      <p class="body-text">Based on the market context, the trend analysis, and the competitor research, the following design opportunity statement defines the specific gap that Ember & Oak's landing page will occupy. This statement will serve as the creative brief for all subsequent design decisions — moodboard, copy, layout concept, and final build.</p>
+
+      <div class="opportunity-box">
+        <div class="opportunity-label">Design opportunity statement · Ember &amp; Oak</div>
+        <div class="opportunity-statement">Fine dining websites are <em>visually sophisticated but emotionally cool.</em> Ember &amp; Oak will be the exception — a dark, editorial, reservation-focused landing page that makes the warmth of fire, wood, and ritual as visible as the restraint of the cuisine.</div>
+        <ul class="opportunity-bullets">
+          <li>The cooking method — specific wood types, the 4pm fire ritual, the finite cover count — will be designed as a visual asset, not a copy footnote.</li>
+          <li>Dark-mode aesthetics will be warmed by ember-orange accents, candlelight gold tones, and copy that is sensory and unhurried rather than cool and clinical.</li>
+          <li>Scarcity ("28 guests each evening") will be made explicit and prominent — converting browsers into reservation holders by communicating genuine exclusivity.</li>
+          <li>The reservation action will be persistent and never more than one scroll away from any point on the page.</li>
+          <li>Copy density will be kept to the minimum needed to communicate the brand's conviction — restraint as a design choice, not a default.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">
+        FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>
+        STEP 04 — INDUSTRY RESEARCH · EMBER &amp; OAK
+      </div>
+      <div class="footer-right">
+        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b0d4d5d5c0c5d4dec3d8f0d7ddd1d9dc9ed3

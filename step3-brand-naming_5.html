@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 03: Brand Naming Exercise</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --accent-dark: #8B3A18;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+    --selected-bg: #FDF6F2;
+    --rejected-bg: #F7F7F7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .document {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 80px;
+    background: #fff;
+    min-height: 100vh;
+  }
+
+  .cover-band {
+    background: var(--ink);
+    margin: -80px -80px 0;
+    padding: 56px 80px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+
+  .project-series {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-series::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .cover-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    line-height: 1.0;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .cover-title em { font-style: italic; color: var(--accent-light); }
+
+  .cover-meta { text-align: right; }
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .meta-value { font-size: 13px; color: #fff; font-weight: 300; }
+  .meta-block { margin-bottom: 20px; }
+  .meta-block:last-child { margin-bottom: 0; }
+
+  .accent-rule {
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light), transparent);
+    margin: 0 -80px;
+  }
+
+  .doc-body { padding-top: 64px; }
+  .section { margin-bottom: 56px; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .section-heading em { font-style: italic; color: var(--accent); }
+
+  .body-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--ink-mid);
+    margin-bottom: 16px;
+  }
+
+  .page-rule {
+    height: 1px;
+    background: var(--rule);
+    margin: 56px -80px;
+  }
+
+  .note-box {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+
+  .note-box p {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+  }
+
+  .note-box strong { color: var(--ink); }
+
+  /* ── CRITERIA ── */
+  .criteria-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin: 28px 0;
+  }
+
+  .criterion-small {
+    background: var(--tag-bg);
+    padding: 18px 20px;
+  }
+
+  .criterion-letter {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .criterion-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .criterion-desc {
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+  }
+
+  /* ── INDUSTRY BLOCK ── */
+  .industry-block { margin-bottom: 64px; }
+
+  .industry-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .industry-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px;
+    color: var(--accent-light);
+    line-height: 1;
+  }
+
+  .industry-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  .industry-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* ── CANDIDATES GRID ── */
+  .candidates-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  /* ── NAME CARD ── */
+  .name-card {
+    border: 1px solid var(--rule);
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .name-card.selected { border: 2px solid var(--accent); background: var(--selected-bg); }
+  .name-card.rejected { background: var(--rejected-bg); }
+
+  .name-card-top {
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .name-card.selected .name-card-top { border-bottom-color: var(--accent-light); }
+
+  .candidate-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  .name-card.rejected .candidate-name { color: var(--ink-muted); }
+
+  .naming-strategy {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .strategy-evocative   { background: #EEF0FF; color: #3D4AB7; }
+  .strategy-compound    { background: #FFF4E6; color: #8B4A1C; }
+  .strategy-abstract    { background: #E8F5EE; color: #1A6B3A; }
+  .strategy-descriptive { background: #F5EEFF; color: #6B2EA8; }
+  .strategy-portmanteau { background: #FEF0F0; color: #A02020; }
+  .strategy-classical   { background: #F0F8FF; color: #1A5080; }
+
+  .name-card-scores {
+    padding: 14px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .name-card.selected .name-card-scores { border-bottom-color: var(--accent-light); }
+
+  .score-item { padding: 4px 0; }
+
+  .score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .score-dots { display: flex; gap: 3px; align-items: center; }
+
+  .sdot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--rule);
+    flex-shrink: 0;
+  }
+
+  .sdot.on { background: var(--accent); }
+  .name-card.rejected .sdot.on { background: var(--ink-faint); }
+
+  .score-total {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    margin-top: 3px;
+  }
+
+  .name-card.selected .score-total { color: var(--accent); }
+
+  .name-card-reason {
+    padding: 14px 24px;
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .name-card.rejected .name-card-reason { color: var(--ink-mid); }
+
+  /* ── SELECTED REVEAL ── */
+  .selected-reveal {
+    background: var(--ink);
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .reveal-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 8px;
+  }
+
+  .reveal-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .reveal-tagline {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--accent-light);
+  }
+
+  .reveal-voice { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .voice-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border: 1px solid rgba(200,118,58,0.4);
+    color: var(--accent-light);
+    border-radius: 2px;
+  }
+
+  /* ── SUMMARY TABLE ── */
+  .summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 24px;
+  }
+
+  .summary-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--ink);
+    padding: 10px 16px;
+    text-align: left;
+  }
+
+  .summary-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink-mid);
+    font-size: 13px;
+  }
+
+  .summary-table td:first-child {
+    font-weight: 500;
+    color: var(--ink);
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+  }
+
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table tr:nth-child(even) td { background: var(--tag-bg); }
+
+  .score-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 2px;
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-right {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+
+  /* ── RESPONSIVE · MOBILE FIRST ──────────────────────────── */
+  @media (max-width: 640px) {
+
+    /* Core document spacing */
+    .document { padding: 24px 20px !important; }
+
+    /* Cover band — remove negative margins, restack */
+    .cover-band {
+      margin: -24px -20px 0 !important;
+      padding: 40px 24px 32px !important;
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+
+    .cover-title { font-size: 32px !important; }
+    .cover-meta  { text-align: left !important; }
+
+    /* Accent rule full bleed */
+    .accent-rule { margin: 0 -20px !important; }
+
+    /* Page rule full bleed */
+    .page-rule { margin: 40px -20px !important; }
+
+    /* Section headings */
+    .section-heading { font-size: 26px !important; }
+
+    /* ── Grids → single column ── */
+    .two-col,
+    .stat-grid,
+    .trend-grid,
+    .split-grid,
+    .behaviour-grid,
+    .criteria-grid,
+    .criteria-row,
+    .candidates-grid,
+    .selected-grid,
+    .rejected-grid,
+    .implications-grid,
+    .deliverables-grid,
+    .trust-breakdown,
+    .opp-three-col,
+    .gap-grid,
+    .brand-card-body,
+    .comp-attr,
+    .audit-body,
+    .persona-summary,
+    .insight-block,
+    .process-steps,
+    .timeline,
+    .tools-row,
+    .score-row,
+    .reveal-voice
+    { grid-template-columns: 1fr !important; }
+
+    /* Rejected grid needs more breathing room */
+    .rejected-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Cover band meta stacking ── */
+    .meta-block { margin-bottom: 12px !important; }
+
+    /* ── Stat/criteria pills ── */
+    .stat-grid { grid-template-columns: 1fr 1fr !important; }
+    .criteria-row { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Persona hero ── */
+    .persona-hero { grid-template-columns: 1fr !important; }
+    .persona-avatar { padding: 28px 20px !important; }
+    .persona-summary {
+      grid-template-columns: 1fr 1fr !important;
+      padding: 20px !important;
+    }
+
+    /* ── Insight block ── */
+    .insight-block { grid-template-columns: 1fr !important; }
+    .insight-num {
+      padding: 16px !important;
+      font-size: 24px !important;
+    }
+
+    /* ── Brand card ── */
+    .brand-card-header {
+      grid-template-columns: 1fr !important;
+      flex-direction: column !important;
+    }
+    .brand-wordmark-preview {
+      border-left: none !important;
+      border-top: 1px solid var(--rule) !important;
+      padding: 16px 20px !important;
+      text-align: left !important;
+    }
+    .brand-num { display: none !important; }
+
+    /* ── Audit cards ── */
+    .audit-header {
+      grid-template-columns: 1fr !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .audit-scores {
+      padding: 12px 16px !important;
+      flex-wrap: wrap !important;
+      border-left: none !important;
+      border-top: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    .audit-title-block { padding: 14px 16px !important; }
+
+    /* ── Annotation grid → stack ── */
+    .annotation-grid,
+    .competitor-body,
+    .visual-zone
+    { grid-template-columns: 1fr !important; }
+
+    .annotation-col,
+    .comp-attr,
+    .audit-col
+    { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    .annotation-col:last-child,
+    .comp-attr:last-child,
+    .audit-col:last-child
+    { border-bottom: none !important; }
+
+    /* ── Tables → scrollable ── */
+    .scoring-wrap,
+    .gap-table,
+    .compare-table,
+    .device-table,
+    .summary-table,
+    .website-table
+    { overflow-x: auto !important; display: block !important; }
+
+    /* ── Process steps ── */
+    .process-step { grid-template-columns: 40px 1fr !important; }
+
+    /* ── Timeline ── */
+    .timeline-row { grid-template-columns: 60px 1fr !important; gap: 12px !important; }
+
+    /* ── Opportunity / gap / hypothesis boxes ── */
+    .opportunity-box,
+    .hypothesis,
+    .gap-box,
+    .trust-box
+    { padding: 28px 20px !important; }
+
+    .opportunity-statement,
+    .hypothesis-text,
+    .gap-text,
+    .trust-statement
+    { font-size: 20px !important; }
+
+    /* ── Name cards (Step 3) ── */
+    .name-card-top { flex-direction: column !important; gap: 8px !important; }
+    .naming-strategy { align-self: flex-start !important; }
+
+    /* ── Selected reveal ── */
+    .selected-reveal {
+      grid-template-columns: 1fr !important;
+      padding: 20px !important;
+      gap: 16px !important;
+    }
+    .reveal-name { font-size: 24px !important; }
+
+    /* ── Industry header ── */
+    .industry-header { flex-wrap: wrap !important; gap: 8px !important; }
+    .industry-category { margin-left: 0 !important; }
+
+    /* ── Score chips in audit header ── */
+    .score-chip-val { width: 26px !important; height: 26px !important; font-size: 11px !important; }
+
+    /* ── Drop zones ── */
+    .drop-zone { height: auto !important; min-height: 200px !important; padding: 24px 16px !important; }
+    .drop-steps { flex-direction: column !important; align-items: flex-start !important; gap: 6px !important; }
+    .drop-legend { position: static !important; margin-top: 16px !important; flex-wrap: wrap !important; }
+
+    /* ── Competitor block ── */
+    .competitor-header { grid-template-columns: 1fr !important; }
+    .comp-tags { justify-content: flex-start !important; border-left: none !important; border-top: 1px solid var(--rule) !important; }
+    .comp-num { border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+
+    /* ── Hero / section headings ── */
+    .section-heading { font-size: 24px !important; line-height: 1.2 !important; }
+    .body-text { font-size: 14px !important; }
+
+    /* ── Note box ── */
+    .note-box { padding: 14px 16px !important; }
+    .note-box p { font-size: 12px !important; }
+
+    /* ── Footer ── */
+    .doc-footer {
+      flex-direction: column !important;
+      gap: 10px !important;
+      align-items: flex-start !important;
+    }
+    .footer-right { text-align: left !important; }
+
+    /* ── Step 1 specific ── */
+    .manifesto { padding: 16px 18px !important; }
+    .manifesto-text { font-size: 18px !important; }
+    .card { padding: 16px !important; }
+    .deliverables-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── Step 2 specific ── */
+    .selected-card { padding: 20px !important; }
+    .selected-card-num { font-size: 36px !important; top: 16px !important; right: 16px !important; }
+
+    /* ── Step 4 specific ── */
+    .stat-num { font-size: 28px !important; }
+    .insight-block { display: flex !important; flex-direction: column !important; }
+    .opp-three-col { grid-template-columns: 1fr !important; }
+
+    /* ── Step 5 specific ── */
+    .trust-breakdown { grid-template-columns: 1fr !important; }
+    .behaviour-grid { grid-template-columns: 1fr !important; }
+
+    /* ── Step 6 specific ── */
+    .gap-grid { grid-template-columns: 1fr !important; }
+    .criteria-bar { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  @media (max-width: 400px) {
+    .cover-title { font-size: 26px !important; }
+    .section-heading { font-size: 22px !important; }
+    .stat-grid { grid-template-columns: 1fr !important; }
+    .persona-summary { grid-template-columns: 1fr !important; }
+    .deliverables-grid { grid-template-columns: 1fr !important; }
+    .rejected-grid { grid-template-columns: 1fr !important; }
+  }
+
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Case Study Series · 2026</div>
+      <h1 class="cover-title">Brand<br><em>Naming Exercise</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block">
+        <div class="meta-label">Designer</div>
+        <div class="meta-value">Deepu Dinesh</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Document</div>
+        <div class="meta-value">Step 03 — Naming & Selection</div>
+      </div>
+      <div class="meta-block">
+        <div class="meta-label">Scope</div>
+        <div class="meta-value">4 candidates · 6 brands · 1 winner each</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1 -->
+    <div class="section">
+      <div class="section-label">01 — The naming approach</div>
+      <h2 class="section-heading">Four candidates.<br>Three criteria.<br><em>One name.</em></h2>
+
+      <p class="body-text">Before any visual design begins, each brand needs a real name — not a placeholder. The name shapes the typographic direction, the tone of voice, and every word of copy that follows. Getting it wrong at this stage creates problems at every stage after it.</p>
+
+      <p class="body-text">For each of the six industries, four naming candidates were generated — each using a different naming strategy. Each candidate was scored against three criteria that reflect what makes a name actually work in practice, not just sound good in a brief.</p>
+
+      <div class="criteria-row">
+        <div class="criterion-small">
+          <div class="criterion-letter">M</div>
+          <div class="criterion-name">Memorability</div>
+          <div class="criterion-desc">Is it easy to remember, spell, and say aloud? Does it have a rhythm that makes it stick? A name that requires explanation every time is a liability.</div>
+        </div>
+        <div class="criterion-small">
+          <div class="criterion-letter">F</div>
+          <div class="criterion-name">Brand fit</div>
+          <div class="criterion-desc">Does the name match the emotional register of the industry? A luxury skincare brand and a kids platform need entirely different naming tones. Fit is about alignment, not cleverness.</div>
+        </div>
+        <div class="criterion-small">
+          <div class="criterion-letter">T</div>
+          <div class="criterion-name">Typographic strength</div>
+          <div class="criterion-desc">Does the name work as a wordmark — at favicon size and at billboard scale? Short names with varied letterforms and clean rendering score higher.</div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <p><strong>Naming strategies used:</strong> Each candidate uses one of six approaches — Evocative (a word that feels like the brand), Compound (two words paired), Descriptive (states what it is), Abstract (invented or lateral), Classical (Latin or Greek root), or Portmanteau (two words blended). Using different strategies per industry ensures the exploration is genuinely varied and not just four versions of the same idea.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2 -->
+    <div class="section">
+      <div class="section-label">02 — The naming exercises</div>
+      <h2 class="section-heading">Six industries.<br><em>Twenty-four</em> candidates.</h2>
+
+      <!-- ══ 01: FINE DINING ══ -->
+      <div class="industry-block">
+        <div class="industry-header">
+          <div class="industry-num">01</div>
+          <div class="industry-title">Fine dining / hospitality</div>
+          <div class="industry-category">Restaurant · Reservations · Experiential</div>
+        </div>
+
+        <div class="candidates-grid">
+
+          <div class="name-card selected">
+            <div class="name-card-top">
+              <div class="candidate-name">Ember &amp; Oak</div>
+              <span class="naming-strategy strategy-compound">Compound</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Both words are grounded in the physical materials of wood-fired cooking — the ember that provides heat, the oak that provides fuel. The ampersand creates balance and duality, mirroring the tension between fire and restraint that defines the best fine dining. Short, imageable, and avoids the common trap of using a French word or a chef's surname.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Cinere</div>
+              <span class="naming-strategy strategy-classical">Classical</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">From the Latin "cinis" meaning ash or embers. Elegant and typographically distinctive, but most people would struggle to spell or pronounce it correctly on first encounter — a real friction point in word-of-mouth and search contexts. The idea is right; the execution creates unnecessary barriers.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">The Hearth Table</div>
+              <span class="naming-strategy strategy-descriptive">Descriptive</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">2/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Warm and evocative but too long at three words to work as a clean wordmark. It also reads more like a casual gastropub than a fine dining destination — "hearth" signals approachable warmth where the brief calls for something more considered and restrained.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Fumo</div>
+              <span class="naming-strategy strategy-evocative">Evocative</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Italian for "smoke" — typographically excellent and genuinely evocative of wood-fired cooking. Set aside because a single foreign word risks reading as a generic Italian restaurant name rather than a distinct brand identity. Also harder to own distinctively in a crowded hospitality market.</div>
+          </div>
+
+        </div>
+        <div class="selected-reveal">
+          <div>
+            <div class="reveal-label">Selected name · score 14/15</div>
+            <div class="reveal-name">Ember &amp; Oak</div>
+            <div class="reveal-tagline">"Where fire meets flavour."</div>
+          </div>
+          <div class="reveal-voice">
+            <span class="voice-pill">Unhurried</span>
+            <span class="voice-pill">Sensory</span>
+            <span class="voice-pill">Assured</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 02: SPACE ══ -->
+      <div class="industry-block">
+        <div class="industry-header">
+          <div class="industry-num">02</div>
+          <div class="industry-title">Space tourism / aerospace</div>
+          <div class="industry-category">Private spaceflight · High-stakes · Aspirational</div>
+        </div>
+
+        <div class="candidates-grid">
+
+          <div class="name-card selected">
+            <div class="name-card-top">
+              <div class="candidate-name">OrbitX</div>
+              <span class="naming-strategy strategy-compound">Compound</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">"Orbit" is the technically accurate term for what space tourists experience — circling Earth, not just reaching it. The "X" suffix signals a private, frontier-era company and is consistent with real commercial aerospace naming conventions. Six letters, all-caps capable, instantly communicates the category without a descriptor.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Apogee</div>
+              <span class="naming-strategy strategy-evocative">Evocative</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">The astronomical term for the highest point of an orbit — genuinely relevant and elegant. Set aside because it already exists as a registered brand name in multiple industries, and it reads more like a lifestyle or consultancy brand than a technical commercial spaceflight company.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Zenith Space</div>
+              <span class="naming-strategy strategy-descriptive">Descriptive</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">The category descriptor "Space" weakens rather than strengthens the name — it reads as generic rather than proprietary. "Zenith" alone is better but is heavily trademarked in watches and electronics, creating a real-world naming conflict even in a hypothetical context.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Vela</div>
+              <span class="naming-strategy strategy-classical">Classical</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">A southern constellation and Latin for "sail" — poetic and short. Scores lower on brand fit because it reads as elegant and gentle rather than technical and audacious. More appropriate for a luxury travel or yachting brand than a high-stakes private spaceflight company.</div>
+          </div>
+
+        </div>
+        <div class="selected-reveal">
+          <div>
+            <div class="reveal-label">Selected name · score 15/15</div>
+            <div class="reveal-name">OrbitX</div>
+            <div class="reveal-tagline">"Your seat at the edge of everything."</div>
+          </div>
+          <div class="reveal-voice">
+            <span class="voice-pill">Audacious</span>
+            <span class="voice-pill">Technical</span>
+            <span class="voice-pill">Monumental</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 03: KIDS ══ -->
+      <div class="industry-block">
+        <div class="industry-header">
+          <div class="industry-num">03</div>
+          <div class="industry-title">Kids entertainment / EdTech</div>
+          <div class="industry-category">Children 4–10 · Parents as decision-makers · Play-led learning</div>
+        </div>
+
+        <div class="candidates-grid">
+
+          <div class="name-card selected">
+            <div class="name-card-top">
+              <div class="candidate-name">Bumblebee World</div>
+              <span class="naming-strategy strategy-compound">Compound</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Bumblebees carry universal associations with cheerfulness, harmless energy, and gentle industriousness — directly mapping to what a children's learning brand needs to project. "World" signals scope and imagination. Works for both audiences: children respond to the animal reference, parents respond to the warm and safe connotation. The double-B sound is naturally playful and easy for young children to say.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Sprout</div>
+              <span class="naming-strategy strategy-evocative">Evocative</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Strong on memorability — the growth metaphor is genuinely relevant for EdTech. Set aside because it is already used by multiple children's media and EdTech brands globally, reducing distinctiveness. The growth metaphor also appeals more to parents than it excites children, which weakens the child-facing side of the dual audience.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Whizzpop Academy</div>
+              <span class="naming-strategy strategy-compound">Compound</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">2/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">"Academy" undermines the playfulness — it signals structured, institutional learning which conflicts with the play-led positioning. Also difficult to render as a clean wordmark at two long compound words. The energy of "Whizzpop" is right; the pairing pulls in the wrong direction.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Curiosito</div>
+              <span class="naming-strategy strategy-abstract">Abstract</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">A blend of "curiosity" and the Italian diminutive "-ito" — playful and phonetically appealing. Set aside narrowly: the name is harder to parse immediately for non-English or non-Italian speakers, and the "-ito" ending could carry unintended Spanish-language associations in some markets, reducing its global clarity.</div>
+          </div>
+
+        </div>
+        <div class="selected-reveal">
+          <div>
+            <div class="reveal-label">Selected name · score 14/15</div>
+            <div class="reveal-name">Bumblebee World</div>
+            <div class="reveal-tagline">"Big adventures for little minds."</div>
+          </div>
+          <div class="reveal-voice">
+            <span class="voice-pill">Joyful</span>
+            <span class="voice-pill">Safe</span>
+            <span class="voice-pill">Encouraging</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 04: AI SAAS ══ -->
+      <div class="industry-block">
+        <div class="industry-header">
+          <div class="industry-num">04</div>
+          <div class="industry-title">AI SaaS / B2B tech</div>
+          <div class="industry-category">Productivity · Enterprise · AI-powered</div>
+        </div>
+
+        <div class="candidates-grid">
+
+          <div class="name-card selected">
+            <div class="name-card-top">
+              <div class="candidate-name">NeuralDesk</div>
+              <span class="naming-strategy strategy-compound">Compound</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">"Neural" signals AI without using the word "AI" — referencing neural networks in a way that is technically accurate and more sophisticated than competitors who prefix everything with "AI." "Desk" grounds the product in the workplace, signalling a productivity tool rather than a research platform. The compound reads as a single, confident word — strong in all-caps and clean as a wordmark.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Synapse</div>
+              <span class="naming-strategy strategy-evocative">Evocative</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Genuinely strong — memorable, typographically excellent, and the neural metaphor is apt. Set aside because "Synapse" already exists as multiple registered tech brands. Even for a hypothetical project, using a name with real trademark conflicts would undermine the portfolio's credibility if questions arose in an interview context.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">CogniFlow</div>
+              <span class="naming-strategy strategy-portmanteau">Portmanteau</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">A logical blend of "cognition" and "flow." The issue is typographic — the capital F mid-word creates an awkward visual rhythm that is difficult to render as a single clean wordmark. It also sounds close to existing SaaS products, reducing distinctiveness in a market where naming collisions are common.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Meridian AI</div>
+              <span class="naming-strategy strategy-descriptive">Descriptive</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">The "AI" suffix dates rapidly and signals a company that hasn't thought carefully about identity beyond its technology — a known weakness in tech branding. "Meridian" alone is compelling but too broad, covering everything from geographic tools to consultancy firms. The combination doesn't clearly communicate a workplace productivity product.</div>
+          </div>
+
+        </div>
+        <div class="selected-reveal">
+          <div>
+            <div class="reveal-label">Selected name · score 15/15</div>
+            <div class="reveal-name">NeuralDesk</div>
+            <div class="reveal-tagline">"Your team's intelligence, amplified."</div>
+          </div>
+          <div class="reveal-voice">
+            <span class="voice-pill">Confident</span>
+            <span class="voice-pill">Precise</span>
+            <span class="voice-pill">Enabling</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 05: SKINCARE ══ -->
+      <div class="industry-block">
+        <div class="industry-header">
+          <div class="industry-num">05</div>
+          <div class="industry-title">Luxury skincare / beauty</div>
+          <div class="industry-category">Premium · Nature-derived · Science-backed</div>
+        </div>
+
+        <div class="candidates-grid">
+
+          <div class="name-card selected">
+            <div class="name-card-top">
+              <div class="candidate-name">Verdana</div>
+              <span class="naming-strategy strategy-classical">Classical</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Derives from the Latin "viridis" (green, flourishing) — a botanical resonance accurate for a nature-derived skincare line. Ends in a soft vowel sound, which is a consistent pattern in successful luxury beauty naming (Tatcha, Aesop, Alpina). Feminine without being exclusionary, scientific without being clinical, European in cadence without claiming a specific country of origin. Sets exceptionally well in wide-tracked capitals as a wordmark.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Lumière</div>
+              <span class="naming-strategy strategy-evocative">Evocative</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">French for "light" — evocative of radiance and skin luminosity. The accented character is a practical liability: it renders inconsistently across digital surfaces, complicates domain registration, and is frequently misspelled. French light-related names are also heavily saturated in beauty branding, reducing distinctiveness.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Sōla</div>
+              <span class="naming-strategy strategy-abstract">Abstract</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Short, elegant, and phonetically pleasing. The macron (ō) adds visual distinction but creates the same digital rendering issues as accented characters. "Sola" without the macron already exists as a registered cosmetics brand. A strong contender — narrowly set aside in favour of Verdana's richer etymological rationale and cleaner typographic rendering.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Purity Lab</div>
+              <span class="naming-strategy strategy-descriptive">Descriptive</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">2/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Scores lowest on brand fit — "Lab" shifts the register from luxury to clinical and functional. A brand positioned on sensory pleasure and natural ingredients does not benefit from laboratory associations. This name would suit a pharmaceutical-grade skincare line, not a premium lifestyle brand.</div>
+          </div>
+
+        </div>
+        <div class="selected-reveal">
+          <div>
+            <div class="reveal-label">Selected name · score 15/15</div>
+            <div class="reveal-name">Verdana</div>
+            <div class="reveal-tagline">"Drawn from the earth. Refined by science."</div>
+          </div>
+          <div class="reveal-voice">
+            <span class="voice-pill">Quiet authority</span>
+            <span class="voice-pill">Considered</span>
+            <span class="voice-pill">Honest</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 06: PET CARE ══ -->
+      <div class="industry-block">
+        <div class="industry-header">
+          <div class="industry-num">06</div>
+          <div class="industry-title">Pet care / consumer D2C</div>
+          <div class="industry-category">Urban pet owners · Subscription · Companion-first</div>
+        </div>
+
+        <div class="candidates-grid">
+
+          <div class="name-card selected">
+            <div class="name-card-top">
+              <div class="candidate-name">Pawside</div>
+              <span class="naming-strategy strategy-portmanteau">Portmanteau</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">A blend of "paw" and "beside/alongside" — implying companionship and loyalty rather than retail. The name communicates positioning directly: this is a companion brand, not a cold product platform. Warm, instantly readable, and works naturally in spoken conversation. Avoids the over-literal naming common in pet care without being abstract.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Furever</div>
+              <span class="naming-strategy strategy-portmanteau">Portmanteau</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Memorable and instantly understood as pet-related. Scores lower on brand fit because the pun reads as slightly cutesy rather than warm and trustworthy — it suits a pet adoption charity or a greeting card, not a premium D2C subscription brand. The tone risks undermining the quality signal the brand needs to earn.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">The Companion Co.</div>
+              <span class="naming-strategy strategy-descriptive">Descriptive</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">2/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">The positioning idea is sound but three words including an article creates a weak wordmark. "Co." reads as generic startup naming. The name also doesn't clearly signal pet care — it could be mistaken for a human companionship or eldercare service without additional context.</div>
+          </div>
+
+          <div class="name-card rejected">
+            <div class="name-card-top">
+              <div class="candidate-name">Fetch &amp; Field</div>
+              <span class="naming-strategy strategy-compound">Compound</span>
+            </div>
+            <div class="name-card-scores">
+              <div class="score-item">
+                <div class="score-label">Memorability</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div></div>
+                <div class="score-total">5/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Brand fit</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div><div class="sdot"></div></div>
+                <div class="score-total">3/5</div>
+              </div>
+              <div class="score-item">
+                <div class="score-label">Type strength</div>
+                <div class="score-dots"><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot on"></div><div class="sdot"></div></div>
+                <div class="score-total">4/5</div>
+              </div>
+            </div>
+            <div class="name-card-reason">Alliterative and very memorable. Scores lower on brand fit because "Field" positions the brand as outdoor and active, skewing toward dogs and rural owners rather than the urban, multi-pet-type audience this brand targets. "Fetch" also implicitly excludes cat owners, unnecessarily narrowing the market.</div>
+          </div>
+
+        </div>
+        <div class="selected-reveal">
+          <div>
+            <div class="reveal-label">Selected name · score 14/15</div>
+            <div class="reveal-name">Pawside</div>
+            <div class="reveal-tagline">"Everything your pet deserves. Delivered."</div>
+          </div>
+          <div class="reveal-voice">
+            <span class="voice-pill">Warm</span>
+            <span class="voice-pill">Trustworthy</span>
+            <span class="voice-pill">Unpretentious</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: SUMMARY -->
+    <div class="section">
+      <div class="section-label">03 — Final selection · all six confirmed</div>
+      <h2 class="section-heading">The six brands,<br><em>named.</em></h2>
+
+      <p class="body-text">All six brand names are now confirmed. These names will be used consistently across every subsequent step — research, moodboarding, copywriting, and the final landing page build. Each name was selected not because it was the only option, but because it scored highest against criteria that reflect real brand naming practice.</p>
+
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Selected name</th>
+            <th>Industry</th>
+            <th>Strategy</th>
+            <th>Score</th>
+            <th>Tagline</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ember &amp; Oak</td>
+            <td>Fine dining</td>
+            <td>Compound</td>
+            <td><span class="score-badge">14/15</span></td>
+            <td>"Where fire meets flavour."</td>
+          </tr>
+          <tr>
+            <td>OrbitX</td>
+            <td>Space tourism</td>
+            <td>Compound</td>
+            <td><span class="score-badge">15/15</span></td>
+            <td>"Your seat at the edge of everything."</td>
+          </tr>
+          <tr>
+            <td>Bumblebee World</td>
+            <td>Kids EdTech</td>
+            <td>Compound</td>
+            <td><span class="score-badge">14/15</span></td>
+            <td>"Big adventures for little minds."</td>
+          </tr>
+          <tr>
+            <td>NeuralDesk</td>
+            <td>AI SaaS</td>
+            <td>Compound</td>
+            <td><span class="score-badge">15/15</span></td>
+            <td>"Your team's intelligence, amplified."</td>
+          </tr>
+          <tr>
+            <td>Verdana</td>
+            <td>Luxury skincare</td>
+            <td>Classical</td>
+            <td><span class="score-badge">15/15</span></td>
+            <td>"Drawn from the earth. Refined by science."</td>
+          </tr>
+          <tr>
+            <td>Pawside</td>
+            <td>Pet care D2C</td>
+            <td>Portmanteau</td>
+            <td><span class="score-badge">14/15</span></td>
+            <td>"Everything your pet deserves. Delivered."</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">
+        FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>
+        STEP 03 — BRAND NAMING EXERCISE
+      </div>
+      <div class="footer-right">
+        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="741011110401101a071c341319151d185a17

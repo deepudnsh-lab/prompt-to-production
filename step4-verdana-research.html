@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 4: Industry Research · Verdana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF7F2;--cream-mid:#F2EDE4;--cream-dark:#E8DFD0;
+  --sage:#5C7A5F;--sage-light:#8FAE92;--sage-tint:#EEF4EE;
+  --warm:#C4855A;--warm-tint:#FBF1EB;--warm-soft:#E8C4A8;
+  --ink:#1A1612;--ink-mid:#4A4038;--ink-muted:#8A7A6A;--ink-faint:#C4B8A8;
+  --white:#FFFFFF;--border:#E0D8CC;--rule:#EDE8E0;
+  --good-bg:#EEF4EE;--good-text:#2D5E30;
+  --warn-bg:#FDF6EE;--warn-text:#7A5020;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--cream);margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;border-bottom:1px solid var(--border);
+}
+.cover-band::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);
+}
+.cover-band::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(92,122,95,.07) 1px,transparent 1px);
+  background-size:28px 28px;pointer-events:none;
+}
+.project-series{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--sage);opacity:.8;
+  margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;
+}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--sage);opacity:.6;}
+.cover-title{
+  font-family:'Cormorant Garamond',serif;font-weight:300;font-size:56px;
+  line-height:.95;color:var(--ink);letter-spacing:-.02em;position:relative;z-index:1;
+}
+.cover-title em{font-style:italic;color:var(--sage);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--border);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--sage);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{
+  font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;
+  line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;
+}
+.section-heading em{font-style:italic;color:var(--sage);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--sage-tint);border-left:3px solid var(--sage);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:28px 0;}
+.stat-card{
+  background:var(--cream);border:1px solid var(--border);
+  padding:22px 18px;position:relative;overflow:hidden;
+}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sage);}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;font-weight:500;font-size:2.2rem;
+  color:var(--sage);line-height:1;margin-bottom:5px;
+}
+.stat-label{font-size:11px;color:var(--ink-muted);line-height:1.4;}
+
+/* ── DATA TABLE ── */
+.data-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.data-table th{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;background:var(--ink);color:var(--white);
+  padding:11px 14px;text-align:left;
+}
+.data-table td{
+  padding:12px 14px;border-bottom:1px solid var(--rule);
+  font-size:13px;color:var(--ink-mid);line-height:1.55;vertical-align:top;
+}
+.data-table tr:hover td{background:var(--cream);}
+.data-table td:first-child{color:var(--ink);font-weight:500;}
+.td-sage{color:var(--sage);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;}
+.td-warm{color:var(--warm);font-family:'DM Mono',monospace;font-size:12px;}
+.td-good{color:var(--good-text);font-family:'DM Mono',monospace;font-size:12px;}
+
+/* ── COMPETITOR CARDS ── */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:20px 0;}
+.comp-card{background:var(--cream);border:1px solid var(--border);padding:22px 20px;}
+.comp-card-full{background:var(--cream);border:1px solid var(--border);padding:22px 20px;margin-bottom:2px;}
+.comp-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.1rem;color:var(--ink);margin-bottom:3px;}
+.comp-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;}
+.comp-scores{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.comp-score{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;}
+.cs-strong{background:var(--good-bg);color:var(--good-text);border:1px solid rgba(45,94,48,.15);}
+.cs-mid{background:var(--warn-bg);color:var(--warn-text);border:1px solid rgba(122,80,32,.15);}
+.cs-weak{background:var(--warm-tint);color:var(--warm);border:1px solid var(--warm-soft);}
+.comp-body{font-size:12.5px;color:var(--ink-mid);line-height:1.65;}
+.comp-body strong{color:var(--ink);}
+.comp-gap{
+  background:var(--sage-tint);border-left:3px solid var(--sage);
+  padding:10px 14px;margin-top:10px;font-size:11.5px;color:var(--ink-mid);line-height:1.6;
+}
+
+/* ── TREND LIST ── */
+.trend-list{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.trend-row{
+  display:grid;grid-template-columns:48px 1fr auto;
+  align-items:start;border:1px solid var(--border);border-bottom:none;
+  background:var(--white);
+}
+.trend-row:first-child{border-radius:2px 2px 0 0;}
+.trend-row:last-child{border-bottom:1px solid var(--border);border-radius:0 0 2px 2px;}
+.trend-row:hover{background:var(--cream);}
+.trend-num{
+  background:var(--sage);border-right:1px solid rgba(255,255,255,.15);
+  padding:16px 8px;display:flex;align-items:center;justify-content:center;align-self:stretch;
+}
+.trend-num span{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.85);letter-spacing:.1em;}
+.trend-content{padding:14px 18px;}
+.trend-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.trend-desc{font-size:12px;color:var(--ink-muted);line-height:1.55;}
+.trend-badge{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;padding:3px 10px;white-space:nowrap;
+  align-self:start;margin:14px 14px 0 0;
+}
+.badge-dominant{background:var(--ink);color:var(--white);}
+.badge-emerging{background:var(--cream);color:var(--ink-mid);border:1px solid var(--border);}
+.badge-declining{background:var(--warm-tint);color:var(--warm);border:1px solid var(--warm-soft);}
+
+/* ── OPPORTUNITY BOX ── */
+.opportunity{
+  background:var(--ink);padding:36px 40px;margin-top:32px;
+  position:relative;overflow:hidden;
+}
+.opportunity::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);
+}
+.opportunity::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(92,122,95,.08) 1px,transparent 1px);
+  background-size:24px 24px;pointer-events:none;
+}
+.opp-label{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(143,174,146,.5);
+  margin-bottom:12px;position:relative;z-index:1;
+}
+.opp-text{
+  font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;
+  font-style:italic;color:var(--white);line-height:1.55;position:relative;z-index:1;
+}
+.opp-text em{font-style:normal;color:var(--sage-light);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .comp-grid{grid-template-columns:1fr;}
+  .trend-row{grid-template-columns:36px 1fr;}
+  .trend-badge{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Verdana · Brand 05 of 06</div>
+    <h1 class="cover-title">Industry<br><em>Research</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 04 — Industry Research</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Verdana</div></div>
+    <div class="meta-block"><div class="meta-label">Industry</div><div class="meta-value">Luxury skincare · US clean beauty · $80–$300</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 MARKET SIZE -->
+  <div class="section">
+    <div class="section-label">01 — Market size & growth</div>
+    <h2 class="section-heading">The market Verdana<br><em>is entering.</em></h2>
+
+    <p class="body-text">The US clean beauty and premium skincare market is one of the most aggressively growing segments in consumer retail. Driven by a generation that reads ingredient labels the way a previous generation read nutrition facts, the category has moved from niche wellness positioning into the mainstream luxury tier — with price points that now rival professional dermatology treatments and packaging that competes with fine jewellery for shelf presence.</p>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">$11.4B</div><div class="stat-label">US clean beauty market size 2024 — Grand View Research, Jan 2026</div></div>
+      <div class="stat-card"><div class="stat-num">12.8%</div><div class="stat-label">CAGR projected through 2030 — Grand View Research, Jan 2026</div></div>
+      <div class="stat-card"><div class="stat-num">68%</div><div class="stat-label">of Gen Z consumers check ingredient lists before purchasing — Mintel 2025</div></div>
+      <div class="stat-card"><div class="stat-num">$182</div><div class="stat-label">Average annual skincare spend · US millennial woman · Euromonitor 2025</div></div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Segment</th><th>2024 Size</th><th>2026 Projection</th><th>Key driver</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Mass clean beauty ($15–$40)</td><td class="td-warm">$4.2B</td><td class="td-warm">$5.1B</td><td>Target, Sephora mass shelf expansion; Byoma, CeraVe clean reformulations</td></tr>
+        <tr><td>Premium clean beauty ($40–$100)</td><td class="td-sage">$4.8B</td><td class="td-sage">$6.3B</td><td>Millennial trade-up; Tatcha, Drunk Elephant, Youth to the People</td></tr>
+        <tr><td>Luxury clean beauty ($100–$300+)</td><td class="td-good">$2.4B</td><td class="td-good">$3.8B</td><td>Gen Z aspirational spend; La Mer, Augustinus Bader, Biologique Recherche</td></tr>
+        <tr><td>Botanical / ingredient-led subcategory</td><td class="td-sage">$1.8B</td><td class="td-sage">$3.1B</td><td>Transparency trend; consumers demanding named ingredients at named percentages</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <p><strong>Verdana positions in the premium-to-luxury tier ($80–$300)</strong> — the fastest-growing segment, where design quality, ingredient storytelling, and packaging aesthetics all carry equal weight to formula efficacy. The buyer in this tier does not separate the product from its presentation. The jar is part of the ritual.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 BUYER PROFILE -->
+  <div class="section">
+    <div class="section-label">02 — Buyer profile</div>
+    <h2 class="section-heading">Who actually<br><em>buys at this tier.</em></h2>
+
+    <p class="body-text">The premium clean beauty buyer is not the dermatologist-adjacent buyer who purchases based on clinical trial data. She is a millennial or Gen Z woman for whom skincare is simultaneously a self-care ritual, an aesthetic identity statement, and a social signal. She discovers products on TikTok and Instagram, buys based on texture and packaging first, reads the ingredient list second, and shares the unboxing before she opens the product.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Attribute</th><th>Profile</th><th>Design implication</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Age and platform</td><td>25–35 · Instagram, TikTok, Pinterest · Substack skincare newsletters</td><td>Visual-first content. The product must photograph beautifully. Matte cream packaging over glossy. Natural light aesthetics.</td></tr>
+        <tr><td>Purchase trigger</td><td>Texture video ("the slip"), aesthetic flatlay, founder story, ingredient callout ("7% niacinamide, nothing else")</td><td>The hero must show the product in context — not on a white sweep but in a lived, tactile setting. Texture is a trust signal.</td></tr>
+        <tr><td>Ingredient literacy</td><td>Reads INCI lists. Knows the difference between retinol and retinal. Can identify greenwashing. Suspicious of "natural" without specifics.</td><td>Name the ingredients. Name the percentages. Do not claim "natural" — claim specific. "5% bakuchiol, 2% squalane, nothing synthetic."</td></tr>
+        <tr><td>Price relationship</td><td>Will spend $120 on a serum without hesitation if the brand earns trust. Will not spend $40 on a brand that feels cheap in its presentation.</td><td>Pricing must not be hidden or apologised for. $120 is a signal of seriousness — display it as a matter of fact.</td></tr>
+        <tr><td>Loyalty pattern</td><td>Highly brand-loyal once converted. Will advocate publicly. Reviews on Reddit r/SkincareAddiction, YouTube reviews, TikTok empties videos.</td><td>Post-purchase experience matters as much as pre-purchase. The unboxing must be designed. The insert must be beautiful.</td></tr>
+        <tr><td>Sustainability expectation</td><td>Expects recyclable packaging. Suspicious of vague sustainability claims. Prefers glass over plastic, refillable over single-use.</td><td>Glass jar or bottle. Refill programme. Name the manufacturer. Do not claim "eco-friendly" — show the evidence.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 COMPETITOR LANDSCAPE -->
+  <div class="section">
+    <div class="section-label">03 — Competitor landscape</div>
+    <h2 class="section-heading">Five competitors.<br><em>Five positions.</em></h2>
+
+    <p class="body-text">Five brands in the premium-to-luxury US clean beauty tier were analysed — each occupying a distinct sub-position within the category. Scored on: Design quality (D), Ingredient transparency (I), Aesthetic coherence (A), Storytelling clarity (S), and Digital experience (E) on a 1–5 scale.</p>
+
+    <div class="comp-card-full">
+      <div class="comp-name">Tatcha</div>
+      <div class="comp-tag">Japanese-inspired luxury · $68–$185 · Sephora + DTC</div>
+      <div class="comp-scores">
+        <span class="comp-score cs-strong">D: 5/5</span>
+        <span class="comp-score cs-mid">I: 3/5</span>
+        <span class="comp-score cs-strong">A: 5/5</span>
+        <span class="comp-score cs-strong">S: 4/5</span>
+        <span class="comp-score cs-strong">E: 4/5</span>
+      </div>
+      <div class="comp-body">The category benchmark for visual design — deep lacquer red, Japanese heritage storytelling, photography that feels like editorial art direction. <strong>Tatcha's weakness is ingredient transparency</strong> — the brand leads with ritual and heritage, not formula specifics. The Gen Z buyer who reads INCI lists finds the ingredient communication opaque. Tatcha owns the aesthetic register; it does not own the ingredient story.</div>
+      <div class="comp-gap">Gap: Tatcha has the design. It does not have the ingredient transparency that the 25–35 millennial/Gen Z buyer now demands as a category baseline.</div>
+    </div>
+
+    <div class="comp-grid">
+      <div class="comp-card">
+        <div class="comp-name">Drunk Elephant</div>
+        <div class="comp-tag">Ingredient-led · $28–$90 · Sephora hero brand</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-mid">D: 3/5</span>
+          <span class="comp-score cs-strong">I: 5/5</span>
+          <span class="comp-score cs-mid">A: 3/5</span>
+          <span class="comp-score cs-strong">S: 4/5</span>
+          <span class="comp-score cs-mid">E: 3/5</span>
+        </div>
+        <div class="comp-body">The category's most ingredient-transparent brand — the "Suspicious 6" framework is the most famous clean beauty communication device in the market. <strong>Drunk Elephant's design is playful and colourful — not elevated.</strong> The packaging feels fun, not luxe. Acquired by Shiseido in 2019; some buyers feel the soul has shifted.</div>
+        <div class="comp-gap">Gap: Ingredient transparency at a non-luxury aesthetic. Verdana takes the ingredient rigour; applies it at a higher design register.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Augustinus Bader</div>
+        <div class="comp-tag">Clinically-led luxury · $80–$320 · DTC + Barneys</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-strong">D: 4/5</span>
+          <span class="comp-score cs-strong">I: 4/5</span>
+          <span class="comp-score cs-mid">A: 3/5</span>
+          <span class="comp-score cs-strong">S: 5/5</span>
+          <span class="comp-score cs-mid">E: 3/5</span>
+        </div>
+        <div class="comp-body">The strongest science-led luxury brand — Professor Augustinus Bader's stem cell research is the entire brand story. Austere white and gold packaging, clinical authority, celebrity following. <strong>The aesthetic is cold — deliberately so.</strong> The buyer who wants warmth, nature, or botanicals will not find it here.</div>
+        <div class="comp-gap">Gap: Clinical authority without warmth or nature. Verdana occupies the warm, botanical version of this price point.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Youth to the People</div>
+        <div class="comp-tag">Vegan superfood · $38–$72 · Sephora + DTC</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-mid">D: 3/5</span>
+          <span class="comp-score cs-strong">I: 4/5</span>
+          <span class="comp-score cs-strong">A: 4/5</span>
+          <span class="comp-score cs-mid">S: 3/5</span>
+          <span class="comp-score cs-mid">E: 3/5</span>
+        </div>
+        <div class="comp-body">Strong on ingredient communication and sustainability credentials. The green glass apothecary packaging is distinctive and photograph-well. <strong>Positioned below Verdana's price tier</strong> — the $38–$72 range is premium but not luxury. The brand has broad awareness but lacks the exclusivity that makes a $150 product feel earned.</div>
+        <div class="comp-gap">Gap: Right ingredient story, right aesthetic, wrong price tier. Verdana takes the botanical positioning one tier higher.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Biologique Recherche</div>
+        <div class="comp-tag">Cult professional · $80–$300 · Spa-only DTC</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-weak">D: 2/5</span>
+          <span class="comp-score cs-strong">I: 5/5</span>
+          <span class="comp-score cs-weak">A: 2/5</span>
+          <span class="comp-score cs-strong">S: 5/5</span>
+          <span class="comp-score cs-weak">E: 2/5</span>
+        </div>
+        <div class="comp-body">The most extreme case of desirability without design — clinical beige packaging, deliberately inaccessible distribution, aggressive formulas that require skin typing. The cult status is real and powerful. <strong>But the digital experience and visual design are actively ugly</strong> — and that is an intentional signal of seriousness.</div>
+        <div class="comp-gap">Gap: Maximum credibility, minimum visual appeal. The buyer who wants the credibility AND the beauty has nowhere to go. Verdana owns that position.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 VISUAL DESIGN TRENDS -->
+  <div class="section">
+    <div class="section-label">04 — Visual design trends · US premium skincare 2025–26</div>
+    <h2 class="section-heading">What the category<br><em>looks like now.</em></h2>
+
+    <div class="trend-list">
+      <div class="trend-row">
+        <div class="trend-num"><span>T01</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Warm, earthy palettes replacing clinical white</div>
+          <div class="trend-desc">The all-white clinical aesthetic that defined premium skincare for a decade (La Mer, SK-II, Kiehl's) is being displaced by warm cream, stone, sage, and terracotta palettes. The shift signals a move from pharmaceutical authority to botanical intimacy — the product as something that grows, not something that is made in a lab.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T02</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Ingredient-forward hero copy — name it, claim it</div>
+          <div class="trend-desc">"With niacinamide" has been replaced by "7% niacinamide, nothing else." The specificity is the trust signal. Brands that name percentages, name sourcing regions, and name manufacturers are outperforming brands that use ingredient names as vague premium markers. The buyer can verify — and increasingly, she does.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T03</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Tactile, textural photography — the "slip" as a conversion tool</div>
+          <div class="trend-desc">Video and photography that shows the texture of the product — the way a serum beads, the drag of a cream, the way an oil catches light — is the single highest-converting content format in the premium skincare category. The texture communicates luxury better than any claim. Brands that do not show texture are leaving conversion on the table.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T04</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Serif typography as authority marker at premium tier</div>
+          <div class="trend-desc">Refined serif display type — Cormorant, Canela, Freight Display — signals a premium register that sans-serif cannot currently achieve in the skincare category. The serif communicates heritage, craft, and the kind of permanence that justifies a $150 price point. The category's most aspirational brands (Tatcha, Augustinus Bader, La Mer) all use serif or editorial type at display level.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T05</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Glass packaging as a category signal of seriousness</div>
+          <div class="trend-desc">Glass over plastic is now a baseline expectation at the premium tier — both as a sustainability signal and as a tactile quality signal. A brand selling at $120+ in a plastic tube will face credibility questions the packaging alone cannot answer. Frosted glass, amber glass, and hand-finished closures are table stakes in the $80–$300 tier.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T06</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Founder-as-formulator brand story</div>
+          <div class="trend-desc">Brands with a named founder who is also the formulator — or who has a personal, specific relationship to the hero ingredient — are outperforming faceless brand architectures. The founder story answers "why does this brand exist?" in the most direct possible way. Biologique Recherche (Professor Alain Siber), Augustinus Bader (Professor Bader), Vintner's Daughter (April Gargiulo) — the founder is the credential.</div>
+        </div>
+        <span class="trend-badge badge-emerging">Emerging</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T07</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Slow beauty — fewer products, deeper rituals</div>
+          <div class="trend-desc">Counter to the 10-step Korean skincare wave, the premium US market is moving toward fewer, more deliberate products. Two or three products, each of which takes its time. A brand that sells a complete routine in three products at $100–$180 each is more aligned with the current buyer psychology than a brand with 40 SKUs. Less is the luxury signal.</div>
+        </div>
+        <span class="trend-badge badge-emerging">Emerging</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T08</span></div>
+        <div class="trend-content">
+          <div class="trend-title">10-step routines and product layering as content</div>
+          <div class="trend-desc">The complexity sell is fading. The 2018–2022 era of 10-step routines and acid layering guides is being replaced by simpler, slower rituals. Brands that still lead with complexity are visually and editorially out of step with the current buyer expectation. The 2025–26 buyer wants fewer, better products and a deeper understanding of each one.</div>
+        </div>
+        <span class="trend-badge badge-declining">Declining</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 OPPORTUNITY -->
+  <div class="section">
+    <div class="section-label">05 — Design opportunity statement</div>
+    <h2 class="section-heading">The territory<br><em>Verdana owns.</em></h2>
+
+    <p class="body-text">The US premium clean beauty market has a visible gap at the intersection of three coordinates: warm botanical visual identity, luxury price tier ($80–$300), and genuine ingredient transparency. Tatcha has the warmth and luxury but not the transparency. Drunk Elephant has the transparency but not the luxury aesthetic. Augustinus Bader has the luxury and credibility but is cold and clinical. Biologique Recherche has maximum credibility but minimum design.</p>
+
+    <p class="body-text">Verdana occupies the exact position none of them hold: a warm, ingredient-honest, botanically-rooted brand that looks as serious as its formula and as beautiful as its packaging promises. The design brief is to make that position visible — in every typeface choice, every palette decision, every image selection, and every word of copy.</p>
+
+    <div class="opportunity">
+      <div class="opp-label">Design opportunity · Verdana · 2026</div>
+      <div class="opp-text">Tatcha has the ceremony. Drunk Elephant has the science. Augustinus Bader has the authority. <em>Verdana has all three</em> — and the warmth that none of them do. Botanical-first. Ingredient-honest. Designed for the buyer who reads the label and buys the jar.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 04 — INDUSTRY RESEARCH · VERDANA</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

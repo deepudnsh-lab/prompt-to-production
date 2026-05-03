@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 13: Behance Publish Guide · NeuralDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF;--surface:#F7F7F9;--border:#E8ECF0;
+  --red:#E8000D;--red-tint:#FFF0F0;--red-soft:#FFD6D8;
+  --slate:#64748B;--slate-light:#94A3B8;--navy:#0F172A;
+  --ink:#0A0A0F;--ink-mid:#3D3D4A;--ink-muted:#7A7A8C;--ink-faint:#B8B8C8;
+  --rule:#EFEFEF;
+  --good-bg:#F0FBF4;--good-text:#1B5E20;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--surface);font-family:'Space Grotesk',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+.cover-band{background:var(--white);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--rule);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--red);opacity:.5;}
+.cover-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;line-height:.95;color:var(--ink);letter-spacing:-.03em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:var(--red);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--rule);margin:0 -80px;}
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;line-height:1.1;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--red);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--red-tint);border-left:3px solid var(--red);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.cl-row{display:grid;grid-template-columns:40px 1fr;border:1px solid var(--rule);border-bottom:none;background:var(--white);}
+.cl-row:first-child{border-radius:2px 2px 0 0;}
+.cl-row:last-child{border-bottom:1px solid var(--rule);border-radius:0 0 2px 2px;}
+.cl-row:hover .cl-content{background:var(--surface);}
+.cl-check{background:var(--surface);border-right:1px solid var(--rule);display:flex;align-items:center;justify-content:center;align-self:stretch;font-size:14px;}
+.cl-check.done{background:var(--good-bg);}
+.cl-content{padding:12px 18px;}
+.cl-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.cl-desc{font-size:12px;color:var(--ink-muted);line-height:1.55;}
+
+/* COPY BLOCK */
+.copy-field{background:var(--surface);border:1px solid var(--rule);margin:20px 0;}
+.cf-label{background:var(--navy);padding:8px 18px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.cf-body{padding:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.8;color:var(--ink-mid);}
+.cf-body em{font-style:normal;color:var(--red);}
+
+/* STEPS LIST */
+.step-list{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.sl-row{display:grid;grid-template-columns:48px 1fr;border:1px solid var(--rule);border-bottom:none;background:var(--white);}
+.sl-row:first-child{border-radius:2px 2px 0 0;}
+.sl-row:last-child{border-bottom:1px solid var(--rule);border-radius:0 0 2px 2px;}
+.sl-row:hover .sl-content{background:var(--surface);}
+.sl-num{background:var(--red);display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(255,255,255,.1);align-self:stretch;}
+.sl-num span{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,.8);letter-spacing:.1em;}
+.sl-content{padding:14px 18px;}
+.sl-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.sl-desc{font-size:12px;color:var(--ink-muted);line-height:1.6;}
+
+/* ASSETS TABLE */
+.data-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.data-table th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--navy);color:var(--white);padding:11px 14px;text-align:left;}
+.data-table td{padding:11px 14px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink-mid);line-height:1.55;vertical-align:top;}
+.data-table tr:hover td{background:var(--surface);}
+.data-table td:first-child{color:var(--ink);font-weight:600;}
+.td-mono{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);}
+
+/* TAGS */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--rule);color:var(--ink-muted);background:var(--surface);}
+.tag.red{border-color:var(--red-soft);color:var(--red);background:var(--red-tint);}
+
+/* CLOSE BOX */
+.close-box{background:var(--navy);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;}
+.close-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.close-box::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.06) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+.cb-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,0,13,.45);margin-bottom:12px;position:relative;z-index:1;}
+.cb-text{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:var(--white);line-height:1.55;position:relative;z-index:1;}
+.cb-text em{font-style:normal;color:var(--red-soft);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · NeuralDesk · Brand 04 of 06</div>
+    <h1 class="cover-title">Behance<br><em>Publish Guide</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 13 — Behance Publish Guide</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">NeuralDesk</div></div>
+    <div class="meta-block"><div class="meta-label">Series</div><div class="meta-value">Brand 04 of 06 — From Prompt to Production</div></div>
+  </div>
+</div>
+<div class="accent-rule"></div>
+<div class="doc-body">
+
+  <!-- 01 PRE-PUBLISH CHECKLIST -->
+  <div class="section">
+    <div class="section-label">01 — Pre-publish checklist</div>
+    <h2 class="section-heading">Before you<br><em>hit publish.</em></h2>
+    <p class="body-text">Twelve checks before the NeuralDesk project goes live on Behance. Each one is a quality gate — a check that either the project is correct, or that it is ready to be seen.</p>
+    <div class="checklist">
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Landing page opens and renders correctly in Chrome, Safari, and Firefox</div><div class="cl-desc">Open neuraldesk-landing.html in each browser. Tab switcher functional. Typewriter running. All sections visible. Mobile breakpoint at 640px clean.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">All nine process documents open without errors</div><div class="cl-desc">Steps 4, 5, 6, 7, 8, 10, 11, 12, 13 — each opens, fonts load, images embedded and visible. No broken references.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Step 6 annotated screenshots are visible in the audit document</div><div class="cl-desc">Three embedded PNG files (Tableau, Looker Studio, ThoughtSpot) render at full width. Scores in the document match what the annotations show.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Step 7 moodboard images are visible in the moodboard document</div><div class="cl-desc">All three Midjourney moodboards (Signal, Momentum, Clarity) embedded and rendering. Direction C identified and recommended.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">All market statistics have a named source and year</div><div class="cl-desc">No stat appears without attribution. Check Step 4 specifically: $33.4B (Grand View Research, Jan 2026), 27.6% CAGR, $9.4B self-serve segment (Forrester Q4 2025).</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Persona is Marcus Webb throughout — no Vikram Nair references remain</div><div class="cl-desc">Search all documents for "Vikram" and "₹". Both should return zero results across all files.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">No document references another brand in the series</div><div class="cl-desc">NeuralDesk documents must be fully standalone. No reference to Ember & Oak, OrbitX, Bumblebee World. Each file functions in complete isolation.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Landing page is fully responsive at 320px, 375px, 640px, 960px, 1440px</div><div class="cl-desc">Resize Chrome DevTools to each width. Hamburger menu functional at 640px. UI sidebar hidden on mobile. Metric grids collapsing correctly.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Step 10 prompts are verbatim — nothing reconstructed</div><div class="cl-desc">Every prompt in Step 10 matches what was actually sent in the conversation. No paraphrasing, no cleanup, no invented prompts.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Cover image screenshot taken at 1400×900px for Behance thumbnail</div><div class="cl-desc">Screenshot the landing page hero section at 1400px wide. Save as PNG. This is the Behance project thumbnail and the first image in the project.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Portfolio hub updated with NeuralDesk card unlocked</div><div class="cl-desc">Step 14 — portfolio-hub.html updated. NeuralDesk card shows as complete. Series progress counter updated to 4 of 6.</div></div></div>
+      <div class="cl-row"><div class="cl-check">☐</div><div class="cl-content"><div class="cl-title">Project title, description, and tags entered in Behance before publish</div><div class="cl-desc">See sections 02–04 below for the exact copy to paste into each Behance field.</div></div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 PROJECT METADATA -->
+  <div class="section">
+    <div class="section-label">02 — Project metadata · copy and paste</div>
+    <h2 class="section-heading">Exactly what<br><em>to write.</em></h2>
+
+    <div class="copy-field">
+      <div class="cf-label">Project title</div>
+      <div class="cf-body">From Prompt to Production — <em>NeuralDesk</em> · Brand 04 of 06 · AI SaaS Landing Page</div>
+    </div>
+
+    <div class="copy-field">
+      <div class="cf-label">Project subtitle / tagline</div>
+      <div class="cf-body">A research-led web design process for a hypothetical self-serve AI analytics product — built entirely through AI direction using Claude (Anthropic) and Midjourney.</div>
+    </div>
+
+    <div class="copy-field">
+      <div class="cf-label">Project description · short (Behance preview text)</div>
+      <div class="cf-body">NeuralDesk is Brand 04 in a six-brand portfolio series called "From Prompt to Production" — a self-initiated project by Deepu Dinesh that documents a complete, research-led web design process executed through AI direction. This project covers the full 14-step process: industry research, customer persona, competitor audit, moodboard, copywriting, and a production-quality responsive landing page. Every design decision traces to a specific research finding. Claude (Anthropic) is the execution engine. The designer is the creative director.</div>
+    </div>
+
+    <div class="copy-field">
+      <div class="cf-label">Project description · long (Behance project body text, paste at the start)</div>
+      <div class="cf-body"><em>What this project is</em>
+
+From Prompt to Production is a self-initiated portfolio series by Deepu Dinesh, Graphic Design Lead with 13 years of experience. Six hypothetical brands, six industries, one complete 14-step design process per brand, all executed through AI direction. NeuralDesk is Brand 04.
+
+<em>The brief</em>
+
+Design a complete landing page for a hypothetical self-serve AI data analytics SaaS product. The buyer is Marcus Webb — a 33-year-old Product Manager at a Series B startup in Austin, TX who loses three hours per week waiting for a data analyst who is always at capacity.
+
+<em>The insight</em>
+
+The AI analytics category is bifurcated: enterprise tools with high design quality and no self-serve access (Tableau, ThoughtSpot) versus self-serve tools with low design quality (Looker Studio, Polymer). No product at this moment has ThoughtSpot-quality design at a self-serve price point with pricing visible on the homepage and no demo gate. NeuralDesk occupies that territory.
+
+<em>The design decisions</em>
+
+Direction C — Arctic/Clarity — was selected from three Midjourney moodboard directions: ultra-minimal, white dominant, Space Grotesk 300, wide tracking, pure red #E8000D as the only accent colour. The hero is centre-aligned with four interactive product UI screens (CSS-built, tab-switched) showing Overview, Funnel Analysis, Channel Report, and Retention Cohorts — each with real metric cards, SVG charts, and an animated query bar. Fully responsive down to 320px.
+
+<em>The process</em>
+
+9 steps documented · 11 verbatim prompts in the Prompt Diary · 9 before/after decisions against the category average · complete case study. All process documents built in the NeuralDesk design system: white surface, red top rule, Space Grotesk + IBM Plex Mono. Standalone files — no cross-references to other brands in the series.
+
+<em>Tools used</em>
+Claude (Anthropic) — all strategy, copy, and code
+Midjourney — three moodboard directions
+HTML / CSS / JS — no framework, no build tooling, deployable offline</div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 TAGS AND CATEGORIES -->
+  <div class="section">
+    <div class="section-label">03 — Tags, categories and creative fields</div>
+    <h2 class="section-heading">How Behance<br><em>finds this project.</em></h2>
+
+    <p class="body-text">Behance uses tags, creative fields, and a primary category to surface projects in search and discovery. Use all three correctly — this is not decoration, it is how hiring managers and recruiters find the work.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Field</th><th>What to select or enter</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Primary creative field</td><td class="td-mono">UI/UX Design</td><td>Landing pages and product UI are UI/UX. Behance surfaces this project to UI/UX-searching recruiters.</td></tr>
+        <tr><td>Secondary creative field</td><td class="td-mono">Graphic Design</td><td>The process documents, typography system, and moodboard are graphic design work.</td></tr>
+        <tr><td>Project category</td><td class="td-mono">Web Design</td><td>The primary deliverable is a web page — single HTML file, responsive, deployable.</td></tr>
+        <tr><td>Tools used</td><td class="td-mono">Claude AI · Midjourney · HTML/CSS</td><td>Behance allows tool attribution — these three are the honest and distinctive set.</td></tr>
+      </tbody>
+    </table>
+
+    <p class="body-text" style="margin-top:8px;">Paste all tags below into the Behance tags field:</p>
+    <div class="tag-row">
+      <div class="tag red">AI Design</div>
+      <div class="tag red">Prompt Engineering</div>
+      <div class="tag red">From Prompt to Production</div>
+      <div class="tag">UI Design</div>
+      <div class="tag">UX Design</div>
+      <div class="tag">Web Design</div>
+      <div class="tag">SaaS Design</div>
+      <div class="tag">Landing Page</div>
+      <div class="tag">Brand Identity</div>
+      <div class="tag">Design Process</div>
+      <div class="tag">AI SaaS</div>
+      <div class="tag">Data Analytics</div>
+      <div class="tag">Product Design</div>
+      <div class="tag">Typography</div>
+      <div class="tag">Midjourney</div>
+      <div class="tag">Claude AI</div>
+      <div class="tag">Responsive Design</div>
+      <div class="tag">Design Systems</div>
+      <div class="tag">B2B Design</div>
+      <div class="tag">Portfolio</div>
+    </div>
+
+    <div class="note-box" style="margin-top:20px;">
+      <p><strong>Behance tag limit:</strong> 30 tags maximum. The 20 above are the correct set — do not reduce them. Every tag above corresponds to either a search term a recruiter would use or a category Behance uses for internal discovery. "From Prompt to Production" should appear on every brand in the series as a series-level tag that links the six projects.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 IMAGE SEQUENCE -->
+  <div class="section">
+    <div class="section-label">04 — Image sequence · what to upload and in what order</div>
+    <h2 class="section-heading">The project<br><em>as Behance sees it.</em></h2>
+    <p class="body-text">Behance projects are image sequences — the work is presented as a series of frames that tell the process story. The order below is the correct sequence for maximum impact: lead with the final output, then show the process, then show the detail.</p>
+
+    <div class="step-list">
+      <div class="sl-row"><div class="sl-num"><span>01</span></div><div class="sl-content"><div class="sl-title">Cover image — landing page hero, full width, 1400×900px</div><div class="sl-desc">Screenshot the NeuralDesk landing page hero at 1400px wide. The hero with the tab-switched UI panel and the centred headline is the most visually striking frame. This is the Behance thumbnail — it must stop the scroll.</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>02</span></div><div class="sl-content"><div class="sl-title">Full landing page scroll — composite at 1440px wide</div><div class="sl-desc">Screenshot the full page as a tall composite: hero → logo strip → how it works → product bento → social proof → graphs → pricing → final CTA. Shows the complete design system applied end-to-end. Export as a single tall PNG, not individual section screenshots.</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>03</span></div><div class="sl-content"><div class="sl-title">Mobile responsive — three device sizes side by side</div><div class="sl-desc">Show the landing page at 375px (iPhone), 640px (mobile breakpoint), and 960px (tablet). Arrange the three frames side by side on a white background. This demonstrates the responsive implementation which is a significant technical deliverable.</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>04</span></div><div class="sl-content"><div class="sl-title">Four product UI screens — tab switcher detail</div><div class="sl-desc">Screenshot each of the four product UI panels (Overview, Funnels, Channels, Retention) at full size. Arrange as a 2×2 grid on white. This shows the depth of UI craft — each screen has real charts, real metric cards, real data.</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>05</span></div><div class="sl-content"><div class="sl-title">Moodboard — Direction C · Arctic / Clarity</div><div class="sl-desc">The Midjourney Clarity moodboard image. Full width. Shows the visual direction that the entire landing page was built to match. Add a small caption: "Direction C — Arctic / Clarity · Selected at Step 07."</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>06</span></div><div class="sl-content"><div class="sl-title">All three moodboard directions — comparison</div><div class="sl-desc">Signal · Momentum · Clarity arranged in a 3-column layout on white. Shows the creative range and the deliberate selection of Direction C over two strong alternatives.</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>07</span></div><div class="sl-content"><div class="sl-title">Design system — palette, type, components</div><div class="sl-desc">A composed frame showing: the 8-colour palette strip, the Space Grotesk 300 type specimen ("One question. One answer. Now."), the IBM Plex Mono data label, and the primary red CTA button. White background, clean layout.</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>08</span></div><div class="sl-content"><div class="sl-title">Competitor audit — annotated screenshots</div><div class="sl-desc">The three annotated competitor screenshots (Tableau, Looker Studio, ThoughtSpot) side by side. Shows the research rigour behind the design decisions. Caption: "Step 06 — Competitor Visual Audit · Three sites scored across 5 dimensions."</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>09</span></div><div class="sl-content"><div class="sl-title">Before & After — two decisions side by side</div><div class="sl-desc">Select the two most impactful before/after comparisons (hero layout, visual direction) and present them as a clean 2-column frame. Label each clearly. Shows that the design is research-led, not taste-led.</div></div></div>
+      <div class="sl-row"><div class="sl-num"><span>10</span></div><div class="sl-content"><div class="sl-title">Process overview — the 9-step timeline</div><div class="sl-desc">A clean summary frame listing all nine steps with their status (Complete / Key step). Shows the breadth of the process — that the landing page is the output of a documented strategic process, not a one-session design exercise.</div></div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 SERIES FRAMING -->
+  <div class="section">
+    <div class="section-label">05 — Series framing · how NeuralDesk sits in the six-brand series</div>
+    <h2 class="section-heading">Brand 04 of 06.<br><em>The mid-series position.</em></h2>
+    <p class="body-text">NeuralDesk is the fourth of six brands. At this point in the series, the process is established and the output quality is increasing with each brand. The mid-series position is an opportunity to show range — NeuralDesk (AI SaaS, minimal, red on white) is visually and strategically distinct from the three preceding brands.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Brand</th><th>Industry</th><th>Direction</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>01 — Ember &amp; Oak</td><td>Fine dining</td><td>Warm editorial · serif · forest green</td><td class="td-mono">Complete ✓</td></tr>
+        <tr><td>02 — OrbitX</td><td>Space tourism</td><td>Aerospace · dark mission blue · Barlow Condensed</td><td class="td-mono">Complete ✓</td></tr>
+        <tr><td>03 — Bumblebee World</td><td>Children's books &amp; toys</td><td>Sunny / Bloom · Nunito · yellow + leaf green</td><td class="td-mono">Complete ✓</td></tr>
+        <tr><td>04 — NeuralDesk</td><td>AI SaaS · data analytics</td><td>Arctic / Clarity · white + pure red #E8000D</td><td class="td-mono" style="color:var(--red);">Publishing now</td></tr>
+        <tr><td>05 — Verdana</td><td>Luxury skincare</td><td>TBD</td><td class="td-mono">Upcoming</td></tr>
+        <tr><td>06 — Pawside</td><td>Pet care D2C</td><td>TBD</td><td class="td-mono">Upcoming</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <p><strong>Cross-linking the series on Behance:</strong> Add all four completed projects to a Behance Project Collection called "From Prompt to Production." Link to the collection from each individual project description. This creates a discovery path — a viewer who finds NeuralDesk can navigate to Ember &amp; Oak, OrbitX, and Bumblebee World from within the project. The series is more powerful as a group than any single brand is alone.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 06 WHAT TO SAY -->
+  <div class="section">
+    <div class="section-label">06 — What to say when sharing on LinkedIn</div>
+    <h2 class="section-heading">The launch<br><em>post.</em></h2>
+
+    <div class="copy-field">
+      <div class="cf-label">LinkedIn post · paste and adapt</div>
+      <div class="cf-body">Brand 04 of 06 is live on Behance.
+
+<em>NeuralDesk</em> — a hypothetical self-serve AI data analytics product, designed for one specific person: Marcus Webb, a 33-year-old Product Manager in Austin who loses three hours a week waiting for a data analyst who is always at capacity.
+
+The design thesis: Tableau has the trust. Looker Studio has the access. ThoughtSpot has the design. NeuralDesk is the first to have all three — at a price point Marcus can approve without a meeting.
+
+What I built:
+→ Industry research with named, dated sources
+→ Customer persona (Marcus Webb · Austin TX · $115K)
+→ Competitor audit with annotated screenshots (Tableau · Looker · ThoughtSpot)
+→ Three Midjourney moodboard directions — Direction C selected
+→ Complete copywriting before any layout decision
+→ A fully responsive landing page with four interactive CSS dashboard screens
+
+Everything built through AI direction using Claude (Anthropic). Every design decision traces to a specific research finding. No instinct without evidence.
+
+This is part of From Prompt to Production — a self-initiated six-brand series documenting a complete, research-led design process executed through AI direction.
+
+[Behance link] #UIDesign #AIDesign #PromptEngineering #WebDesign #SaaSDesign #DesignProcess</div>
+    </div>
+  </div>
+
+  <div class="close-box">
+    <div class="cb-label">NeuralDesk · Brand 04 of 06 · publish ready</div>
+    <div class="cb-text">Four brands complete. Two remaining. The series is halfway done — and the output quality is increasing with every brand. <em>Brands 05 and 06 benefit from everything NeuralDesk taught the process</em>: palette decision before any document, layout matched to emotional register, no patching broken interactions. The compounding effect of a documented process is the point of the series.</div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 13 — BEHANCE PUBLISH GUIDE · NEURALDESK</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+</div>
+</div>
+</body>
+</html>

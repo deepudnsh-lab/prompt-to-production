@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 5: Customer Persona · Bumblebee World</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#FFD000;--sun-deep:#F5A800;--sun-pale:#FFF8D6;
+  --honey:#FF8C00;--honey-light:#FFE0A0;
+  --bee:#1A1200;--bee-dark:#0D0D00;
+  --leaf:#2E7D32;--leaf-light:#E8F5E9;
+  --sky:#E3F2FD;--sky-deep:#1565C0;
+  --blush:#FFF3E0;--paper:#FFFEF7;
+  --ink:#1A1200;--ink-mid:#4A3F00;--ink-muted:#8A7A00;--ink-faint:#BFB060;
+  --rule:#F0E890;--tag-bg:#FFF8D6;
+  --warn-bg:#FFF3E0;--warn-text:#E65100;
+  --good-bg:#E8F5E9;--good-text:#1B5E20;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'Nunito Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* COVER */
+.cover-band{background:var(--sun);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 30%,var(--honey) 0%,transparent 55%),radial-gradient(circle at 10% 80%,rgba(255,255,255,.3) 0%,transparent 40%);pointer-events:none;}
+.cover-band::after{content:'';position:absolute;inset:0;opacity:.12;background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);background-size:24px 24px;pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--bee);opacity:.55;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--bee);opacity:.4;}
+.cover-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:52px;line-height:.95;color:var(--bee);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.15);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--bee);font-weight:700;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:4px;background:linear-gradient(to right,var(--honey),var(--sun),transparent);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--honey);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:2px;background:var(--rule);}
+.section-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:32px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--honey);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:2px;background:var(--rule);margin:56px -80px;}
+
+/* PERSONA HERO CARD */
+.persona-hero{display:grid;grid-template-columns:220px 1fr;gap:0;border:2px solid var(--rule);margin:24px 0;overflow:hidden;}
+.ph-left{background:var(--sun);padding:32px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;position:relative;overflow:hidden;}
+.ph-left::before{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,.2);border-radius:50%;}
+.ph-left::after{content:'';position:absolute;inset:0;opacity:.1;background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);background-size:18px 18px;pointer-events:none;}
+.ph-avatar{width:88px;height:88px;border-radius:50%;background:var(--honey);border:4px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin-bottom:14px;position:relative;z-index:1;}
+.ph-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.4rem;color:var(--bee);position:relative;z-index:1;margin-bottom:2px;}
+.ph-age{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:rgba(26,18,0,.5);position:relative;z-index:1;margin-bottom:12px;}
+.ph-tags{display:flex;flex-direction:column;gap:4px;position:relative;z-index:1;}
+.ph-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;background:rgba(255,255,255,.5);color:var(--bee);padding:3px 10px;border-radius:20px;}
+.ph-right{background:#fff;padding:28px 28px;}
+.ph-bio{font-size:14px;line-height:1.85;color:var(--ink-mid);margin-bottom:20px;font-style:italic;border-left:3px solid var(--sun);padding-left:16px;}
+.ph-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--rule);}
+.ph-stat{background:var(--tag-bg);padding:14px 12px;text-align:center;}
+.ph-stat-val{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.2rem;color:var(--honey);margin-bottom:2px;}
+.ph-stat-label{font-size:10px;color:var(--ink-muted);font-family:'DM Mono',monospace;letter-spacing:.08em;}
+
+/* BEHAVIOUR CARDS */
+.beh-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:20px 0;}
+.beh-card{background:var(--tag-bg);padding:20px 18px;border-top:4px solid var(--sun);transition:border-top-color .2s;}
+.beh-card:hover{border-top-color:var(--honey);}
+.beh-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;color:var(--sun-deep);opacity:.35;line-height:1;margin-bottom:4px;}
+.beh-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem;color:var(--ink);margin-bottom:6px;}
+.beh-body{font-size:12.5px;color:var(--ink-mid);line-height:1.65;}
+.beh-signal{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--honey);margin-top:8px;font-weight:600;}
+
+/* JOURNEY MAP */
+.journey{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:20px 0;border:2px solid var(--rule);overflow:hidden;}
+.jrn-step{padding:16px 14px;border-right:2px solid var(--rule);background:#fff;}
+.jrn-step:last-child{border-right:none;}
+.jrn-num{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px;}
+.jrn-stage{font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;color:var(--ink);margin-bottom:8px;}
+.jrn-action{font-size:11px;color:var(--ink-mid);line-height:1.6;margin-bottom:8px;}
+.jrn-emotion{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--honey);padding:3px 8px;background:var(--tag-bg);border-radius:2px;display:inline-block;}
+.jrn-bar{height:4px;background:var(--sun);margin-top:10px;}
+
+/* TRUST / FEAR GRID */
+.tf-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:20px 0;}
+.tf-card-trust{background:var(--good-bg);border-left:4px solid var(--leaf);padding:20px 18px;}
+.tf-card-fear{background:var(--warn-bg);border-left:4px solid var(--honey);padding:20px 18px;}
+.tf-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;}
+.tf-label-t{color:var(--leaf);}
+.tf-label-f{color:var(--warn-text);}
+.tf-item{font-size:12.5px;color:var(--ink-mid);line-height:1.65;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);}
+.tf-item:last-child{border-bottom:none;}
+.tf-item::before{content:'→ ';color:var(--honey);font-weight:700;}
+
+/* DESIGN IMPLICATIONS */
+.impl-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin:20px 0;}
+.impl-card{background:var(--bee);padding:20px 18px;position:relative;overflow:hidden;}
+.impl-card::before{content:'';position:absolute;bottom:-15px;right:-15px;width:60px;height:60px;background:rgba(255,208,0,.08);border-radius:50%;}
+.impl-num{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,208,0,.4);margin-bottom:8px;}
+.impl-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;color:var(--sun);margin-bottom:6px;}
+.impl-body{font-size:12px;color:rgba(255,255,255,.55);line-height:1.6;}
+
+/* CONTRAST TABLE */
+.contrast-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13px;}
+.contrast-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--bee);color:var(--sun);padding:11px 14px;text-align:left;}
+.contrast-table td{padding:12px 14px;border-bottom:2px solid var(--rule);color:var(--ink-mid);vertical-align:top;line-height:1.5;}
+.contrast-table tr:nth-child(even) td{background:var(--tag-bg);}
+.contrast-table tr:last-child td{border-bottom:none;}
+.contrast-table td:first-child{font-weight:700;color:var(--ink);white-space:nowrap;}
+.ct-bb{color:var(--honey);font-weight:800;}
+
+/* THESIS BOX */
+.thesis{background:var(--sun);padding:36px 40px;margin-top:32px;border-radius:4px;position:relative;overflow:hidden;}
+.thesis::before{content:'👩';position:absolute;right:32px;top:24px;font-size:2.5rem;opacity:.2;}
+.thesis-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(26,18,0,.45);margin-bottom:12px;}
+.thesis-text{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:var(--bee);line-height:1.35;}
+.thesis-text em{font-style:normal;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.2);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:2px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:24px;}
+  .persona-hero{grid-template-columns:1fr;}
+  .ph-stats{grid-template-columns:1fr 1fr 1fr;}
+  .beh-grid,.tf-grid,.impl-grid{grid-template-columns:1fr;}
+  .journey{grid-template-columns:1fr;}
+  .jrn-step{border-right:none;border-bottom:2px solid var(--rule);}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Bumblebee World · Brand 03 of 06</div>
+    <h1 class="cover-title">Customer<br><em>Persona</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 05 — Customer Persona</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Bumblebee World</div></div>
+    <div class="meta-block"><div class="meta-label">Persona</div><div class="meta-value">Priya Sharma · 32 · Bangalore</div></div>
+  </div>
+</div>
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 THE PERSONA -->
+  <div class="section">
+    <div class="section-label">01 — The persona</div>
+    <h2 class="section-heading">Meet <em>Priya.</em><br>She is the brief.</h2>
+
+    <p class="body-text">The buyer of Bumblebee World is not the 3–6 year old child. Children cannot read the marketing, cannot search Google, and cannot swipe an Instagram story. The buyer is Priya — a mother aged 28–38, urban India, aspirational, educated, working. She buys the product. She decides whether it goes on the shelf or gets returned. She is the one who shares it on Instagram. Every design decision is made for her, while being experienced by her child.</p>
+
+    <div class="persona-hero">
+      <div class="ph-left">
+        <div class="ph-avatar">👩</div>
+        <div class="ph-name">Priya Sharma</div>
+        <div class="ph-age">32 · Bangalore · Product Manager</div>
+        <div class="ph-tags">
+          <span class="ph-tag">Urban · Aspirational</span>
+          <span class="ph-tag">Instagram-native</span>
+          <span class="ph-tag">First-time mother</span>
+          <span class="ph-tag">HHI ₹22 LPA</span>
+        </div>
+      </div>
+      <div class="ph-right">
+        <div class="ph-bio">"I want Aarav to have the best start. I don't have time to research everything — so when I find a brand I trust, I stick with it. And I do show off when I find something beautiful that's also good for him."</div>
+        <div class="ph-stats">
+          <div class="ph-stat"><div class="ph-stat-val">4</div><div class="ph-stat-label">Years old · Aarav</div></div>
+          <div class="ph-stat"><div class="ph-stat-val">45<span style="font-size:.6em;">min</span></div><div class="ph-stat-label">Daily Instagram time</div></div>
+          <div class="ph-stat"><div class="ph-stat-val">₹1,200</div><div class="ph-stat-label">Avg spend per children's purchase</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 SIX DEFINING BEHAVIOURS -->
+  <div class="section">
+    <div class="section-label">02 — Six defining behaviours</div>
+    <h2 class="section-heading">How Priya actually<br><em>buys things.</em></h2>
+
+    <div class="beh-grid">
+      <div class="beh-card">
+        <div class="beh-num">01</div>
+        <div class="beh-title">She discovers on Instagram, not Google</div>
+        <div class="beh-body">Priya follows 12–15 Indian parenting and "mom aesthetic" accounts. New children's products enter her awareness through Instagram Reels and Stories — not paid ads, but organic shares from other mothers she trusts. A recommendation from @bangalore_mama carries more weight than a Google search result.</div>
+        <div class="beh-signal">Signal: Product aesthetics must be Instagram-shareable. The packaging is marketing.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">02</div>
+        <div class="beh-title">She researches seriously before buying</div>
+        <div class="beh-body">After Instagram discovery, she spends 15–25 minutes researching: reads reviews on Amazon, checks the brand's website for developmental credentials, looks for the founder's story, and texts 2–3 friends who have already bought. The impulse to buy is social. The decision to buy is rational.</div>
+        <div class="beh-signal">Signal: The website must answer her questions quickly. Credibility signals above the fold.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">03</div>
+        <div class="beh-title">She buys for gifting as often as for herself</div>
+        <div class="beh-body">62% of premium children's product purchases are gifts — birthdays, baby showers, festivals. Priya buys Bumblebee World both for Aarav and to give to her sister's 3-year-old, her colleague's newborn, her neighbour's daughter. The gift must look beautiful before it is opened, which means the unboxing experience is part of the product.</div>
+        <div class="beh-signal">Signal: Packaging is a gifting decision. Must look premium in a photograph.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">04</div>
+        <div class="beh-title">She is proud when the brand is culturally Indian</div>
+        <div class="beh-body">Priya grew up reading Amar Chitra Katha and watching Doordarshan. She wants Aarav to know about Diwali, Holi, classical Indian stories — but presented in a format that feels modern and premium, not dated. She rejects both bland Western content and low-quality "desi" content equally. She wants the third option: Indian stories with international design quality.</div>
+        <div class="beh-signal">Signal: Indian characters and festivals, rendered with premium illustration quality.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">05</div>
+        <div class="beh-title">She has 20 minutes, not two hours</div>
+        <div class="beh-body">Priya is a working mother. She manages a product team by day and Aarav's bedtime routine by night. She has a narrow purchase window — typically Saturday morning while Aarav is with her husband, or Sunday evening during his nap. The website must communicate its value proposition and earn her trust within the first scroll. She will not come back.</div>
+        <div class="beh-signal">Signal: Value proposition visible in 8 seconds. Trust earned in the first section.</div>
+      </div>
+      <div class="beh-card">
+        <div class="beh-num">06</div>
+        <div class="beh-title">She responds to founder stories and visible values</div>
+        <div class="beh-body">Priya prefers brands where she knows who made it and why. A founder photo, a founding story, a clearly stated developmental philosophy — these convert her from interested browser to loyal buyer. She has left websites that look beautiful but feel corporate and empty. She needs to know there is a person behind the product who shares her values.</div>
+        <div class="beh-signal">Signal: Founder-visible brand. Values stated in the hero, not buried on an About page.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 THE PURCHASE JOURNEY -->
+  <div class="section">
+    <div class="section-label">03 — The purchase journey · five stages</div>
+    <h2 class="section-heading">From Instagram reel<br>to <em>checkout.</em></h2>
+
+    <div class="journey">
+      <div class="jrn-step">
+        <div class="jrn-num">Stage 01</div>
+        <div class="jrn-stage">Discovery</div>
+        <div class="jrn-action">Sees a reel — another mother unpacking a Bumblebee World order. Beautiful yellow packaging. Child's face lights up. Saves the post.</div>
+        <div class="jrn-emotion">✨ Curious</div>
+        <div class="jrn-bar"></div>
+      </div>
+      <div class="jrn-step">
+        <div class="jrn-num">Stage 02</div>
+        <div class="jrn-stage">Research</div>
+        <div class="jrn-action">Clicks to website. Reads product description. Looks for developmental benefits. Checks Instagram grid. Looks for founder story. Texts a friend.</div>
+        <div class="jrn-emotion">🔍 Evaluating</div>
+        <div class="jrn-bar" style="background:var(--honey);"></div>
+      </div>
+      <div class="jrn-step">
+        <div class="jrn-num">Stage 03</div>
+        <div class="jrn-stage">Validation</div>
+        <div class="jrn-action">Friend confirms it is good. Reads 5–8 reviews. Sees the safety certification. Reads the founder note. Adds to cart. Pauses.</div>
+        <div class="jrn-emotion">✅ Almost convinced</div>
+        <div class="jrn-bar" style="background:var(--leaf);"></div>
+      </div>
+      <div class="jrn-step">
+        <div class="jrn-num">Stage 04</div>
+        <div class="jrn-stage">Purchase</div>
+        <div class="jrn-action">Free shipping nudge or "only 3 left" converts her. Buys one for Aarav, adds a second as a birthday gift for her niece. Chooses gift wrapping.</div>
+        <div class="jrn-emotion">💛 Decided</div>
+        <div class="jrn-bar" style="background:var(--sun-deep);"></div>
+      </div>
+      <div class="jrn-step">
+        <div class="jrn-num">Stage 05</div>
+        <div class="jrn-stage">Share</div>
+        <div class="jrn-action">Order arrives in beautiful packaging. Photographs unboxing. Posts to Instagram Stories. Tags Bumblebee World. Becomes an organic advocate.</div>
+        <div class="jrn-emotion">📸 Delighted</div>
+        <div class="jrn-bar" style="background:var(--bee);"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 TRUST & FRICTION -->
+  <div class="section">
+    <div class="section-label">04 — Trust signals &amp; friction points</div>
+    <h2 class="section-heading">What converts her.<br><em>What loses her.</em></h2>
+
+    <div class="tf-grid">
+      <div class="tf-card-trust">
+        <div class="tf-label tf-label-t">What builds trust · show these above the fold</div>
+        <div class="tf-item">Founder photograph and founding story — visible on homepage</div>
+        <div class="tf-item">Child safety certifications — BIS, CE, EN71 marks visible</div>
+        <div class="tf-item">Developmental benefit stated specifically — not just "educational"</div>
+        <div class="tf-item">Indian characters and settings — she can see her child in the story</div>
+        <div class="tf-item">Real parent reviews with photographs — not anonymous star ratings</div>
+        <div class="tf-item">Age-appropriateness stated clearly — "for 3–5 years" not "for all ages"</div>
+        <div class="tf-item">Premium packaging visible in product photography</div>
+      </div>
+      <div class="tf-card-fear">
+        <div class="tf-label tf-label-f">What creates friction · remove these immediately</div>
+        <div class="tf-item">Generic stock photography of white children</div>
+        <div class="tf-item">No founder story — feels corporate and anonymous</div>
+        <div class="tf-item">Vague developmental claims — "boosts creativity" with no specifics</div>
+        <div class="tf-item">Slow website — she abandons after 4 seconds</div>
+        <div class="tf-item">No reviews or very few reviews</div>
+        <div class="tf-item">Unclear delivery timeline — she is often buying as a gift with a date</div>
+        <div class="tf-item">Packaging not visible — she needs to see what she is gifting</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 DESIGN IMPLICATIONS -->
+  <div class="section">
+    <div class="section-label">05 — Design implications · six decisions from the persona</div>
+    <h2 class="section-heading">What Priya tells us<br>to <em>build.</em></h2>
+
+    <div class="impl-grid">
+      <div class="impl-card">
+        <div class="impl-num">Implication 01</div>
+        <div class="impl-title">Instagram-first visual design</div>
+        <div class="impl-body">Every product image, every packaging photograph, every website section must be designed for the 9:16 phone screen first. If it doesn't look beautiful as an Instagram Story, it is not finished.</div>
+      </div>
+      <div class="impl-card">
+        <div class="impl-num">Implication 02</div>
+        <div class="impl-title">Founder visible on the homepage</div>
+        <div class="impl-body">Priya converts to buyer when she knows who made it. The founder's face, name, and one-sentence reason for starting must appear on the homepage — not on a separate About page she will never visit.</div>
+      </div>
+      <div class="impl-card">
+        <div class="impl-num">Implication 03</div>
+        <div class="impl-title">Value proposition in 8 seconds</div>
+        <div class="impl-body">She has 20 minutes total. She will not scroll past the first section if the brand has not communicated its thesis. The hero must answer: what is this, who made it, and why should I trust it — in one viewport.</div>
+      </div>
+      <div class="impl-card">
+        <div class="impl-num">Implication 04</div>
+        <div class="impl-title">Indian children visible everywhere</div>
+        <div class="impl-body">Every illustration, every character, every photograph of a child using the product must feature Indian children. Priya is proud of this brand because her child can see themselves in it.</div>
+      </div>
+      <div class="impl-card">
+        <div class="impl-num">Implication 05</div>
+        <div class="impl-title">Gifting pathway must be obvious</div>
+        <div class="impl-body">62% of purchases are gifts. "Send as a gift" must be a clear option at every purchase point. Gift wrapping, gift message, and gift delivery must be highlighted — not buried in the checkout flow.</div>
+      </div>
+      <div class="impl-card">
+        <div class="impl-num">Implication 06</div>
+        <div class="impl-title">Two tests for every design decision</div>
+        <div class="impl-body">Every element must pass two simultaneous tests: the child's engagement test (is this stimulating, colourful, joyful?) and the parent's Instagram test (is this beautiful enough to share?). Both must pass. Neither alone is enough.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 06 CONTRAST TABLE -->
+  <div class="section">
+    <div class="section-label">06 — How this persona differs · Priya vs Arjun (OrbitX)</div>
+    <h2 class="section-heading">Same series.<br><em>Completely different buyer.</em></h2>
+
+    <table class="contrast-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Arjun Mehta · OrbitX</th>
+          <th class="ct-bb">Priya Sharma · Bumblebee World</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Purchase value</td>
+          <td>$200,000–$600,000 · life decision</td>
+          <td class="ct-bb">₹699–₹2,500 · repeat purchase</td>
+        </tr>
+        <tr>
+          <td>Decision timeline</td>
+          <td>6–18 months of research</td>
+          <td class="ct-bb">4–10 days from discovery to checkout</td>
+        </tr>
+        <tr>
+          <td>Primary emotion</td>
+          <td>Credibility, scarcity, exclusivity</td>
+          <td class="ct-bb">Joy, pride, love, aspiration</td>
+        </tr>
+        <tr>
+          <td>Discovery channel</td>
+          <td>Peer referral · private networks</td>
+          <td class="ct-bb">Instagram · parenting communities</td>
+        </tr>
+        <tr>
+          <td>Trust signal</td>
+          <td>Mission designation, named specialist, past passengers</td>
+          <td class="ct-bb">Founder story, parent reviews, safety certifications</td>
+        </tr>
+        <tr>
+          <td>CTA register</td>
+          <td>"Reserve your manifest position"</td>
+          <td class="ct-bb">"Shop now" · "Send as a gift" · "Start the collection"</td>
+        </tr>
+        <tr>
+          <td>What she shares</td>
+          <td>Does not share — confidential by request</td>
+          <td class="ct-bb">Posts the unboxing · tags the brand · shares with friends</td>
+        </tr>
+        <tr>
+          <td>Page structure</td>
+          <td>Mission briefing — facts before feelings</td>
+          <td class="ct-bb">Emotional entry — feelings before facts · joy in the first second</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="thesis">
+    <div class="thesis-label">The Bumblebee World buyer thesis</div>
+    <div class="thesis-text">Priya does not buy toys. She buys <em>what kind of mother she is.</em> A brand that looks beautiful, celebrates India, and makes her child's face light up — that is a brand she will buy again, gift to others, and tell her friends about. Design for her pride. The child's joy will follow.</div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 05 — CUSTOMER PERSONA · BUMBLEBEE WORLD</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

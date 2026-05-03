@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 12: Case Study · OrbitX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0E0E;--ink-mid:#3D3D3D;--ink-muted:#7A7A7A;--ink-faint:#B8B8B8;
+  --paper:#FAF8F4;--accent:#2563C8;--accent-light:#C8DAF7;
+  --rule:#E0DCD5;--tag-bg:#F0EDE8;
+  --space:#020916;--mission:#0A1E3D;--signal:#2563C8;--horizon:#60A5FA;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* COVER */
+.cover-band{background:var(--space);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(37,99,200,.25),transparent 65%);pointer-events:none;}
+.cover-band::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 10%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--accent-light);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--accent-light),transparent);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--accent);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--tag-bg);border-left:3px solid var(--accent);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* BRIEF BLOCK */
+.brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--rule);border:1px solid var(--rule);margin:24px 0;}
+.brief-cell{background:#fff;padding:20px 22px;}
+.brief-cell-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.brief-cell-value{font-size:14px;color:var(--ink-mid);line-height:1.65;}
+.brief-cell-value strong{color:var(--ink);}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:24px 0;}
+.stat-card{background:var(--space);padding:22px 18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(37,99,200,.18),transparent);}
+.stat-num{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--accent-light);line-height:1;margin-bottom:5px;position:relative;z-index:1;}
+.stat-label{font-size:11px;color:rgba(255,255,255,.4);line-height:1.45;font-weight:300;position:relative;z-index:1;}
+
+/* PROCESS TIMELINE */
+.process-timeline{display:flex;flex-direction:column;gap:1px;margin:24px 0;}
+.pt-row{display:grid;grid-template-columns:52px 1fr;gap:0;border:1px solid var(--rule);border-bottom:none;}
+.pt-row:last-child{border-bottom:1px solid var(--rule);}
+.pt-num{background:var(--space);display:flex;align-items:center;justify-content:center;padding:16px 8px;border-right:1px solid rgba(255,255,255,.07);}
+.pt-num-val{font-family:'DM Mono',monospace;font-size:9px;color:var(--horizon);letter-spacing:.1em;}
+.pt-content{background:#fff;padding:14px 20px;transition:background .2s;}
+.pt-row:hover .pt-content{background:var(--tag-bg);}
+.pt-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.pt-desc{font-size:12px;color:var(--ink-muted);line-height:1.55;}
+.pt-status{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border-radius:2px;display:inline-block;margin-left:8px;vertical-align:middle;}
+.st-done{background:#E8F5EE;color:#1A6B3A;}
+.st-key{background:rgba(37,99,200,.1);color:var(--signal);}
+
+/* IDENTITY SYSTEM */
+.identity-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:24px 0;}
+.id-card{background:var(--tag-bg);padding:22px 20px;}
+.id-card-dark{background:var(--space);padding:22px 20px;position:relative;overflow:hidden;}
+.id-card-dark::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 80% 30%,rgba(37,99,200,.12),transparent);pointer-events:none;}
+.id-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.id-label-light{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(96,165,250,.5);margin-bottom:10px;}
+.id-value{font-size:13px;color:var(--ink-mid);line-height:1.65;}
+.id-value strong{color:var(--ink);}
+.id-value-light{font-size:13px;color:rgba(232,244,253,.65);line-height:1.65;}
+
+/* PALETTE */
+.palette-row{display:flex;gap:0;margin:16px 0;border:1px solid var(--rule);}
+.pal-swatch{flex:1;height:44px;display:flex;align-items:center;justify-content:center;}
+.pal-label{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;color:rgba(255,255,255,.6);mix-blend-mode:screen;}
+
+/* TYPOGRAPHY SPECIMEN */
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:16px 0;}
+.type-cell{background:var(--space);padding:20px 18px;}
+.type-role{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:rgba(96,165,250,.4);margin-bottom:10px;}
+.type-sample-big{font-family:'DM Sans',sans-serif;font-weight:900;font-size:2rem;color:#fff;line-height:.95;letter-spacing:-.03em;}
+.type-sample-big em{font-style:normal;color:var(--horizon);}
+.type-sample-mono{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--horizon);}
+.type-note{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.25);margin-top:8px;letter-spacing:.08em;}
+
+/* INSIGHT ROW */
+.insight-row{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;padding:20px 0;border-bottom:1px solid var(--rule);}
+.insight-row:last-child{border-bottom:none;}
+.ins-num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent-light);opacity:.5;line-height:1;}
+.ins-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+.ins-body{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+
+/* THESIS BOX */
+.thesis-box{background:var(--space);padding:40px;margin:32px 0;position:relative;overflow:hidden;}
+.thesis-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 85% 50%,rgba(37,99,200,.18),transparent 60%);pointer-events:none;}
+.thesis-box::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 80% 30%,rgba(255,255,255,.3),transparent),radial-gradient(1px 1px at 50% 75%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+.tb-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent-light);margin-bottom:14px;position:relative;z-index:1;}
+.tb-text{font-family:'DM Serif Display',serif;font-size:24px;color:#fff;line-height:1.4;position:relative;z-index:1;}
+.tb-text em{font-style:italic;color:var(--accent-light);}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:28px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .brief-grid,.identity-grid,.type-row{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · OrbitX · Brand 02 of 06</div>
+    <h1 class="cover-title">Case<br><em>Study</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 12 — Case Study</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">OrbitX</div></div>
+    <div class="meta-block"><div class="meta-label">Industry</div><div class="meta-value">Space tourism · Civilian spaceflight</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 THE BRIEF -->
+  <div class="section">
+    <div class="section-label">01 — The brief</div>
+    <h2 class="section-heading">A civilian space tourism brand<br>that <em>no one has built yet.</em></h2>
+
+    <p class="body-text">OrbitX is the second brand in a six-brand portfolio series called "From Prompt to Production" — a self-initiated project that documents a complete, research-led web design process executed through AI direction. Every design decision is made by the designer. Every output is produced through a prompt.</p>
+
+    <p class="body-text">The brief for OrbitX: design a hypothetical civilian space tourism brand targeting ultra-high-net-worth passengers in the Asia-Pacific market. Build a complete brand identity and a production-quality landing page. Differentiate from the three existing competitors — Blue Origin, Virgin Galactic, and SpaceX — using research, not taste.</p>
+
+    <div class="brief-grid">
+      <div class="brief-cell">
+        <div class="brief-cell-label">Industry</div>
+        <div class="brief-cell-value">Civilian spaceflight · Suborbital tourism</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Target customer</div>
+        <div class="brief-cell-value">Ultra-HNW founders and executives · Asia-Pacific · $40M+ net worth</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Market size</div>
+        <div class="brief-cell-value"><strong>$1.84B</strong> in 2025 · projected $62.1B by 2036 · 21.8% CAGR (Future Market Insights, Jan 2026)</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Ticket price range</div>
+        <div class="brief-cell-value">$200,000–$600,000 per seat · suborbital · 6 passengers per mission</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Execution engine</div>
+        <div class="brief-cell-value">Claude (Anthropic) · Midjourney · AI video generation · HTML / CSS / JS</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-cell-label">Constraint</div>
+        <div class="brief-cell-value">Hypothetical brand · all claims defensible · every design decision sourced</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 THE INSIGHT -->
+  <div class="section">
+    <div class="section-label">02 — The insight that drove everything</div>
+    <h2 class="section-heading">The passenger is<br><em>invisible.</em></h2>
+
+    <p class="body-text">The competitor audit of Blue Origin, Virgin Galactic, and SpaceX identified one gap shared by all three sites: despite Blue Origin having flown 58 civilian passengers, Virgin Galactic having 700+ on a waitlist, and SpaceX having taken four civilians on a three-day orbital mission — not a single named civilian passenger appears on any of their homepages.</p>
+
+    <p class="body-text">Every competitor centres the vehicle or the mission. No competitor centres the person who goes. That gap — identified through the Step 6 audit, confirmed by the Step 5 persona work — became the design thesis for the entire brand.</p>
+
+    <div class="thesis-box">
+      <div class="tb-label">The central design thesis · OrbitX</div>
+      <div class="tb-text">Blue Origin builds the rocket. Virgin Galactic builds the experience. SpaceX builds the future. <em>OrbitX builds the passenger.</em></div>
+    </div>
+
+    <div class="insight-row">
+      <div class="ins-num">01</div>
+      <div>
+        <div class="ins-title">The passenger is the product — not the vehicle</div>
+        <div class="ins-body">Every OrbitX design decision follows from this. The hero image is not the rocket — it is the view the passenger will see. The section images show the helmet visor, the person floating inside the capsule, the experience from inside. The vehicle has its own section. The passenger has every other section.</div>
+      </div>
+    </div>
+    <div class="insight-row">
+      <div class="ins-num">02</div>
+      <div>
+        <div class="ins-title">Arjun does not need convincing — he needs confirmation</div>
+        <div class="ins-body">The persona (Arjun Mehta, 52, founder, Mumbai/Dubai/Singapore) has already decided in principle. He researches before expressing interest. He reads the page on a 14" laptop at 11pm. He does not want to be sold to. The page is structured as a mission briefing document — not a hospitality experience. Facts first. Emotion emerges from precision.</div>
+      </div>
+    </div>
+    <div class="insight-row">
+      <div class="ins-num">03</div>
+      <div>
+        <div class="ins-title">Scarcity is real — state it as fact, not as pressure</div>
+        <div class="ins-body">Six seats per mission. Specific mission designations. Real launch windows. "NX-12 · Q1 2028 · 2 of 6 seats remaining" is more compelling than "Limited availability" because it is true, specific, and respects Arjun's intelligence. No urgency language. No countdown timers. Just the number.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 THE PROCESS -->
+  <div class="section">
+    <div class="section-label">03 — The 14-step process · OrbitX</div>
+    <h2 class="section-heading">Research to<br><em>production.</em></h2>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-num">14</div><div class="stat-label">Steps from brief to live landing page</div></div>
+      <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Process documents produced for OrbitX</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Competitor sites audited with annotated screenshots</div></div>
+      <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Design decisions made without a research source</div></div>
+    </div>
+
+    <div class="process-timeline">
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">01–03</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Project Brief · Industry Scoring · Brand Naming <span class="pt-status st-done">Series-level</span></div>
+          <div class="pt-desc">Series manifesto. 16 industries scored across 4 criteria — space tourism selected for Brand 02. "OrbitX" chosen from 4 candidates for precision, scalability, and distinctiveness.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">04</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Industry Research <span class="pt-status st-done">Complete</span></div>
+          <div class="pt-desc">$1.84B market (2025) · 21.8% CAGR to 2036 · Suborbital dominates at 58.4% share · Ticket pricing: Blue Origin $200K–$300K, Virgin Galactic $600K+, SpaceX $55M–$200M. Sources named and dated throughout. The universal gap — passenger invisibility — first emerged here.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">05</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Customer Persona <span class="pt-status st-done">Complete</span></div>
+          <div class="pt-desc">Arjun Mehta · 52 · Founder &amp; Chairman · Mumbai / Dubai / Singapore · $40M+ net worth. Six defining behaviours. The 14" laptop at 11pm context. "He does not want to be sold to." Every copy and layout decision traces back to this document.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">06</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Competitor Visual Audit <span class="pt-status st-done">Complete</span></div>
+          <div class="pt-desc">Blue Origin · Virgin Galactic · SpaceX. Annotated screenshots with V·P·W·R·M scoring. Universal gap confirmed: passenger invisible across all three sites. Design opportunity statement locked: "OrbitX builds the passenger."</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">07</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Moodboard · 3 Directions <span class="pt-status st-key">Direction A selected</span></div>
+          <div class="pt-desc">Direction A (Cosmonaut/Vast) · Direction B (Monolith/Silent) · Direction C (Aurora/Luminous). All three Midjourney moodboards generated and embedded. Direction A selected: deep mission blue, aerospace precision, human warmth inside. B rejected (austerity risk) · C rejected (fantasy risk for Arjun's credibility requirement).</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">08</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Content &amp; Copywriting <span class="pt-status st-done">Complete</span></div>
+          <div class="pt-desc">IA designed from scratch as a mission briefing document — 8 sections, each answering a specific question. All copy written before any layout decisions. The headline "At 100km, the atmosphere disappears." arrived in the first draft and was not changed.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">09</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Landing Page Build <span class="pt-status st-key">Key pivot</span></div>
+          <div class="pt-desc">Three.js 3D models attempted and rejected — quality insufficient for portfolio-grade work. Pivoted to: full-viewport AI video hero + three AI-generated section images colour-graded to Direction A palette via CSS filters. The pivot from 3D to video/photography was the most significant production decision in the project.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">10–12</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Prompt Diary · Before &amp; After · Case Study <span class="pt-status st-done">Complete</span></div>
+          <div class="pt-desc">Full documentation of the creative direction record. 10 actual verbatim prompts. 9 before/after decisions against the category average. Case study synthesising the research, the thesis, the identity system, and the outcome.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 THE IDENTITY SYSTEM -->
+  <div class="section">
+    <div class="section-label">04 — The identity system · Direction A · Cosmonaut</div>
+    <h2 class="section-heading">Every element<br><em>earns its place.</em></h2>
+
+    <p class="body-text">The OrbitX identity system is built from the Direction A selection at Step 7. Every token — colour, typeface, spacing, language — is traceable to the design thesis: aerospace precision with human warmth held just below the surface.</p>
+
+    <!-- PALETTE -->
+    <div class="note-box"><p><strong>Colour system — Direction A · Cosmonaut/Vast</strong></p></div>
+    <div class="palette-row">
+      <div class="pal-swatch" style="background:#020916;flex:1.5;"><span class="pal-label">Deep Space #020916</span></div>
+      <div class="pal-swatch" style="background:#0A1E3D;"><span class="pal-label">Mission #0A1E3D</span></div>
+      <div class="pal-swatch" style="background:#2563C8;"><span class="pal-label">Signal #2563C8</span></div>
+      <div class="pal-swatch" style="background:#60A5FA;"><span class="pal-label">Horizon #60A5FA</span></div>
+      <div class="pal-swatch" style="background:#E8F4FD;"><span class="pal-label" style="color:rgba(37,99,200,.6);">Atmosphere #E8F4FD</span></div>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div class="note-box" style="margin-top:24px;"><p><strong>Typography system</strong></p></div>
+    <div class="type-row">
+      <div class="type-cell">
+        <div class="type-role">Display · all section headlines · Barlow Condensed 900</div>
+        <div class="type-sample-big">AT 100KM,<br>THE ATMOSPHERE<br><em>DISAPPEARS.</em></div>
+        <div class="type-note">Weight 900 · Condensed · Uppercase · Letter-spacing -.025em · Line-height .87</div>
+      </div>
+      <div class="type-cell">
+        <div class="type-role">Labels · navigation · data · DM Mono 400</div>
+        <div class="type-sample-mono" style="margin-bottom:14px;">Mission NX-14 · Apogee 100km · Q3 2028</div>
+        <div class="type-sample-mono" style="color:rgba(255,255,255,.35);">The Vehicle · The Mission · The Training · The Manifest</div>
+        <div class="type-note">Letter-spacing .2em · Uppercase · Used for all data, nav, and annotation labels</div>
+      </div>
+    </div>
+
+    <!-- IDENTITY DETAILS -->
+    <div class="identity-grid" style="margin-top:24px;">
+      <div class="id-card">
+        <div class="id-label">Image treatment · CSS colour grading system</div>
+        <div class="id-value">Three AI-generated section images — each from a different colour temperature — unified to the OrbitX palette through CSS filters applied at varying intensities per image.<br><br>
+        <strong>Vehicle (warmest — golden dusk):</strong> brightness(0.82) contrast(1.18) saturate(0.72) hue-rotate(-28deg)<br><br>
+        <strong>Helmet (warm amber):</strong> brightness(0.80) contrast(1.18) saturate(0.68) hue-rotate(-30deg)<br><br>
+        <strong>Inside vehicle (already cool):</strong> brightness(0.88) contrast(1.1) saturate(0.82) hue-rotate(-15deg)<br><br>
+        Blue multiply overlay on all three via CSS pseudo-element.</div>
+      </div>
+      <div class="id-card-dark">
+        <div class="id-label-light">Voice system · six rules</div>
+        <div class="id-value-light">
+          <strong style="color:rgba(232,244,253,.85);">01</strong> Facts before feelings<br>
+          <strong style="color:rgba(232,244,253,.85);">02</strong> Never use superlatives<br>
+          <strong style="color:rgba(232,244,253,.85);">03</strong> Specific over vague<br>
+          <strong style="color:rgba(232,244,253,.85);">04</strong> Passenger always the subject<br>
+          <strong style="color:rgba(232,244,253,.85);">05</strong> Inform. Never sell.<br>
+          <strong style="color:rgba(232,244,253,.85);">06</strong> Sentences end. They do not trail.<br><br>
+          <span style="font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:rgba(96,165,250,.5);">"AT 100KM, THE ATMOSPHERE DISAPPEARS."<br>A fact. Not a promise. Not a tagline.</span>
+        </div>
+      </div>
+      <div class="id-card-dark">
+        <div class="id-label-light">Navigation · mission document language</div>
+        <div class="id-value-light">
+          <span style="font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;">The Vehicle &nbsp;·&nbsp; The Mission<br>The Training &nbsp;·&nbsp; The Manifest</span><br><br>
+          Not "Home / About / Experience / Book." Each label is a chapter heading in a classified briefing document. The definite article makes each section sound named and specific — as though it has always existed and is simply being referenced.
+        </div>
+      </div>
+      <div class="id-card">
+        <div class="id-label">CTA language system</div>
+        <div class="id-value">
+          <strong>Primary CTA:</strong> "Reserve your manifest position →"<br>
+          <strong>Secondary CTA:</strong> "View mission specifications"<br>
+          <strong>Contact CTA:</strong> "Request a briefing →"<br>
+          <strong>Nav CTA:</strong> "Speak to a Specialist"<br><br>
+          None of these say "Book," "Buy," "Reserve a seat," or "Contact Us." Every word is from the register of a person being selected for a programme — not a customer completing a transaction.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 WHAT THIS DEMONSTRATES -->
+  <div class="section">
+    <div class="section-label">05 — What this project demonstrates</div>
+    <h2 class="section-heading">What OrbitX<br><em>proves.</em></h2>
+
+    <p class="body-text">OrbitX is a hypothetical brand. None of the missions exist. Arjun Mehta is a composite persona. The market data is real — named and dated throughout. The design decisions are all real, and each one is traceable to a specific research finding.</p>
+
+    <div class="insight-row">
+      <div class="ins-num">01</div>
+      <div>
+        <div class="ins-title">Research as design direction</div>
+        <div class="ins-body">The central design thesis — "OrbitX builds the passenger" — was not an instinct. It was a finding. The competitor audit identified that the passenger is invisible across all three major space tourism sites. The persona identified what that specific passenger needs. Research produced the brief. The brief produced the design.</div>
+      </div>
+    </div>
+    <div class="insight-row">
+      <div class="ins-num">02</div>
+      <div>
+        <div class="ins-title">AI direction vs AI generation</div>
+        <div class="ins-body">Claude produced every document, every line of code, and every HTML file in this project. The design decisions — which industry, which direction, which headline, which CTA language, which images to use and how to grade them — were all made by the designer. The prompts are the creative record. The outputs are the proof that direction produces better results than generation.</div>
+      </div>
+    </div>
+    <div class="insight-row">
+      <div class="ins-num">03</div>
+      <div>
+        <div class="ins-title">Category intelligence as competitive advantage</div>
+        <div class="ins-body">The OrbitX landing page is structurally different from every competitor because the research identified specifically what every competitor does and where every competitor fails. "Left-aligned is hospitality, centre-aligned is aerospace" — that insight came from the audit, not from aesthetic preference. The research is what makes the design defensible.</div>
+      </div>
+    </div>
+    <div class="insight-row">
+      <div class="ins-num">04</div>
+      <div>
+        <div class="ins-title">Knowing when to change the approach</div>
+        <div class="ins-body">The Three.js 3D model approach was attempted, iterated, and abandoned. The decision to pivot to real video and AI-graded photography was made when the quality ceiling of the programmatic approach became clear. That decision — "the creative direction decision matters more than the technical approach" — produced a better result faster than continued iteration on the wrong tool.</div>
+      </div>
+    </div>
+    <div class="insight-row">
+      <div class="ins-num">05</div>
+      <div>
+        <div class="ins-title">Cross-discipline execution</div>
+        <div class="ins-body">Strategy (market research, persona, competitor audit) → brand identity (palette, typography, voice system) → copywriting (all eight sections, IA, CTA language) → web design (landing page build, video integration, CSS colour grading) → documentation (prompt diary, before/after, case study). One designer, one process, one complete output.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 12 — CASE STUDY · ORBITX</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

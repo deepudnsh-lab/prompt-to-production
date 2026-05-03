@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pawside — Happy Dog. Happy You.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF8F0;--cream2:#FEF3E8;--tan:#E8D5C4;--coral:#FF6B6B;--teal:#4ECDC4;--yellow:#FFE66D;
+  --rust:#8B5A3C;--ink:#2B1810;--ink-mid:#4A3628;--ink-faint:#8B7563;--white:#FFFFFF;--border:#E0D4C8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+
+/* NAVBAR */
+.navbar{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(255,248,240,.95);backdrop-filter:blur(20px);padding:12px 28px;border-radius:100px;border:1px solid var(--border);display:flex;gap:32px;align-items:center;z-index:1000;min-width:400px;justify-content:center;}
+.navbar a{font-size:13px;font-weight:500;color:var(--ink-mid);text-decoration:none;transition:color .2s;}
+.navbar a:hover{color:var(--coral);}
+.navbar .logo{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink);text-decoration:none;margin-right:auto;}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:48px;padding:120px 60px 80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;right:0;width:400px;height:400px;background:radial-gradient(circle,rgba(255,107,107,.1),transparent);border-radius:50%;pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:100px;left:100px;width:300px;height:300px;background:radial-gradient(circle,rgba(78,205,196,.08),transparent);border-radius:50%;pointer-events:none;}
+.hero-content{position:relative;z-index:2;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:400;line-height:1.1;margin-bottom:16px;color:var(--ink);}
+.hero h1 em{font-style:italic;color:var(--coral);}
+.hero-sub{font-size:18px;color:var(--ink-mid);margin-bottom:24px;line-height:1.6;}
+.hero-cta{background:linear-gradient(135deg,var(--coral),#FF5252);color:var(--white);padding:16px 32px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none;display:inline-block;}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,107,107,.3);}
+.hero-image{position:relative;height:500px;background:linear-gradient(135deg,rgba(255,230,109,.2),rgba(78,205,196,.15));border-radius:20px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+.hero-image img{width:100%;height:100%;object-fit:cover;border-radius:20px;}
+.hero-placeholder{font-size:14px;color:var(--ink-faint);text-align:center;}
+
+/* INGREDIENTS SECTION */
+.section{padding:80px 60px;position:relative;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--coral);margin-bottom:12px;}
+.section-heading{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:400;margin-bottom:32px;color:var(--ink);}
+.section-heading em{font-style:italic;color:var(--coral);}
+
+.ingredients-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+.ingredient-list{display:grid;gap:20px;}
+.ingredient-item{background:var(--cream2);padding:20px;border-left:4px solid var(--coral);border-radius:6px;}
+.ingredient-label{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--coral);margin-bottom:4px;}
+.ingredient-detail{font-size:14px;color:var(--ink-mid);line-height:1.5;}
+.ingredients-image{height:400px;background:linear-gradient(135deg,rgba(255,230,109,.2),rgba(255,107,107,.1));border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+.ingredients-image img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+/* PRODUCTS SECTION */
+.products-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;}
+.product-card{background:var(--cream2);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.08);}
+.product-image{height:280px;background:linear-gradient(135deg,rgba(78,205,196,.15),rgba(255,230,109,.15));display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);}
+.product-image img{width:100%;height:100%;object-fit:cover;}
+.product-info{padding:20px;}
+.product-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;margin-bottom:8px;color:var(--ink);}
+.product-desc{font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:16px;}
+.product-price{font-size:18px;font-weight:600;color:var(--coral);}
+
+/* TESTIMONIALS SECTION */
+.testimonials-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;}
+.testimonial-card{background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(254,243,232,.4));border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;}
+.testimonial-image{height:240px;background:linear-gradient(135deg,rgba(78,205,196,.2),rgba(255,230,109,.2));border-radius:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+.testimonial-image img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.testimonial-text{font-size:14px;color:var(--ink-mid);line-height:1.7;margin-bottom:12px;flex-grow:1;}
+.testimonial-author{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--coral);font-weight:600;}
+
+/* SOURCING SECTION */
+.sourcing-section{background:linear-gradient(135deg,var(--ink),var(--rust));color:var(--white);padding:80px 60px;}
+.sourcing-section .section-heading{color:var(--white);}
+.sourcing-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.sourcing-text h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;margin-bottom:16px;color:var(--yellow);}
+.sourcing-text p{font-size:15px;line-height:1.8;margin-bottom:16px;opacity:.95;}
+.sourcing-list{display:grid;gap:12px;}
+.sourcing-item{font-size:14px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.1);}
+.sourcing-item strong{color:var(--yellow);}
+.sourcing-image{height:400px;background:rgba(255,255,255,.1);border-radius:16px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.2);}
+.sourcing-image img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+
+/* COMMUNITY SECTION */
+.community-section{background:var(--cream2);padding:80px 60px;}
+.community-content{text-align:center;max-width:600px;margin:0 auto;margin-bottom:48px;}
+.community-content p{font-size:16px;color:var(--ink-mid);line-height:1.8;}
+.community-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.community-card{height:280px;background:linear-gradient(135deg,rgba(78,205,196,.15),rgba(255,230,109,.15));border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);}
+.community-card img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
+
+/* FINAL CTA */
+.final-cta{padding:80px 60px;text-align:center;background:linear-gradient(135deg,rgba(255,107,107,.05),rgba(78,205,196,.05));}
+.final-cta h2{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:400;margin-bottom:24px;color:var(--ink);}
+.final-cta h2 em{color:var(--coral);}
+.final-cta p{font-size:16px;color:var(--ink-mid);margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto;}
+.cta-button-group{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.cta-btn{padding:16px 32px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;border:none;display:inline-block;}
+.cta-btn.primary{background:linear-gradient(135deg,var(--coral),#FF5252);color:var(--white);}
+.cta-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,107,107,.3);}
+.cta-btn.secondary{background:transparent;color:var(--coral);border:2px solid var(--coral);}
+.cta-btn.secondary:hover{background:var(--coral);color:var(--white);}
+
+.reassurance{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto;}
+.reassurance-item{background:var(--cream2);padding:16px;border-radius:8px;text-align:center;}
+.reassurance-item strong{color:var(--ink);display:block;margin-bottom:4px;}
+.reassurance-item span{font-size:13px;color:var(--ink-mid);}
+
+/* FOOTER */
+.footer{background:var(--ink);color:var(--white);padding:60px;text-align:center;font-size:13px;}
+.footer a{color:var(--yellow);text-decoration:none;}
+
+@media(max-width:768px){
+  .navbar{min-width:auto;width:90%;gap:16px;}
+  .hero{grid-template-columns:1fr;padding:100px 30px 60px;}
+  .hero-image{height:300px;}
+  .section{padding:60px 30px;}
+  .ingredients-grid{grid-template-columns:1fr;}
+  .products-grid{grid-template-columns:1fr;}
+  .testimonials-grid{grid-template-columns:1fr;}
+  .sourcing-grid{grid-template-columns:1fr;}
+  .community-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="#" class="logo">🐾 Pawside</a>
+  <a href="#ingredients">Ingredients</a>
+  <a href="#products">Products</a>
+  <a href="#testimonials">Results</a>
+  <a href="#community">Community</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Happy dog.<br><em>Happy you.</em></h1>
+    <p class="hero-sub">Grooming products that don't pretend to understand your dog better than you do.</p>
+    <button class="hero-cta">Start the Glow-Up</button>
+  </div>
+  <div class="hero-image">
+    <div class="hero-placeholder">[HERO IMAGE: Dog mid-play, genuine joy]</div>
+  </div>
+</section>
+
+<!-- INGREDIENTS -->
+<section class="section" id="ingredients">
+  <div class="section-label">The Good Stuff</div>
+  <h2 class="section-heading">The formula.<br><em>Nothing else.</em></h2>
+  <div class="ingredients-grid">
+    <div class="ingredient-list">
+      <div class="ingredient-item">
+        <div class="ingredient-label">5% Oat Extract</div>
+        <div class="ingredient-detail">Soothes & hydrates. From Minnesota farmers who actually care.</div>
+      </div>
+      <div class="ingredient-item">
+        <div class="ingredient-label">3% Shea Butter</div>
+        <div class="ingredient-detail">Nourishes & softens. From Ghana. Fair trade. Real sourcing.</div>
+      </div>
+      <div class="ingredient-item">
+        <div class="ingredient-label">2% Aloe Vera</div>
+        <div class="ingredient-detail">Calms & protects. From Texas. Because local matters.</div>
+      </div>
+      <div class="ingredient-item">
+        <div class="ingredient-label">1% Chamomile</div>
+        <div class="ingredient-detail">Gentle & balancing. Reduces irritation & promotes shine.</div>
+      </div>
+    </div>
+    <div class="ingredients-image">
+      <div class="hero-placeholder">[INGREDIENTS IMAGE: Product + ingredients arranged beautifully]</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section">
+  <div class="section-label">The Lineup</div>
+  <h2 class="section-heading">What we <em>actually</em> make.</h2>
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-image">
+        <div class="hero-placeholder">[PRODUCT 1: Shampoo bottle]</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Gentle Shampoo</div>
+        <div class="product-desc">Cleans without stripping. Your dog will smell like they got a professional grooming, not a chemical bath.</div>
+        <div class="product-price">$24</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">
+        <div class="hero-placeholder">[PRODUCT 2: Conditioner bottle]</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Nourishing Conditioner</div>
+        <div class="product-desc">Makes tangles disappear. Your dog's coat will look so shiny you'll start taking 'gram photos. (We'll repost them.)</div>
+        <div class="product-price">$22</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-image">
+        <div class="hero-placeholder">[PRODUCT 3: Spray bottle]</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Detangling Spray</div>
+        <div class="product-desc">For when your dog has created a wool sweater from their own fur in 48 hours. It happens. We understand.</div>
+        <div class="product-price">$18</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" id="testimonials">
+  <div class="section-label">Real Results</div>
+  <h2 class="section-heading">Real dogs.<br><em>Real glow-ups.</em></h2>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-image">
+        <div class="hero-placeholder">[TESTIMONIAL 1: Before/after dog coat]</div>
+      </div>
+      <div class="testimonial-text">"Used Pawside for 6 weeks. Coat went from matte to glossy. Also stopped itching. My vet asked what I changed. I showed her the bottle. She ordered it for her own dog."</div>
+      <div class="testimonial-author">Maya Chen, Austin TX</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-image">
+        <div class="hero-placeholder">[TESTIMONIAL 2: Happy dog photo]</div>
+      </div>
+      <div class="testimonial-text">"My dog hates baths. HATES them. But the detangling spray made grooming 40% shorter because no tangles meant no tugging. She's still grumpy, but less grumpy."</div>
+      <div class="testimonial-author">Sarah M., Denver CO</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-image">
+        <div class="hero-placeholder">[TESTIMONIAL 3: Dog running/playing]</div>
+      </div>
+      <div class="testimonial-text">"Stopped using the fancy brand everyone on Instagram recommends. Switched to Pawside. Saved $200 a year. Dog is happier. I am richer. Everyone wins."</div>
+      <div class="testimonial-author">James K., Portland OR</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCING -->
+<section class="sourcing-section" id="sourcing">
+  <div class="section-label" style="color:var(--yellow);">Know Where It Comes From</div>
+  <div class="sourcing-grid">
+    <div class="sourcing-text">
+      <h3>Transparency is not a gimmick.</h3>
+      <p>Every ingredient has a story. A place. A farmer who cares. We list the coordinates because we're not hiding anything.</p>
+      <div class="sourcing-list">
+        <div class="sourcing-item"><strong>Oat Extract</strong> — Sweden 59.3297° N, 18.0686° E</div>
+        <div class="sourcing-item"><strong>Shea Butter</strong> — Ghana 7.9465° N, 1.0232° W</div>
+        <div class="sourcing-item"><strong>Aloe Vera</strong> — Texas 29.7604° N, 95.3698° W</div>
+        <div class="sourcing-item"><strong>Chamomile</strong> — Egypt 26.8206° N, 30.8025° E</div>
+      </div>
+    </div>
+    <div class="sourcing-image">
+      <div class="hero-placeholder">[SOURCING IMAGE: Botanical plant/ingredient photo]</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section class="section" id="community">
+  <div class="section-label">Join the Pack</div>
+  <h2 class="section-heading">Tag us in your <em>glow-up.</em></h2>
+  <div class="community-content">
+    <p>Show us your dog's transformation. Post it to Instagram. Tag @pawsidepets. We repost the best ones. Your dog becomes part of the pack. You become part of the community.</p>
+  </div>
+  <div class="community-grid">
+    <div class="community-card">
+      <div class="hero-placeholder">[UGC 1: Dog owner with groomed dog]</div>
+    </div>
+    <div class="community-card">
+      <div class="hero-placeholder">[UGC 2: Happy dog after grooming]</div>
+    </div>
+    <div class="community-card">
+      <div class="hero-placeholder">[UGC 3: Dog with shiny coat]</div>
+    </div>
+    <div class="community-card">
+      <div class="hero-placeholder">[UGC 4: Dog playing/running]</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>Start the <em>glow-up</em> today.</h2>
+  <p>Your dog deserves ingredients you can actually pronounce. We deliver in 24 hours. 30-day glow-up guarantee. If your dog's coat isn't happier, we'll refund you. (They will be. It always happens.)</p>
+  <div class="cta-button-group">
+    <button class="cta-btn primary">Order Now</button>
+    <button class="cta-btn secondary">Learn More</button>
+  </div>
+  <div class="reassurance">
+    <div class="reassurance-item">
+      <strong>✓ Ships in 24 hours</strong>
+      <span>No waiting. Your dog needs this.</span>
+    </div>
+    <div class="reassurance-item">
+      <strong>✓ 30-day guarantee</strong>
+      <span>Happy dog or your money back.</span>
+    </div>
+    <div class="reassurance-item">
+      <strong>✓ 10K+ happy dogs</strong>
+      <span>Join the pack. See the proof.</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>🐾 Pawside — Grooming products for real dogs. Made with love for dog owners who get it.</p>
+  <p style="margin-top:16px;opacity:.6;">© 2026 Pawside. <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Instagram</a></p>
+</footer>
+
+</body>
+</html>

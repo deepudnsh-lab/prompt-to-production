@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 10: Prompt Diary · NeuralDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF;--surface:#F7F7F9;--border:#E0E0E0;
+  --red:#E8000D;--red-hover:#FF1A26;--red-tint:#FFF0F0;--red-soft:#FFD6D8;
+  --ink:#0A0A0F;--ink-mid:#3D3D4A;--ink-muted:#7A7A8C;--ink-faint:#B8B8C8;
+  --rule:#EFEFEF;--tag-bg:#F7F7F9;
+  --good-bg:#F0FBF4;--good-text:#1B6B3A;
+  --warn-bg:#FFFBF0;--warn-text:#8B5E00;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--surface);font-family:'Space Grotesk',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--white);margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;border-bottom:1px solid var(--rule);
+}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--red);opacity:.7;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--red);opacity:.5;}
+.cover-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;line-height:.95;color:var(--ink);letter-spacing:-.03em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:var(--red);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--rule);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;line-height:1.1;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--red);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--red-tint);border-left:3px solid var(--red);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:28px 0;}
+.stat-card{background:var(--surface);border:1px solid var(--rule);padding:22px 18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2rem;color:var(--red);line-height:1;margin-bottom:5px;}
+.stat-label{font-size:11px;color:var(--ink-muted);line-height:1.4;font-weight:400;}
+
+/* ── DIRECTION LOCK ── */
+.dir-lock{background:var(--ink);padding:18px 24px;margin-bottom:32px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;}
+.dir-lock::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.dl-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px;}
+.dl-value{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:.95rem;color:#fff;}
+.dl-div{width:1px;height:36px;background:rgba(255,255,255,.1);}
+
+/* ── PROMPT ENTRIES ── */
+.prompt-entry{border:1px solid var(--rule);overflow:hidden;margin-bottom:3px;}
+.pe-header{background:var(--ink);padding:14px 20px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:14px;position:relative;overflow:hidden;}
+.pe-header::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.05) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;}
+.pe-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--red);line-height:1;position:relative;z-index:1;}
+.pe-step{position:relative;z-index:1;}
+.pe-step-name{font-size:14px;font-weight:500;color:#fff;margin-bottom:2px;}
+.pe-step-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.3);}
+.pe-badge{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;position:relative;z-index:1;}
+.badge-worked{background:rgba(27,107,58,.3);color:#5DC889;border:1px solid rgba(27,107,58,.3);}
+.badge-iterated{background:rgba(232,0,13,.15);color:#FF6B6B;border:1px solid rgba(232,0,13,.2);}
+.badge-key{background:rgba(232,0,13,.12);color:var(--red-soft);border:1px solid rgba(232,0,13,.18);}
+.badge-pivot{background:rgba(255,184,0,.15);color:#FFB800;border:1px solid rgba(255,184,0,.2);}
+
+/* Prompt box */
+.prompt-box{background:var(--ink);border-bottom:1px solid rgba(255,255,255,.06);padding:0;}
+.pb-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,0,13,.4);padding:12px 20px 8px;}
+.pb-text{font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.75;color:rgba(255,248,248,.8);padding:0 20px 16px;white-space:pre-wrap;word-break:break-word;}
+.pb-text em{font-style:normal;color:var(--red-soft);}
+
+/* Analysis */
+.pe-analysis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.pa-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.pa-col:last-child{border-right:none;}
+.pa-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;border-radius:2px;display:inline-block;margin-bottom:8px;}
+.label-worked{background:var(--good-bg);color:var(--good-text);}
+.label-issue{background:var(--warn-bg);color:var(--warn-text);}
+.label-lesson{background:var(--red-tint);color:var(--red);}
+.pa-text{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.pa-text strong{color:var(--ink);font-weight:600;}
+
+/* ── KEY LESSON ── */
+.key-lesson{background:var(--ink);padding:32px 36px;margin-top:32px;position:relative;overflow:hidden;}
+.key-lesson::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--red),var(--red-soft),transparent);}
+.key-lesson::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(232,0,13,.05) 1px,transparent 1px);background-size:22px 22px;pointer-events:none;}
+.kl-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,0,13,.45);margin-bottom:10px;position:relative;z-index:1;}
+.kl-text{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:18px;color:#fff;line-height:1.55;position:relative;z-index:1;}
+.kl-text em{font-style:normal;color:var(--red-soft);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .pe-analysis{grid-template-columns:1fr;}
+  .pa-col{border-right:none;border-bottom:1px solid var(--rule);}
+  .pa-col:last-child{border-bottom:none;}
+  .pe-header{grid-template-columns:28px 1fr;}
+  .pe-badge{display:none;}
+  .dir-lock{flex-wrap:wrap;}
+  .dl-div{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · NeuralDesk · Brand 04 of 06</div>
+    <h1 class="cover-title">Prompt<br><em>Diary</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 10 — Prompt Diary</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">NeuralDesk</div></div>
+    <div class="meta-block"><div class="meta-label">Prompts documented</div><div class="meta-value">11 prompts · 6 steps</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- INTRO -->
+  <div class="section">
+    <div class="section-label">01 — What this document is</div>
+    <h2 class="section-heading">The actual prompts.<br><em>Verbatim.</em></h2>
+
+    <p class="body-text">This document records every significant prompt used to build NeuralDesk — the exact words sent at each step, what came back, what needed fixing, and what lesson applies to the remaining brands. Nothing is reconstructed. These are the actual instructions that produced the final output.</p>
+
+    <p class="body-text">NeuralDesk introduced two firsts for this series: a complete rejection of the dark mode convention dominant in AI SaaS, in favour of a white-dominant light theme with pure red as the only accent. And the most technically ambitious landing page in the series so far — a stacked screen interaction that was eventually replaced with a clean tab switcher after user feedback, exactly as documented here.</p>
+
+    <div class="dir-lock">
+      <div><div class="dl-label">Direction locked</div><div class="dl-value">C — Arctic / Clarity</div></div>
+      <div class="dl-div"></div>
+      <div><div class="dl-label">Palette</div><div class="dl-value">White dominant · Pure Red #E8000D · Cool Grey · Slate #64748B</div></div>
+      <div class="dl-div"></div>
+      <div><div class="dl-label">Typography</div><div class="dl-value">Space Grotesk 300 · IBM Plex Mono labels</div></div>
+      <div class="dl-div"></div>
+      <div><div class="dl-label">Buyer</div><div class="dl-value">Marcus Webb · 33 · PM · Austin TX</div></div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">11</div><div class="stat-label">Total prompts documented across all steps</div></div>
+      <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Prompts that worked on the first pass</div></div>
+      <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Major direction changes on the landing page</div></div>
+      <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Key lessons extracted for remaining brands</div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- PROMPTS -->
+  <div class="section">
+    <div class="section-label">02 — The prompt diary · all eleven entries</div>
+    <h2 class="section-heading">What was typed.<br>What <em>happened.</em></h2>
+
+    <!-- 01 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">01</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 04 — Industry Research · brief locked</div>
+          <div class="pe-step-sub">Three answers · AI SaaS data analytics · self-serve</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompts sent — locking the brief</div>
+        <div class="pb-text">Q: What is NeuralDesk's core product?
+A: <em>AI data analysis & reporting</em>
+
+Q: What's the sales motion?
+A: <em>Self-serve — sign up and pay online</em>
+
+[Buyer was inferred from the series docs — Product Manager /
+Marketing Analyst / Growth Lead at a Series B startup]</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Two answers locked the entire brief. The AI analytics market data came back well-sourced — $33.4B market, 27.6% CAGR (Grand View Research Jan 2026), $9.4B self-serve segment (Forrester Q4 2025). The buyer was correctly inferred as a non-technical practitioner — PM, analyst, growth lead — not a CTO or procurement manager. <strong>The self-serve motion correctly ruled out enterprise design patterns</strong> from the first document.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The first palette direction — dark mode with cyan accent — was the category default and too similar to the existing AI SaaS visual language. Required a full palette reconsideration before Step 5. The dark mode direction was rejected in favour of white-dominant with pure red — documented in Prompt 04.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Research documents should audit the visual language of competitors, not just their market data. The competitor audit (Step 6) confirmed that every premium AI SaaS product defaults to dark mode — making a deliberate light mode choice the strongest available visual differentiation. The research document should flag this earlier.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">02</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 05 — Persona · American buyer</div>
+          <div class="pe-step-sub">Vikram → Marcus · one correction · one sentence</div>
+        </div>
+        <span class="pe-badge badge-iterated">One correction</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">lets use an americal persona</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Four words, one typo ("americal"), produced a complete persona replacement. Vikram Nair (Bangalore, ₹28L, Razorpay testimonial) became Marcus Webb (Austin TX, $115K, Stripe testimonial). All currency, geography, company references, and pricing tiers updated in a single pass. <strong>The buyer thesis remained identical</strong> — he does not buy analytics software, he buys back three hours of his week.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Two ₹ symbols survived the first replacement pass — one in the enterprise pricing contrast table (₹50L–₹5Cr → $100K–$2M). Required a targeted second fix. The initial persona was built for an Indian market context; the Bangalore reference in the intro paragraph also needed updating to Austin, TX.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When changing locale context mid-build, verify: currency symbols, company names (Razorpay → Stripe), city references, and salary figures. A find-for-all-₹ check after any locale swap takes 10 seconds and prevents the document from being internally inconsistent. The document is only credible if it is consistent throughout.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">03</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 06 — Competitor audit · ThoughtSpot score</div>
+          <div class="pe-step-sub">Annotated screenshots embedded · scores reconciled</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompts sent to Claude — with three annotated screenshots</div>
+        <div class="pb-text">here are the 3 annotted image for step 6 please add these images in it
+and reshare
+
+[Images uploaded: Looker_studio.png · Tablue.png · Thoughtspot.png]</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">All three embedded cleanly at ~200KB each — lightweight enough that the file loads fast. The annotated screenshots made a critical finding visible: <strong>ThoughtSpot's real scores from the annotations (D:2 C:2 S:1 T:4 V:4 = 13/25) were significantly lower than the original estimates (19/25)</strong>. The UI screenshots mask the product detail and the form-driven signup is a dead end for Marcus. The audit became sharper because of the actual screenshots.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The original pre-screenshot scores needed reconciling with the annotated evidence. Tableau went from 15/25 to 19/25 (the annotation confirmed stronger design quality and trust signals than initially scored). ThoughtSpot dropped from 19/25 to 13/25. Looker Studio moved from 16/25 to 17/25. All three required targeted score updates after image review.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Always upload competitor screenshots before finalising audit scores. The pre-screenshot scores are hypotheses. The annotated screenshots are evidence. In this audit, the evidence changed the story significantly — ThoughtSpot looked more impressive from memory than it actually delivers for a self-serve buyer. Screenshots make the audit honest.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">04</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Palette decision — rejecting dark mode</div>
+          <div class="pe-step-sub">Four directions shown · light theme selected · pure red locked</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">I don't like the color palette. Can you suggest a few more color
+palettes? Something maybe preferably in the tones of red and its
+complementary colors.
+
+[Four palette directions were presented]
+
+I want to use pure red, and I want to create a light theme website
+instead of a dark theme website. This should be a totally white
+should be the most color used, and I want the lighter theme website.
+Use your red as well. Show me a color palette accordingly</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The palette decision was the single most important creative direction choice for this brand. <strong>White dominant + pure red #E8000D is visually distinctive in a category where every premium product is dark.</strong> The palette widget showed the colour working in a mini landing page mock before any document was rebuilt — confirming the direction before committing to it. The cool grey scale (#F7F7F9 → #EFEFEF → #E0E0E0) handles surfaces without competing with the red.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The first dark-mode research document needed to be completely rebuilt in the new light theme. All subsequent documents (persona, audit, moodboard, copy) also needed to be built in the NeuralDesk design system from scratch — Space Grotesk for headlines, IBM Plex Mono for labels, white surface, red top rule, dot grid background. No component from the dark-mode version survived.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>Decide the palette before building any document.</strong> The dark-mode research document was a complete rebuild — wasted work that could have been avoided if the palette had been challenged at the brief stage. For future brands: show a colour palette widget with a mini mock before committing to the design system. One decision up front prevents one full rebuild later.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">05</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 07 — Moodboard · Direction C selected</div>
+          <div class="pe-step-sub">Three Midjourney moodboards · Arctic/Clarity chosen</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent — direction selection</div>
+        <div class="pb-text">Q: Which moodboard direction are you going with for NeuralDesk?
+A: <em>Direction C — Arctic / Clarity · ultra-minimal, wide-tracked,
+   Linear/Vercel register</em></div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">All three moodboards came back exceptionally strong on the first Midjourney generation. Direction C (Clarity) was the standout — "ONE QUESTION. ONE ANSWER. NOW." in ultra-wide-tracked caps, the arctic iceberg, the minimal query UI with just a cursor, single red dot on white cards. <strong>The bento-box 9-panel format and hex codes named in the prompt produced palette strip panels automatically</strong> — now a standard prompt element for all six brands.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing. All three moodboards were usable on the first generation. The bento-box grid instruction carried from OrbitX and Bumblebee World worked exactly as expected. The red accent colour communicated correctly in all three directions despite their different emotional registers.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Direction C (Arctic/Clarity) was the highest-risk direction — Light-weight Space Grotesk 300, maximum white space, single red accent. It is the most distinctive direction for a B2B analytics product and the most demanding to execute correctly. The moodboard quality confirmed the direction was achievable. The landing page build tested whether it held up at full scale.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">06</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 08 — Copywriting · all seven sections</div>
+          <div class="pe-step-sub">Copy before layout · six voice rules · hero headline locked</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Direction communicated to Claude — implicit brief</div>
+        <div class="pb-text">Direction C — Arctic / Clarity locked. Ultra-minimal, cool blue-grey,
+Space Grotesk 300, wide tracking. Building Step 8 — Copywriting now.
+
+[Step 8 built entirely from locked direction, persona, and IA — no
+additional prompts required beyond the direction confirmation]</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The hero headline arrived in the first draft and was not changed: <strong>"One question. One answer. Now."</strong> — nine words, Direction C's light-weight type register, three declarative sentences. The pricing structure ($0 / $29 / $79) matched Marcus's solo approval limit exactly. The "generate a one-pager for your manager" link on the Team tier was the most original conversion detail in the document — not in the brief, arrived in the first draft.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing significant. The IA (seven sections mapped to seven questions Marcus has) was correct on the first pass. The copy previews rendered in Direction C's actual aesthetic — Space Grotesk 300, wide-tracked mono labels, red rule — which confirmed the voice and the visual register worked together before any layout decision.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">The quality of Step 5 (persona) directly determines the quality of Step 8 (copy). Marcus's six behaviours — especially "he is deeply skeptical of AI as a feature claim" — produced copy rules that eliminated entire categories of bad B2B SaaS writing. The persona is not background context. It is the brief for the copywriter.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">07</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — Landing page · first build</div>
+          <div class="pe-step-sub">Split hero · dashboard UI · first version</div>
+        </div>
+        <span class="pe-badge badge-iterated">Iterated</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompts sent — hero approach</div>
+        <div class="pb-text">Q: Do you have images to upload for the landing page sections?
+A: <em>Use Unsplash CDN images — embed live URLs</em>
+
+Q: What should the hero background be?
+A: <em>Full-bleed product UI screenshot — the NeuralDesk dashboard</em></div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The first build correctly established the design system — DM Sans 200 weight, DM Mono labels, pure red accent, white dominant. The CSS-built dashboard UI in the hero right panel was the right instinct — showing the product rather than a stock photo. The custom red dot cursor, the typewriter query animation, and the scroll reveal on all sections all worked on the first build.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The split-layout hero (copy left / dashboard right) was conventional — not distinctive enough for Direction C. Required a full hero rethink: centre-aligned copy with the product UI displayed below as a switchable tab panel. Multiple iterations followed on the UI interaction pattern before the final approach was confirmed.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Direction C's Arctic/Clarity register demands centred, full-width, maximum-breathing-room layouts. A split left/right hero is an editorial or hospitality pattern — it works for Ember & Oak, not for a minimal AI SaaS product. The hero layout must match the brand's emotional register, not just the correct palette and font.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">08</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — The compact redesign</div>
+          <div class="pe-step-sub">Centre-aligned hero · stacked UI screens · four tabs</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">Let's create a more compact landing page. I want you to have the
+Jira banner center aligned. And the product UI should be more
+detailed and elaborate. Add more screens. And create a hero banner
+in which the user can actually toggle between screens I don't want
+the carousel. But I want hero banner in which there are multiple
+layers of UI screen. And the user can click on each screen to reveal
+the one hidden behind it. They should appear as if they are stacked
+on top of each other. Also, change the layout of the rest of the
+sections as well. Give me something different and modern.
+add more graphs in the 3rd section</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The centre-aligned hero instantly improved the page — "One question. One answer. Now." needs to be centred to read as a statement rather than an editorial headline. The four product UI screens (Overview, Funnels, Channels, Retention) with real data — SVG charts, metric cards, a retention cohort heatmap — elevated the product credibility significantly. The graphs section with four chart types (line, bar, donut, dark multi-line cohort) was the most technically detailed section in any landing page in the series so far.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The stacked screens interaction — cards positioned with CSS transforms, z-index cascades, hover spread — was technically brittle. It broke when screens had different content heights, behaved inconsistently on resize, and looked wrong at the bottom of the hero. Required an additional 16:9 ratio fix attempt that broke the rest of the sections before the final solution was reached.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>Complex CSS interaction patterns require a feasibility test before committing to them at full scale.</strong> The stacked screens concept was visually right — four layers of UI showing depth and richness — but the CSS execution was too fragile for a portfolio file that must work consistently across browsers and screen sizes. The right instinct, the wrong implementation. Tab switcher was the correct solution.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">09</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — 16:9 ratio attempt</div>
+          <div class="pe-step-sub">Patch-based fix · broke all sections · full rebuild required</div>
+        </div>
+        <span class="pe-badge badge-pivot">Pivot moment</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">the size of the UI is perfect, but the stacked ui is not looking good
+and is behaving wierd at the bottom. lets remove that and just have
+different UI show up only when the user click the tabs at bottom
+(overview, Funnels, Channels, Retentions) rest is looking good</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What this fixed</span>
+          <div class="pa-text">The pivot from stacked screens to a tab switcher was the correct decision. A four-tab panel — Overview / Funnels / Channels / Retention — with a clean fade-in on tab click is exactly what the UI needed. Simple, predictable, consistent across all screen sizes. The product UI detail was preserved; only the brittle interaction layer was removed. <strong>The fix that actually worked was also the simplest one.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What went wrong first</span>
+          <div class="pa-text">Before the tab switcher, a 16:9 aspect-ratio patch was attempted — multiple Python sed passes on the HTML file to adjust heights, widths, and SVG coordinates. Each pass introduced new inconsistencies. The sections below the hero lost their content. The file became corrupted enough to require a complete clean rebuild from scratch rather than a targeted fix.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>Never patch a broken interaction with more patches.</strong> When a CSS positioning approach fails, rebuild the interaction cleanly rather than layering corrections. The clean rebuild took less time than the three failed patch attempts combined, and produced a better result. The same principle applies to any iterative design problem: when the direction is wrong, the answer is to change direction, not to optimise the wrong direction.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">10</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — Mobile responsiveness</div>
+          <div class="pe-step-sub">Hamburger nav · two breakpoints · cursor disabled on touch</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">This looks really good. It looks really bad in mobile version.
+So we please make this responsive.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Two breakpoints (960px tablet, 640px mobile) resolved all the major mobile layout failures in a single pass. The hamburger nav with animated three-line icon and full-width mobile menu dropdown worked correctly on the first build. <strong>Disabling the custom cursor on mobile was the most important detail</strong> — cursor:none on a touch device prevents any tap interactions from registering visually.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The UI sidebar was hidden on mobile — the correct decision, but the metrics grid inline style (grid-template-columns set directly on the element) required a JavaScript fix rather than a CSS override, since inline styles have higher specificity than media query rules. A JS function reads the viewport width and resets the grid at each breakpoint on load and resize.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Never set grid layout via inline styles in the HTML. Always use CSS classes or variables so media queries can override them. Inline styles require JavaScript to override — an unnecessary dependency. For future landing pages: grid-template-columns and other layout properties should live exclusively in the stylesheet, never on the element itself.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">11</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 09 — The tabs were invisible</div>
+          <div class="pe-step-sub">Four tabs missing from HTML · single targeted fix</div>
+        </div>
+        <span class="pe-badge badge-iterated">One fix</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">the four tabs are not visible</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What this fixed</span>
+          <div class="pa-text">The tabs had been present in the CSS and JS but had been dropped from the HTML entirely during the patch-and-rebuild sequence. A single targeted str_replace injected the four tabs — Overview · Funnels · Channels · Retention — directly above the screens-panels div. The JS tab switcher was already correctly written and immediately functional once the HTML was present.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">Why it happened</span>
+          <div class="pa-text">The tab HTML was written in one rewrite pass but got orphaned during a subsequent HTML restructuring — the stabs div was moved to the bottom of the screens-wrap, then lost when the stage div was removed. CSS and JS were complete; only the HTML was missing. The disconnect between three separate file layers (HTML structure, CSS rules, JS logic) caused the failure.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">After every major HTML restructure, verify that HTML, CSS, and JS are all aligned — that every class in the CSS has a corresponding HTML element, and every selector in the JS targets something that exists. A quick browser console check for "querySelector returns null" would have caught this immediately. Build a structural verification step into any major HTML refactor.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end prompts -->
+
+  <div class="page-rule"></div>
+
+  <!-- KEY LESSONS -->
+  <div class="section">
+    <div class="section-label">03 — Four key lessons · apply to remaining brands</div>
+    <h2 class="section-heading">What NeuralDesk<br><em>taught</em> the series.</h2>
+
+    <div class="key-lesson">
+      <div class="kl-label">Lesson 01 — Decide the palette before building any document</div>
+      <div class="kl-text">The first research document was built in dark mode and had to be completely rebuilt when the palette changed. <em>Show a colour palette widget with a mini mock before committing to the design system.</em> One decision up front prevents one full rebuild later. For Brands 05 and 06: palette decision is the first output of Step 4, before any document is produced.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 02 — The layout must match the brand's emotional register</div>
+      <div class="kl-text">Direction C's Arctic/Clarity register demands centred, full-width, maximum-breathing-room layouts. The first split-layout hero was correct for Ember & Oak's editorial warmth — and wrong for NeuralDesk's minimal authority. <em>The hero layout is not a structural decision — it is a brand decision.</em> Make it intentionally, not by default.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 03 — Never patch a broken interaction with more patches</div>
+      <div class="kl-text">Three failed patch attempts on the stacked screens took longer than a clean rebuild. <em>When a direction is wrong, change the direction — do not optimise the wrong direction.</em> The tab switcher was simpler, more reliable, and produced a better result than any version of the stacked interaction. Complexity for its own sake is not a portfolio asset.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 04 — Never set layout properties as inline styles</div>
+      <div class="kl-text">The metrics grid inline style (grid-template-columns on the element) required a JavaScript override to change at mobile breakpoints. CSS media queries cannot override inline styles. <em>All layout properties belong in the stylesheet — never on the element.</em> For every remaining brand: grid-template-columns, flex-direction, and display properties are set in CSS only, never inline.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 10 — PROMPT DIARY · NEURALDESK</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 12: Case Study · Bumblebee World</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Nunito+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#FFD000;--sun-deep:#F5A800;--sun-pale:#FFF8D6;
+  --honey:#FF8C00;--honey-light:#FFE0A0;
+  --bee:#1A1200;--bee-dark:#0D0D00;
+  --leaf:#2E7D32;--leaf-light:#E8F5E9;
+  --marigold:#FF6B35;
+  --sky:#E3F2FD;--sky-deep:#1565C0;
+  --paper:#FFFEF7;
+  --ink:#1A1200;--ink-mid:#4A3F00;--ink-muted:#8A7A00;--ink-faint:#BFB060;
+  --rule:#F0E890;--tag-bg:#FFF8D6;
+  --good-bg:#E8F5E9;--good-text:#1B5E20;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'Nunito Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--sun);margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;
+}
+.cover-band::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 85% 30%,var(--honey) 0%,transparent 55%),
+             radial-gradient(circle at 10% 80%,rgba(255,255,255,.3) 0%,transparent 40%);
+  pointer-events:none;
+}
+.cover-band::after{
+  content:'';position:absolute;inset:0;opacity:.12;
+  background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);
+  background-size:24px 24px;pointer-events:none;
+}
+.cover-emoji{font-size:3.5rem;position:absolute;right:280px;top:44px;z-index:2;animation:wobble 3s ease-in-out infinite;}
+@keyframes wobble{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--bee);opacity:.55;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--bee);opacity:.4;}
+.cover-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:52px;line-height:.95;color:var(--bee);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:normal;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.15);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--bee);font-weight:700;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:4px;background:linear-gradient(to right,var(--honey),var(--sun),transparent);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--honey);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:2px;background:var(--rule);}
+.section-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:32px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:normal;color:var(--honey);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:2px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--tag-bg);border-left:4px solid var(--sun-deep);padding:18px 22px;margin:24px 0;border-radius:0 4px 4px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── BRAND NAMEPLATE ── */
+.brand-plate{background:var(--bee);padding:36px 40px;margin:28px 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;position:relative;overflow:hidden;border-radius:4px;}
+.brand-plate::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 90% 50%,rgba(255,208,0,.1),transparent 55%);pointer-events:none;}
+.brand-plate::after{content:'';position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle,rgba(255,208,0,.8) 1.5px,transparent 1.5px);background-size:20px 20px;pointer-events:none;}
+.bp-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:3rem;color:var(--sun);line-height:1;position:relative;z-index:1;}
+.bp-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:8px;position:relative;z-index:1;}
+.bp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;position:relative;z-index:1;}
+.bp-stat{background:rgba(255,255,255,.06);padding:14px 16px;text-align:center;}
+.bp-stat-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.6rem;color:var(--sun);line-height:1;margin-bottom:3px;}
+.bp-stat-label{font-size:10px;color:rgba(255,255,255,.35);line-height:1.3;}
+
+/* ── BRIEF GRID ── */
+.brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--rule);border:2px solid var(--rule);margin:24px 0;border-radius:4px;overflow:hidden;}
+.brief-cell{background:#fff;padding:20px 22px;}
+.brief-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--honey);margin-bottom:8px;}
+.brief-value{font-size:14px;color:var(--ink-mid);line-height:1.65;}
+.brief-value strong{color:var(--ink);}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:24px 0;}
+.stat-card{background:var(--sun);padding:22px 18px;border-radius:4px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;bottom:-10px;right:-10px;width:60px;height:60px;background:rgba(255,255,255,.2);border-radius:50%;}
+.stat-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;color:var(--bee);line-height:1;margin-bottom:5px;position:relative;z-index:1;}
+.stat-label{font-size:11px;color:rgba(26,18,0,.55);line-height:1.4;font-weight:600;position:relative;z-index:1;}
+
+/* ── PROCESS TIMELINE ── */
+.process-timeline{display:flex;flex-direction:column;gap:1px;margin:24px 0;}
+.pt-row{display:grid;grid-template-columns:52px 1fr;gap:0;border:2px solid var(--rule);border-bottom:none;}
+.pt-row:last-child{border-bottom:2px solid var(--rule);}
+.pt-row:first-child{border-radius:4px 4px 0 0;}
+.pt-row:last-child{border-radius:0 0 4px 4px;}
+.pt-num{background:var(--bee);display:flex;align-items:center;justify-content:center;padding:16px 8px;border-right:2px solid var(--rule);}
+.pt-num-val{font-family:'DM Mono',monospace;font-size:9px;color:var(--sun);letter-spacing:.1em;}
+.pt-content{background:#fff;padding:14px 20px;}
+.pt-row:hover .pt-content{background:var(--tag-bg);}
+.pt-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.pt-desc{font-size:12px;color:var(--ink-muted);line-height:1.55;}
+.pt-status{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border-radius:20px;display:inline-block;margin-left:8px;vertical-align:middle;}
+.st-series{background:var(--tag-bg);color:var(--honey);}
+.st-done{background:var(--good-bg);color:var(--good-text);}
+.st-key{background:rgba(255,140,0,.15);color:var(--honey);}
+
+/* ── DECISION CARDS ── */
+.decision-card{border:2px solid var(--rule);margin-bottom:3px;border-radius:4px;overflow:hidden;}
+.dc-header{background:var(--bee);padding:12px 20px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;}
+.dc-step{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,208,0,.45);}
+.dc-title{font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:600;color:#fff;}
+.dc-source{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,208,0,.12);color:var(--sun);padding:2px 8px;border-radius:20px;}
+.dc-body{background:var(--tag-bg);padding:18px 22px;}
+.dc-body p{font-size:13px;color:var(--ink-mid);line-height:1.75;}
+.dc-body strong{color:var(--ink);}
+
+/* ── PALETTE ── */
+.palette-row{display:flex;gap:0;height:52px;margin:16px 0;border-radius:4px;overflow:hidden;}
+.pal-swatch{flex:1;display:flex;align-items:flex-end;padding:6px 8px;}
+.pal-swatch span{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.06em;color:rgba(255,255,255,.7);mix-blend-mode:screen;}
+
+/* ── TYPE SPECIMEN ── */
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:16px 0;}
+.type-card{background:var(--tag-bg);padding:20px 20px;}
+.type-card-dark{background:var(--bee);padding:20px 20px;position:relative;overflow:hidden;}
+.type-card-dark::after{content:'';position:absolute;inset:0;opacity:.07;background-image:radial-gradient(circle,rgba(255,208,0,.8) 1.5px,transparent 1.5px);background-size:18px 18px;pointer-events:none;}
+.type-role{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;}
+.type-role-light{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,208,0,.4);margin-bottom:8px;}
+.type-specimen{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.6rem;line-height:1.1;color:var(--ink);}
+.type-specimen-light{font-family:'Nunito',sans-serif;font-weight:900;font-size:1.6rem;line-height:1.1;color:var(--sun);}
+.type-specimen-mono{font-family:'DM Mono',monospace;font-size:.85rem;line-height:1.6;color:var(--honey);letter-spacing:.08em;}
+
+/* ── INSIGHT ROW ── */
+.insight-row{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:24px 0;}
+.insight-card{background:var(--tag-bg);padding:20px 20px;border-left:4px solid var(--sun-deep);border-radius:0 4px 4px 0;}
+.insight-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--honey);margin-bottom:8px;}
+.insight-text{font-size:13px;color:var(--ink-mid);line-height:1.65;}
+.insight-text strong{color:var(--ink);}
+
+/* ── OUTPUT BOX ── */
+.output-box{background:var(--bee);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;border-radius:4px;}
+.output-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 40%,rgba(255,208,0,.1),transparent 55%);pointer-events:none;}
+.output-box::after{content:'';position:absolute;inset:0;opacity:.07;background-image:radial-gradient(circle,rgba(255,208,0,.8) 1.5px,transparent 1.5px);background-size:24px 24px;pointer-events:none;}
+.ob-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,208,0,.45);margin-bottom:12px;position:relative;z-index:1;}
+.ob-heading{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:#fff;line-height:1.4;margin-bottom:20px;position:relative;z-index:1;}
+.ob-heading em{font-style:normal;color:var(--sun);}
+.ob-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;position:relative;z-index:1;}
+.ob-card{background:rgba(255,255,255,.06);padding:16px 18px;}
+.ob-card-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,208,0,.45);margin-bottom:8px;}
+.ob-card-text{font-size:12px;color:rgba(255,255,255,.6);line-height:1.65;}
+.ob-card-text strong{color:#fff;}
+
+/* ── SKILLS BOX ── */
+.skills-box{background:var(--sun);padding:32px 36px;margin-top:3px;position:relative;overflow:hidden;border-radius:4px;}
+.skills-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 90% 50%,var(--honey) 0%,transparent 55%);pointer-events:none;}
+.skills-box::after{content:'';position:absolute;inset:0;opacity:.1;background-image:radial-gradient(circle,var(--bee) 1.5px,transparent 1.5px);background-size:20px 20px;pointer-events:none;}
+.sb-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(26,18,0,.4);margin-bottom:10px;position:relative;z-index:1;}
+.sb-text{font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;color:var(--bee);line-height:1.6;position:relative;z-index:1;}
+.sb-text em{font-style:normal;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.15);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:2px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .cover-emoji{display:none;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .brief-grid,.type-row,.insight-row,.ob-grid{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .brand-plate{grid-template-columns:1fr;}
+  .bp-stats{grid-template-columns:1fr 1fr 1fr;}
+  .dc-header{grid-template-columns:1fr;gap:6px;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div class="cover-emoji">🐝</div>
+  <div>
+    <div class="project-series">From Prompt to Production · Bumblebee World · Brand 03 of 06</div>
+    <h1 class="cover-title">Case<br><em>Study</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 12 — Case Study</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Bumblebee World</div></div>
+    <div class="meta-block"><div class="meta-label">Industry</div><div class="meta-value">Children's books &amp; toys · EdTech adjacent</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 THE BRIEF -->
+  <div class="section">
+    <div class="section-label">01 — The brief</div>
+    <h2 class="section-heading">A children's brand that<br><em>refuses every trade-off.</em></h2>
+
+    <p class="body-text">Bumblebee World is the third of six hypothetical brands built as part of <strong>From Prompt to Production</strong> — a self-initiated portfolio series by Deepu Dinesh, Graphic Design Lead with 13 years of experience. The project demonstrates a complete, research-led web design process executed through AI direction: Claude (Anthropic) and Gemini as execution engines, the designer as the creative director and domain expert.</p>
+
+    <p class="body-text">The brief for this brand: design a complete landing page for a hypothetical Indian children's books and toys brand targeting early learners aged 3–6. The buyer is an urban, aspirational Indian mother — not the child. Every design decision must pass two simultaneous tests: the child's engagement test and the parent's Instagram test. Both must pass. Neither alone is enough.</p>
+
+    <div class="brand-plate">
+      <div>
+        <div class="bp-name">Bumblebee<br>World 🐝</div>
+        <div class="bp-sub">Books &amp; toys for curious little minds · Ages 3–6 · Made in India</div>
+      </div>
+      <div class="bp-stats">
+        <div class="bp-stat"><div class="bp-stat-num">62%</div><div class="bp-stat-label">of purchases are gifts — birthday, Diwali, baby shower</div></div>
+        <div class="bp-stat"><div class="bp-stat-num">9</div><div class="bp-stat-label">steps to the final build, all documented</div></div>
+        <div class="bp-stat"><div class="bp-stat-num">03</div><div class="bp-stat-label">of 06 brands in the series</div></div>
+      </div>
+    </div>
+
+    <div class="brief-grid">
+      <div class="brief-cell">
+        <div class="brief-label">The gap to close</div>
+        <div class="brief-value">Every competitor in this category makes a choice: <strong>beautiful or Indian. Educational or Instagrammable.</strong> No competitor has premium design quality AND Indian cultural content AND physical toys AND a gift-ready product at a D2C price point AND a character universe that travels across every touchpoint. Bumblebee World occupies all five simultaneously.</div>
+      </div>
+      <div class="brief-cell">
+        <div class="brief-label">What makes this case study credible</div>
+        <div class="brief-value">Every research statistic cites a named source and year. Every design decision traces to a specific research finding or persona insight. The landing page is a single, fully functional HTML file — <strong>no framework, no backend, no build tooling</strong>. It works offline. The multi-tool workflow (Claude + Gemini) is documented in full in Step 10.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 THE PROCESS -->
+  <div class="section">
+    <div class="section-label">02 — The process</div>
+    <h2 class="section-heading">Nine steps.<br><em>Each one documented.</em></h2>
+
+    <p class="body-text">The full project followed a 14-step framework. Steps 1–3 were strategy-level work completed once for the entire series. Steps 4–12 were executed specifically for Bumblebee World. Every step produced a standalone HTML document.</p>
+
+    <div class="process-timeline">
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">01</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Project Brief <span class="pt-status st-series">Series level</span></div>
+          <div class="pt-desc">The big idea, the 14-step framework, the tools, the scope. The rule that nothing unverifiable may be claimed — established here and applied to every subsequent document.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">02</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Industry Scoring Matrix <span class="pt-status st-series">Series level</span></div>
+          <div class="pt-desc">16 industries scored against 4 criteria: Visual diversity, Persona clarity, Design challenge, Emotional range. Kids EdTech selected — chosen for its dual-audience design problem and emotional range contrast with OrbitX.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">03</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Brand Naming Exercise <span class="pt-status st-series">Series level</span></div>
+          <div class="pt-desc">4 candidates per brand. Bumblebee World won on compound naming with a 14/15 score — both words grounded in physical and emotional truth. "Bumblebee" for the child. "World" for the scope. The double-B sound is naturally playful and easy for a 3-year-old to say.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">04</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Deep Industry Research <span class="pt-status st-done">Brand level</span></div>
+          <div class="pt-desc">Global children's book market ($16.4B — Statista 2026), educational toy market ($118B — Grand View Research 2026), India-specific figures (₹4,200 Cr books, ₹18,500 Cr toys), 62% gifting purchase rate, and 6 visual design trends tagged by status.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">05</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Customer Persona — Priya Sharma <span class="pt-status st-done">Brand level</span></div>
+          <div class="pt-desc">32 · Bangalore · Product Manager · Mother of Aarav (4) · HHI ₹22 LPA · 45 min Instagram daily · 20 minutes to make a purchase decision. The buyer thesis: <em>Priya does not buy toys. She buys what kind of mother she is.</em></div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">06</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Competitor Visual Audit <span class="pt-status st-done">Brand level</span></div>
+          <div class="pt-desc">Usborne (19/25 — design quality benchmark, zero Indian content), Kiddopia (15/25 — Indian culture, digital-only, not giftable), Tulika Books (13/25 — deepest cultural content, S:1/5 shareability). The universal gap: no competitor is beautiful AND Indian AND giftable AND Instagrammable simultaneously.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">07</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Moodboard — 3 Directions <span class="pt-status st-done">Brand level</span></div>
+          <div class="pt-desc">Direction A (Sunny/Bloom — warm Indian yellow, marigold, Nunito 900) · Direction B (Wild/Lush — deep forest green, Panchatantra animals) · Direction C (Sweet/Petal — rose pink, gifting-first). Direction A selected: most commercially confident, passes both the Instagram test and the gifting test simultaneously.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">08</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Content &amp; Copywriting <span class="pt-status st-done">Brand level</span></div>
+          <div class="pt-desc">All copy written before any layout decision. Seven sections, each answering one of Priya's questions in order. Six voice rules. Hero headline: "Every child is a world." Two CTAs: "Start the collection →" for the everyday buyer and "Find the perfect gift" for the gifting buyer — never collapsed into one.</div>
+        </div>
+      </div>
+      <div class="pt-row">
+        <div class="pt-num"><div class="pt-num-val">09</div></div>
+        <div class="pt-content">
+          <div class="pt-title">Landing Page — Multi-tool build <span class="pt-status st-key">Key step</span></div>
+          <div class="pt-desc">Seven iterations across Claude (cloud dive experiment, reference image rebuild) before pivoting to a Gemini-generated HTML file with forest illustration system and illustrated book covers — then brought back to Claude for brand alignment, palette correction, image embedding (5 images, ~1.3MB base64), and responsive fixes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 KEY DECISIONS -->
+  <div class="section">
+    <div class="section-label">03 — Key design decisions</div>
+    <h2 class="section-heading">The choices that<br><em>define the brand.</em></h2>
+
+    <p class="body-text">Every design decision in this project traces back to a specific research finding, persona insight, or competitor gap. The four most consequential decisions are documented below.</p>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 01 · Step 05</div>
+        <div class="dc-title">The dual-audience rule — every element must pass two tests simultaneously</div>
+        <div class="dc-source">Persona</div>
+      </div>
+      <div class="dc-body">
+        <p>The Step 5 persona established the defining constraint for the entire brand: Priya buys, Aarav uses. The website must speak to Priya's values (developmental benefit, gifting quality, cultural pride, Instagram shareability) while being visually joyful enough for a 3-year-old to engage with. <strong>Every design decision — palette, copy, layout, illustration style, CTA language — was evaluated against both tests before being confirmed.</strong> A bright yellow palette passes both: it excites the child and photographs beautifully for the parent. A generic stock image of a white child fails both: it neither excites Aarav nor gives Priya pride. The dual-audience rule is not a compromise — it is the brand's competitive advantage. No competitor in the audit applies it consistently.</p>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 02 · Step 06</div>
+        <div class="dc-title">Direction A — Sunny / Bloom · warm Indian yellow as the brand's primary signal</div>
+        <div class="dc-source">Audit + Moodboard</div>
+      </div>
+      <div class="dc-body">
+        <p>The Step 4 research identified that the Indian children's market has shifted from pale pastels toward warm, saturated, confident colour. The Step 6 audit confirmed that the competitor with the worst shareability score (Tulika Books, S:1/5) used institutional blue-grey — and the competitor with the best visual score (Usborne, D:5/5) used clean white. <strong>Sunshine #FFD000 was chosen because it is the colour of marigolds, school bags, turmeric, and ripe mangoes — immediately culturally legible to an Indian parent without being labelled as Indian.</strong> It photographs beautifully against the wooden floors and white walls that dominate Indian parenting Instagram. It is warm without being orange, bright without being garish. Direction B (dark forest green) was rejected specifically because it would have failed the gifting test — grandparents would not reach for a dark green product at a birthday party.</p>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 03 · Step 08</div>
+        <div class="dc-title">Meera's founding story on the homepage — not the About page</div>
+        <div class="dc-source">Copy + Persona</div>
+      </div>
+      <div class="dc-body">
+        <p>The Step 5 persona found that Priya converts from interested browser to loyal buyer when she knows who made the product and why. The standard placement for a founder story is the About page — which Priya will never visit in her 20-minute research window. <strong>The decision was made to place Meera's founding story directly on the homepage, in the fifth section, between the toys and the reviews.</strong> The founding moment — Meera's daughter asked why none of the children in her books looked like her — is also Priya's own unspoken question about Aarav. The story does not need to explain itself. Priya reads it and the connection is made instantly. A founder story on the homepage is a trust signal. A founder story on the About page is a page nobody reads.</p>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="dc-header">
+        <div class="dc-step">Decision 04 · Steps 09 + 10</div>
+        <div class="dc-title">The multi-tool pivot — Gemini for illustrations, Claude for brand alignment</div>
+        <div class="dc-source">Workflow</div>
+      </div>
+      <div class="dc-body">
+        <p>After seven landing page iterations in Claude, the decision was made to bring in a Gemini-generated HTML file that had a forest illustration system and illustrated book cover mockups at a quality level Claude's CSS had not reached. <strong>This was not a failure of the process — it was a creative direction decision.</strong> The designer's job is to find the best output by any means available. The Gemini file was structurally excellent (forest parallax, illustrated cards, dark/light theme toggle) and content-wrong everywhere else (wrong brand name, wrong palette, wrong copy, API-dependent images). Claude then corrected all content errors, remapped the palette from Direction B dark green to Direction A Sunny/Bloom, embedded all five images as base64, and fixed responsive behaviour. The two-tool workflow produced a better result than either tool alone would have.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 04 VISUAL IDENTITY -->
+  <div class="section">
+    <div class="section-label">04 — Visual identity system</div>
+    <h2 class="section-heading">Direction A — Sunny / Bloom.<br><em>Applied.</em></h2>
+
+    <p class="body-text">Direction A was selected in Step 7. The identity system it established was applied consistently across every subsequent document and the final landing page. Every element in the build exists within these rules.</p>
+
+    <div class="palette-row">
+      <div class="pal-swatch" style="background:#FFD000;"><span>#FFD000</span></div>
+      <div class="pal-swatch" style="background:#F5A800;"><span>#F5A800</span></div>
+      <div class="pal-swatch" style="background:#FF8C00;"><span>#FF8C00</span></div>
+      <div class="pal-swatch" style="background:#FF6B35;"><span>#FF6B35</span></div>
+      <div class="pal-swatch" style="background:#2E7D32;"><span>#2E7D32</span></div>
+      <div class="pal-swatch" style="background:#FFF8D6;"><span style="color:#1A1200;">#FFF8D6</span></div>
+      <div class="pal-swatch" style="background:#1A1200;"><span>#1A1200</span></div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-card-dark">
+        <div class="type-role-light">Display · all headlines</div>
+        <div class="type-specimen-light">Every child<br>is a world.</div>
+        <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,208,0,.3);letter-spacing:.1em;">Nunito · Weight 900</div>
+      </div>
+      <div class="type-card">
+        <div class="type-role">Labels · navigation · metadata</div>
+        <div class="type-specimen-mono">Books &amp; toys for curious minds · Ages 3–6 · Made in India 🌻</div>
+        <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-faint);letter-spacing:.1em;">DM Mono · Regular · Wide tracking</div>
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-card">
+        <div class="type-role">Body · descriptions · sub-copy</div>
+        <div style="font-family:'Nunito Sans',sans-serif;font-size:15px;line-height:1.7;color:var(--ink-mid);">Indian stories and handcrafted toys that grow with your child — beautiful enough to gift, meaningful enough to keep.</div>
+        <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-faint);letter-spacing:.1em;">Nunito Sans · Regular 400 / SemiBold 600</div>
+      </div>
+      <div class="type-card-dark">
+        <div class="type-role-light">CTA · primary button</div>
+        <div style="display:inline-block;background:var(--sun);color:var(--bee);font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;padding:12px 24px;border-radius:4px;margin-top:4px;">Start the collection →</div>
+        <div style="margin-top:12px;display:inline-block;border:2px solid rgba(255,255,255,.3);color:#fff;font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;padding:10px 20px;border-radius:4px;">Find the perfect gift</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 05 WHAT THIS DEMONSTRATES -->
+  <div class="section">
+    <div class="section-label">05 — What this demonstrates</div>
+    <h2 class="section-heading">The skill<br><em>being shown.</em></h2>
+
+    <div class="insight-row">
+      <div class="insight-card">
+        <div class="insight-label">Dual-audience design thinking</div>
+        <div class="insight-text">The hardest design problem in the children's category is that the buyer and the user are different people with completely different decision criteria. <strong>Bumblebee World is designed to excite a 3-year-old and earn a mother's trust and Instagram post simultaneously.</strong> No competitor in the audit achieves both. The discipline required to hold both audiences in every design decision — without compromising either — is the primary skill this case study demonstrates.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Multi-tool workflow fluency</div>
+        <div class="insight-text">Brand 03 introduced a workflow that Brands 01 and 02 did not use: a Gemini-generated HTML file brought into Claude for brand alignment and correction. <strong>The decision to switch tools mid-project was a creative direction decision, not a failure.</strong> Knowing when a different tool produces better output — and knowing exactly how to correct what it gets wrong — is a design lead skill, not a technical one. The multi-tool workflow is documented in full in Step 10.</div>
+      </div>
+    </div>
+
+    <div class="insight-row">
+      <div class="insight-card">
+        <div class="insight-label">Research-led design — every decision has a source</div>
+        <div class="insight-text">The dark palette came from the trend analysis in Step 4. The gifting pathway prominence came from the 62% figure in Step 4. The founder story placement came from Priya's conversion triggers in Step 5. The cultural content strategy came from the Kiddopia/Tulika gap in Step 6. <strong>Nothing was decided by taste alone.</strong> A designer who can read market research and translate it into specific, defensible design decisions is more valuable than one who produces beautiful work without knowing why.</div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-label">Hypothetical but defensible</div>
+        <div class="insight-text">Bumblebee World does not exist. But the market it sits in does. The persona it targets does. The competitor landscape it navigates does. <strong>Every statistic has a named source and year. Every design decision has a documented rationale.</strong> If a hiring manager asks why the CTA says "Start the collection" and not "Buy Now," the answer is in Step 5. If they ask why the yellow palette was chosen over the green, the answer is in Step 7. The case study is bulletproof because the process was honest.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-box">
+    <div class="ob-label">The output · what was built</div>
+    <div class="ob-heading">One brand. Nine documents.<br><em>One production-quality landing page.</em></div>
+    <div class="ob-grid">
+      <div class="ob-card">
+        <div class="ob-card-label">The landing page</div>
+        <div class="ob-card-text">Single HTML file · all 5 images base64 embedded · forest parallax illustration system · illustrated book cover cards · dark/light theme toggle · mouse parallax on hero · scroll-reveal animations · mobile responsive · works offline · no framework or build tooling required</div>
+      </div>
+      <div class="ob-card">
+        <div class="ob-card-label">The process documents</div>
+        <div class="ob-card-text">9 individual HTML files · industry research · persona · visual audit · moodboard · copywriting · prompt diary · before/after comparison · this case study · each standalone, complete, and cross-reference-free</div>
+      </div>
+      <div class="ob-card">
+        <div class="ob-card-label">The tools used</div>
+        <div class="ob-card-text"><strong>Claude (Anthropic)</strong> — all strategy documents, copywriting, correction passes · <strong>Gemini</strong> — initial landing page build with forest illustration system · <strong>Midjourney</strong> — three moodboard images · Google Fonts · Pure HTML / CSS / JS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="skills-box" style="margin-top:3px;">
+    <div class="sb-label">The series thesis — restated for Brand 03</div>
+    <div class="sb-text">Every competitor is either beautiful or Indian or educational. <em>Bumblebee World is all three.</em> That is not a tagline. It is the output of nine steps of research, persona development, audit, moodboarding, copywriting, and deliberate design direction — applied to the one category where no one has held all three simultaneously.</div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 12 — CASE STUDY · BUMBLEBEE WORLD</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

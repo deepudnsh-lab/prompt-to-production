@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 08: Copywriting · OrbitX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0E0E;--ink-mid:#3D3D3D;--ink-muted:#7A7A7A;--ink-faint:#B8B8B8;
+  --paper:#FAF8F4;--accent:#2563C8;--accent-light:#C8DAF7;
+  --rule:#E0DCD5;--tag-bg:#F0EDE8;
+  --space:#020916;--mission:#0A1E3D;--signal:#2563C8;
+  --horizon:#60A5FA;--atmos:#E8F4FD;--white:#FFFFFF;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+/* COVER */
+.cover-band{background:var(--space);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(37,99,200,.25),transparent 65%);pointer-events:none;}
+.cover-band::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 10%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 60% 60%,rgba(255,255,255,.3),transparent);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--accent-light);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--accent-light),transparent);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--accent);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--tag-bg);border-left:3px solid var(--accent);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* IA MAP */
+.ia-grid{display:grid;grid-template-columns:40px 1fr;gap:0;margin:28px 0;}
+.ia-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--signal);letter-spacing:.1em;padding:14px 16px 14px 0;border-right:2px solid var(--rule);display:flex;align-items:flex-start;justify-content:flex-end;}
+.ia-content{padding:14px 0 14px 20px;border-bottom:1px solid var(--rule);}
+.ia-content:last-child{border-bottom:none;}
+.ia-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.ia-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-faint);letter-spacing:.1em;margin-bottom:5px;}
+.ia-purpose{font-size:12px;color:var(--ink-mid);line-height:1.55;}
+.ia-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:2px;display:inline-block;margin-left:8px;vertical-align:middle;}
+.b-anchor{background:#E8F5EE;color:#1A6B3A;}
+.b-proof{background:#FFF4E6;color:#8B4A1C;}
+.b-convert{background:var(--accent-light);color:var(--accent);}
+
+/* VOICE GRID */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin:24px 0;}
+.vc{background:var(--tag-bg);padding:18px 16px;}
+.vc-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.vc-rule{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.3;}
+.vc-eg{font-size:11px;color:var(--ink-muted);font-style:italic;line-height:1.55;}
+
+/* COPY BLOCKS */
+.cb{border:1px solid var(--rule);overflow:hidden;margin-bottom:3px;}
+.cb-header{background:var(--space);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.cb-section{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent-light);}
+.cb-note{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:.08em;}
+
+/* Live dark */
+.live-dark{background:var(--space);padding:32px 36px;border-bottom:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;}
+.live-dark::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 80% 40%,rgba(37,99,200,.12),transparent 60%);pointer-events:none;}
+
+/* Live light */
+.live-light{background:var(--atmos);padding:28px 32px;border-bottom:1px solid rgba(37,99,200,.1);}
+
+/* Dark copy elements */
+.d-overline{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:rgba(96,165,250,.6);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.d-overline::before{content:'';width:16px;height:1px;background:var(--signal);flex-shrink:0;}
+.d-h1{font-family:'DM Sans',sans-serif;font-weight:700;color:var(--white);letter-spacing:-.03em;line-height:.95;margin-bottom:14px;}
+.d-h1 em{font-style:normal;color:var(--horizon);}
+.d-h2{font-family:'DM Sans',sans-serif;font-weight:700;color:var(--white);letter-spacing:-.025em;line-height:1.05;margin-bottom:12px;}
+.d-h2 em{font-style:normal;color:var(--horizon);}
+.d-body{font-size:13px;font-weight:300;color:rgba(232,244,253,.55);line-height:1.85;max-width:520px;margin-bottom:16px;}
+.d-cta{display:inline-flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:12px 24px;background:var(--signal);color:var(--white);font-weight:500;margin-right:10px;}
+.d-cta-ghost{display:inline-flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:11px 22px;border:1px solid rgba(37,99,200,.5);color:rgba(96,165,250,.8);}
+
+/* Stat row */
+.stat-row{display:flex;gap:0;margin-top:20px;border-top:1px solid rgba(255,255,255,.06);padding-top:18px;}
+.stat{padding:0 24px 0 0;margin-right:24px;border-right:1px solid rgba(255,255,255,.08);}
+.stat:last-child{border-right:none;padding-right:0;margin-right:0;}
+.stat-num{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:700;color:var(--white);line-height:1;margin-bottom:3px;}
+.stat-num em{font-style:normal;color:var(--horizon);}
+.stat-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);}
+
+/* Nav */
+.d-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.06);}
+.d-nav-logo{font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.9);}
+.d-nav-links{display:flex;gap:20px;}
+.d-nav-link{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);}
+
+/* Spec grid */
+.spec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.05);margin-top:20px;}
+.spec-cell{background:var(--mission);padding:14px 16px;}
+.spec-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(96,165,250,.4);margin-bottom:4px;}
+.spec-val{font-size:14px;font-weight:500;color:rgba(255,255,255,.8);}
+
+/* Passenger cards */
+.pax-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);}
+.pax-card{background:var(--mission);padding:16px 18px;}
+.pax-id{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(96,165,250,.4);margin-bottom:6px;}
+.pax-profile{font-size:13px;font-weight:400;color:rgba(255,255,255,.75);line-height:1.4;}
+.pax-detail{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.3);margin-top:4px;letter-spacing:.06em;}
+
+/* Mission timeline */
+.timeline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:16px;}
+.tl-card{background:#fff;border:1px solid rgba(37,99,200,.1);padding:16px;}
+.tl-time{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal);margin-bottom:6px;}
+.tl-title{font-size:13px;font-weight:500;color:var(--mission);margin-bottom:4px;line-height:1.3;}
+.tl-detail{font-size:11px;color:var(--ink-muted);line-height:1.55;}
+
+/* Training cards */
+.training-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:16px;}
+.tr-card{background:#fff;border:1px solid rgba(37,99,200,.1);padding:14px;}
+.tr-day{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal);margin-bottom:5px;}
+.tr-title{font-size:12px;font-weight:500;color:var(--mission);margin-bottom:3px;line-height:1.3;}
+.tr-detail{font-size:11px;color:var(--ink-muted);line-height:1.5;}
+
+/* Light copy elements */
+.l-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--signal);margin-bottom:8px;}
+.l-h2{font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;color:var(--mission);letter-spacing:-.025em;line-height:1.1;margin-bottom:10px;}
+.l-h2 em{font-style:italic;color:var(--signal);}
+.l-body{font-size:13px;color:var(--ink-mid);line-height:1.85;max-width:520px;margin-bottom:12px;}
+
+/* Manifest */
+.manifest-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.05);}
+.manifest-card{background:var(--mission);padding:20px 18px;}
+.mc-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(96,165,250,.4);margin-bottom:8px;}
+.mc-mission{font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;}
+.mc-window{font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.4);margin-bottom:12px;letter-spacing:.08em;}
+.mc-seats{font-family:'DM Mono',monospace;font-size:9px;color:rgba(96,165,250,.6);letter-spacing:.08em;}
+.manifest-cta-row{background:var(--mission);padding:20px 24px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;margin-top:1px;}
+.mct-text{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(96,165,250,.5);}
+
+/* Contact form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;}
+.form-fields{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.06);}
+.form-field{background:rgba(10,30,61,.8);padding:14px 16px;}
+.form-field-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:rgba(96,165,250,.45);margin-bottom:5px;}
+.form-field-input{font-size:13px;color:rgba(255,255,255,.45);font-weight:300;}
+.specialist-card{padding:20px;border:1px solid rgba(37,99,200,.2);}
+.spec-card-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(96,165,250,.4);margin-bottom:12px;}
+.spec-avatar{width:48px;height:48px;background:var(--mission);border-radius:50%;border:1px solid rgba(37,99,200,.4);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.spec-initials{font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,.7);}
+.spec-name{font-size:14px;font-weight:500;color:#fff;margin-bottom:3px;}
+.spec-title{font-family:'DM Mono',monospace;font-size:9px;color:rgba(96,165,250,.5);letter-spacing:.08em;margin-bottom:12px;}
+.spec-desc{font-size:12px;color:rgba(255,255,255,.4);line-height:1.65;}
+
+/* Annotation */
+.ann{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.ann-col{padding:14px 18px;border-right:1px solid var(--rule);}
+.ann-col:last-child{border-right:none;}
+.ann-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:7px;}
+.ann-text{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.ann-text strong{color:var(--ink);font-weight:500;}
+
+/* Footer */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:28px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .voice-grid{grid-template-columns:1fr;}
+  .ia-grid{grid-template-columns:28px 1fr;}
+  .ann{grid-template-columns:1fr;}
+  .ann-col{border-right:none;border-bottom:1px solid var(--rule);}
+  .stat-row{flex-wrap:wrap;gap:12px;}
+  .stat{border-right:none;padding-right:0;}
+  .pax-row,.manifest-grid,.timeline-grid,.training-grid,.spec-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .manifest-cta-row{grid-template-columns:1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · OrbitX · Brand 02 of 06</div>
+    <h1 class="cover-title">Content &amp;<br><em>Copywriting</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 08 — Copy</div></div>
+    <div class="meta-block"><div class="meta-label">Direction</div><div class="meta-value">A · Cosmonaut · Vast</div></div>
+    <div class="meta-block"><div class="meta-label">Persona</div><div class="meta-value">Arjun Mehta · 52 · Founder</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- 01 IA -->
+  <div class="section">
+    <div class="section-label">01 — Page structure · information architecture</div>
+    <h2 class="section-heading">Eight sections.<br>Eight <em>questions answered.</em></h2>
+
+    <p class="body-text">The OrbitX page is structured like a mission briefing document — not a brochure, not a campaign. Each section exists because it answers a specific question in the reader's mind. If a section cannot be reduced to the question it answers, it does not belong on the page.</p>
+
+    <p class="body-text">The sequence follows the logic of a high-value technical decision: credibility first, proof second, detail third, commitment last. The page does not build atmosphere before substance. It leads with facts and lets atmosphere emerge from precision.</p>
+
+    <div class="note-box">
+      <p><strong>The structural principle:</strong> Arjun is at 11pm in a hotel room with 20 minutes. Every section must earn his continued attention by answering the next question in his head. The moment a section fails to do that, he closes the tab.</p>
+    </div>
+
+    <div class="ia-grid">
+      <div class="ia-num">01</div>
+      <div class="ia-content">
+        <div class="ia-name">Navigation <span class="ia-badge b-anchor">Anchor</span></div>
+        <div class="ia-sub">Fixed · wordmark · 4 section labels · primary CTA</div>
+        <div class="ia-purpose">The four nav labels — The Vehicle, The Mission, The Training, The Manifest — read like a classified document's table of contents. Arjun reads nav labels before the hero. These four words tell him immediately what kind of company OrbitX is. The CTA is "Speak to a Specialist" — not Book, not Reserve, not Contact Us.</div>
+      </div>
+
+      <div class="ia-num">02</div>
+      <div class="ia-content">
+        <div class="ia-name">Hero — Credential Statement <span class="ia-badge b-anchor">Anchor</span></div>
+        <div class="ia-sub">Full viewport · helmet visor image · headline + four mission stats</div>
+        <div class="ia-purpose">Answers: "Is this real?" The hero does not sell the experience — it states the facts. Altitude, duration, passenger count, next mission designation. The headline is bold and factual. The image is a human eye reflected in a visor with Earth behind it. The passenger is the subject, not the rocket.</div>
+      </div>
+
+      <div class="ia-num">03</div>
+      <div class="ia-content">
+        <div class="ia-name">The Vehicle — Technical Credentials</div>
+        <div class="ia-sub">Dark section · philosophy statement + 4-cell spec grid</div>
+        <div class="ia-purpose">Answers: "Can I trust the engineering?" Vehicle name, altitude ceiling, propulsion type, reusability status. This section appears before any experience content because the reader will not emotionally engage until he trusts the machine. The philosophy statement — "We do not launch until we are certain" — appears here, not on the homepage hero.</div>
+      </div>
+
+      <div class="ia-num">04</div>
+      <div class="ia-content">
+        <div class="ia-name">Previous Passengers — Human Proof <span class="ia-badge b-proof">Proof</span></div>
+        <div class="ia-sub">Dark section · 3 anonymised biographical signal cards</div>
+        <div class="ia-purpose">Answers: "Has anyone like me done this?" Not testimonials — biographical signals. Founder, Mumbai, flew March 2027. Chairman, Dubai, flew August 2027. Passenger identities kept confidential by request. The reader sees his peer group. He does not need a quote. He needs a mirror.</div>
+      </div>
+
+      <div class="ia-num">05</div>
+      <div class="ia-content">
+        <div class="ia-name">The Mission — What Actually Happens</div>
+        <div class="ia-sub">Light section · T-minus timeline · 6 cards from medical clearance to landing</div>
+        <div class="ia-purpose">Answers: "What exactly am I buying?" A precise sequence — not experience language. T-72hrs: medical clearance. T-48hrs: arrive at spaceport. T-24hrs: simulator and briefing. T-0: launch. T+11min: apogee. T+22min: touchdown. This is an itinerary, not a narrative.</div>
+      </div>
+
+      <div class="ia-num">06</div>
+      <div class="ia-content">
+        <div class="ia-name">The Training — Pre-Flight Programme</div>
+        <div class="ia-sub">Light section · 4-card two-day programme · presented as premium itinerary</div>
+        <div class="ia-purpose">Answers: "What do I have to do before I go?" Presented as a premium two-day programme — not a requirement. Medical assessment, full mission simulation, vehicle walk-around, suit fitting, crew dinner. By the time the passenger boards, they have already experienced everything once.</div>
+      </div>
+
+      <div class="ia-num">07</div>
+      <div class="ia-content">
+        <div class="ia-name">The Manifest — Mission Windows <span class="ia-badge b-convert">Convert</span></div>
+        <div class="ia-sub">Dark section · 3 active missions · specific seat counts · no urgency language</div>
+        <div class="ia-purpose">Answers: "How do I secure a position?" Real mission designations, specific dates, actual seat counts. Not manufactured scarcity — operational fact. Three missions listed. The reader can see the pipeline and choose his window. The CTA is "Reserve your manifest position" — not Book Now.</div>
+      </div>
+
+      <div class="ia-num">08</div>
+      <div class="ia-content">
+        <div class="ia-name">Speak to a Specialist — Contact <span class="ia-badge b-convert">Convert</span></div>
+        <div class="ia-sub">Dark section · 3-field form · named Asia-Pacific specialist</div>
+        <div class="ia-purpose">Answers: "Who do I actually speak to?" A named mission specialist — name, title, number of passengers supported. Three fields only: name, preferred contact time, mission of interest. No deposit required to begin the conversation. The reader is not submitting an enquiry. He is requesting a briefing.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 VOICE -->
+  <div class="section">
+    <div class="section-label">02 — Voice &amp; tone · six rules</div>
+    <h2 class="section-heading">The voice is a briefing.<br><em>Not a brochure.</em></h2>
+
+    <p class="body-text">OrbitX copy is aerospace precision with human warmth held just below the surface. It does not try to impress. It informs. The emotion lives in the facts — not in the adjectives. Every line should feel like it was written by someone who has actually been there.</p>
+
+    <div class="voice-grid">
+      <div class="vc">
+        <div class="vc-label">Rule 01</div>
+        <div class="vc-rule">Facts before feelings</div>
+        <div class="vc-eg">Write: "100km. 11 minutes. 6 passengers."<br>Not: "An extraordinary journey to the edge of the universe."</div>
+      </div>
+      <div class="vc">
+        <div class="vc-label">Rule 02</div>
+        <div class="vc-rule">Never use superlatives</div>
+        <div class="vc-eg">Write: "The most capable suborbital vehicle currently operating."<br>Not: "The world's most incredible spacecraft."</div>
+      </div>
+      <div class="vc">
+        <div class="vc-label">Rule 03</div>
+        <div class="vc-rule">Specific over vague</div>
+        <div class="vc-eg">Write: "4 of 6 seats reserved · NX-14 · Q2 2028."<br>Not: "Limited availability. Reserve early."</div>
+      </div>
+      <div class="vc">
+        <div class="vc-label">Rule 04</div>
+        <div class="vc-rule">The passenger is always the subject</div>
+        <div class="vc-eg">Write: "At 100km, you see the planet."<br>Not: "OrbitX takes you to the edge of space."</div>
+      </div>
+      <div class="vc">
+        <div class="vc-label">Rule 05</div>
+        <div class="vc-rule">Inform. Never sell.</div>
+        <div class="vc-eg">Write: "The manifest for NX-14 is open."<br>Not: "Don't miss your chance. Book now."</div>
+      </div>
+      <div class="vc">
+        <div class="vc-label">Rule 06</div>
+        <div class="vc-rule">Sentences end. They do not trail.</div>
+        <div class="vc-eg">Write: "You will not see Earth the same way again."<br>Not: "An experience that will change you forever…"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 COPY INVENTORY -->
+  <div class="section">
+    <div class="section-label">03 — Complete copy inventory · every section</div>
+    <h2 class="section-heading">Every word.<br>Before any <em>layout.</em></h2>
+
+    <!-- NAV -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">Navigation — Section 01</div>
+        <div class="cb-note">Fixed · desktop horizontal · mobile drawer</div>
+      </div>
+      <div class="live-dark">
+        <div class="d-nav">
+          <div class="d-nav-logo">ORBITX</div>
+          <div class="d-nav-links">
+            <div class="d-nav-link">The Vehicle</div>
+            <div class="d-nav-link">The Mission</div>
+            <div class="d-nav-link">The Training</div>
+            <div class="d-nav-link">The Manifest</div>
+          </div>
+          <div class="d-cta" style="font-size:8px;padding:9px 18px;">Speak to a Specialist →</div>
+        </div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Label rationale</div>
+          <div class="ann-text">"The Vehicle · The Mission · The Training · The Manifest" — each label uses a definite article, making it sound like a chapter heading in a classified document rather than a website menu. <strong>The reader understands the structure of OrbitX before he reads a single sentence of body copy.</strong></div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">CTA rationale</div>
+          <div class="ann-text">"Speak to a Specialist" — not Contact, not Book, not Enquire. The word "Specialist" signals that the person on the other end has subject matter expertise. <strong>The reader is not reaching out to a company. He is requesting access to a person who knows more about this than he does.</strong> That is a fundamentally different relationship.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">Hero — Section 02</div>
+        <div class="cb-note">Full viewport · helmet visor with Earth reflection · mission data strip</div>
+      </div>
+      <div class="live-dark">
+        <div class="d-overline">Civilian spaceflight · NX series · Suborbital</div>
+        <div class="d-h1" style="font-size:52px;">At 100km,<br>the atmosphere<br><em>disappears.</em></div>
+        <div class="d-body">What remains is the planet — suspended in actual darkness, turning without noise. Six passengers per mission. Eleven minutes above the Kármán line. A view that has no analogue on Earth.</div>
+        <div>
+          <div class="d-cta">Reserve your manifest position →</div>
+          <div class="d-cta-ghost">View mission specifications</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-num">100<em>km</em></div><div class="stat-lbl">Apogee altitude</div></div>
+          <div class="stat"><div class="stat-num">11<em>min</em></div><div class="stat-lbl">Above Kármán line</div></div>
+          <div class="stat"><div class="stat-num">6</div><div class="stat-lbl">Passengers per mission</div></div>
+          <div class="stat"><div class="stat-num">NX<em>-14</em></div><div class="stat-lbl">Next open mission</div></div>
+        </div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Headline rationale</div>
+          <div class="ann-text">"At 100km, the atmosphere disappears." This is a fact stated without embellishment. The number grounds it immediately. The emotional weight arrives from the precision — not from adjectives or aspirational language. <strong>The reader processes this as information first, then as invitation.</strong> That sequencing is deliberate.</div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">Data strip rationale</div>
+          <div class="ann-text">Four mission stats below the CTA answer the credibility question before the reader scrolls. Altitude, duration, passenger count, next mission designation. <strong>These four numbers do more persuasive work than any paragraph of experience copy.</strong> They signal: OrbitX operates specific missions with specific numbers. This is not a concept. It is a programme.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE VEHICLE -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">The Vehicle — Section 03</div>
+        <div class="cb-note">Dark section · philosophy statement · 4-cell spec grid</div>
+      </div>
+      <div class="live-dark">
+        <div class="d-overline">The Vehicle</div>
+        <div class="d-h2" style="font-size:32px;">Built for one<br>mission. <em>Yours.</em></div>
+        <div class="d-body">The OrbitX NX is a fully reusable suborbital spacecraft designed for six civilian passengers. Every system is redundant. Every flight is preceded by a full inspection cycle. We do not launch until we are certain.</div>
+        <div class="spec-grid">
+          <div class="spec-cell"><div class="spec-label">Vehicle</div><div class="spec-val">OrbitX NX</div></div>
+          <div class="spec-cell"><div class="spec-label">Max altitude</div><div class="spec-val">110km</div></div>
+          <div class="spec-cell"><div class="spec-label">Propulsion</div><div class="spec-val">LOX / LH2</div></div>
+          <div class="spec-cell"><div class="spec-label">Reusability</div><div class="spec-val">Full · booster + capsule</div></div>
+        </div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Philosophy line</div>
+          <div class="ann-text">"We do not launch until we are certain." Six words, no hedge, no corporate safety language. <strong>This is the most important statement on the page and it is delivered as a fact, not a promise.</strong> The reader does not need reassurance. He needs to be told the truth plainly. That is what this line does.</div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">Spec grid rationale</div>
+          <div class="ann-text">Vehicle name, altitude ceiling, propulsion type, reusability status. These are the first four questions any technically literate founder asks. <strong>The grid communicates that OrbitX speaks the language of the people who built this — not just the people who sell it.</strong> That is a credibility signal without a single word of credibility language.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIOUS PASSENGERS -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">Previous Passengers — Section 04</div>
+        <div class="cb-note">Dark section · 3 anonymised biographical signal cards</div>
+      </div>
+      <div class="live-dark">
+        <div class="d-overline">Previous passengers</div>
+        <div class="d-h2" style="font-size:28px;margin-bottom:16px;">Those who have<br><em>already gone.</em></div>
+        <div class="pax-row">
+          <div class="pax-card">
+            <div class="pax-id">Passenger 08 · NX-03</div>
+            <div class="pax-profile">Founder &amp; Chairman<br>Manufacturing sector</div>
+            <div class="pax-detail">Mumbai · Flew March 2027</div>
+          </div>
+          <div class="pax-card">
+            <div class="pax-id">Passenger 14 · NX-06</div>
+            <div class="pax-profile">Managing Director<br>Private equity</div>
+            <div class="pax-detail">Dubai · Flew August 2027</div>
+          </div>
+          <div class="pax-card">
+            <div class="pax-id">Passenger 21 · NX-09</div>
+            <div class="pax-profile">Founder<br>Technology sector</div>
+            <div class="pax-detail">Singapore · Flew January 2028</div>
+          </div>
+        </div>
+        <div class="d-body" style="margin-top:16px;font-size:11px;">Passenger identities are kept confidential at individual request. Sector and geography are shared with consent.</div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Why biographical signals — not testimonials</div>
+          <div class="ann-text">Biographical signals are more powerful than quotes for this reader. He does not need inspiration — he needs to see his peer group. <strong>Founder, Mumbai. Chairman, Dubai. Founder, Singapore.</strong> These three cards answer a silent question: people like me have already trusted this. The anonymity is itself a quality signal: OrbitX protects its passengers.</div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">Geography rationale</div>
+          <div class="ann-text">All three cards are Asia-Pacific — Mumbai, Dubai, Singapore. This reflects the research finding that Asia-Pacific is the fastest-growing segment of civilian spaceflight. <strong>The reader sees his own geography represented.</strong> He is not looking at a brand built for a different market and adapted for him. OrbitX was built with him in mind from the start.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE MISSION -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">The Mission — Section 05</div>
+        <div class="cb-note">Light section · T-minus timeline · 6 sequential cards</div>
+      </div>
+      <div class="live-light">
+        <div class="l-label">The Mission</div>
+        <div class="l-h2">What happens.<br><em>Precisely.</em></div>
+        <div class="l-body">From medical clearance to touchdown — every step of the NX mission sequence, documented.</div>
+        <div class="timeline-grid">
+          <div class="tl-card">
+            <div class="tl-time">T — 72 hours</div>
+            <div class="tl-title">Medical clearance</div>
+            <div class="tl-detail">Full physiological assessment with the OrbitX flight surgeon. Available remotely or at partner facilities in Mumbai, Dubai, and Singapore.</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-time">T — 48 hours</div>
+            <div class="tl-title">Arrive at spaceport</div>
+            <div class="tl-detail">Private transfer to the facility. Crew introduction. Mission briefing with your flight commander. First vehicle walk-around on the pad.</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-time">T — 24 hours</div>
+            <div class="tl-title">Simulator &amp; suit fitting</div>
+            <div class="tl-detail">Full mission simulation — launch forces, weightlessness, re-entry. Suit fitted by the technician who will suit you on launch day.</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-time">T — 0</div>
+            <div class="tl-title">Launch</div>
+            <div class="tl-detail">Vertical ascent. Max-Q at T+45 seconds. Engine cut-off and coast phase begins. Separation at 80km. The vehicle is now in space.</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-time">T + 11 minutes</div>
+            <div class="tl-title">Apogee · 100km</div>
+            <div class="tl-detail">The Kármán line. Five minutes of weightlessness. Earth below. The atmosphere as a thin visible line. This is what you came for.</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-time">T + 22 minutes</div>
+            <div class="tl-title">Landing</div>
+            <div class="tl-detail">Controlled re-entry. Parachute deployment at 3km. Booster recovery. Capsule touchdown within 500m of launch site. Mission complete.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Timeline structure</div>
+          <div class="ann-text">Six cards, T-minus to touchdown. No narrative, no experience language, no adjectives until apogee. <strong>"This is what you came for"</strong> — the only line of emotional register in the entire sequence — earns its place because everything before it has been precise. The emotion arrives from contrast, not from decoration.</div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">Medical clearance geography</div>
+          <div class="ann-text">Partner facilities in Mumbai, Dubai, and Singapore are named explicitly in the first card. <strong>This removes a friction point before the reader even considers it.</strong> He does not need to travel abroad for a physical. OrbitX meets him where he is. One fewer reason to pause. One more signal that this brand understands exactly who its customer is.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE TRAINING -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">The Training — Section 06</div>
+        <div class="cb-note">Light section · 4 cards · two-day programme as premium itinerary</div>
+      </div>
+      <div class="live-light">
+        <div class="l-label">The Training</div>
+        <div class="l-h2">Two days.<br><em>Everything you need.</em></div>
+        <div class="l-body">The OrbitX pre-flight programme is not a requirement. It is the beginning of the mission. By the time you board, you will have met your crew, flown the simulation, and understood exactly what to expect. Most passengers consider it the second-best part of the experience.</div>
+        <div class="training-grid">
+          <div class="tr-card">
+            <div class="tr-day">Day 01 · Arrival</div>
+            <div class="tr-title">Medical &amp; crew introduction</div>
+            <div class="tr-detail">Physiological assessment. Meet your five fellow passengers and flight commander. Facility orientation. Overnight at the spaceport lodge.</div>
+          </div>
+          <div class="tr-card">
+            <div class="tr-day">Day 02 · Morning</div>
+            <div class="tr-title">Full mission simulation</div>
+            <div class="tr-detail">Complete mission sequence in the full-motion simulator. Launch forces, weightlessness, re-entry. Every moment, experienced once before the real thing.</div>
+          </div>
+          <div class="tr-card">
+            <div class="tr-day">Day 02 · Afternoon</div>
+            <div class="tr-title">Vehicle walk-around &amp; suit fitting</div>
+            <div class="tr-detail">Full access to the NX vehicle on the pad. Suit fitted by the same technician who will suit you at T-0. Final questions with the flight surgeon.</div>
+          </div>
+          <div class="tr-card">
+            <div class="tr-day">Day 02 · Evening</div>
+            <div class="tr-title">Crew dinner &amp; final briefing</div>
+            <div class="tr-detail">Private crew dinner at the spaceport facility. Final mission briefing. Early lights-out. Tomorrow you launch.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Reframe decision</div>
+          <div class="ann-text">"Most passengers consider it the second-best part of the experience." <strong>One sentence reframes the entire training from obligation to highlight.</strong> It also communicates something important: OrbitX has enough previous passengers to have observed patterns. This is not a prototype. It is a programme with a track record.</div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">Final line</div>
+          <div class="ann-text">"Tomorrow you launch." Four words. No fuss, no exclamation, no dramatisation. <strong>The restraint is the emotion.</strong> The reader processes those four words and feels the weight of what is coming — not because they were amplified, but because they were stated plainly. That is the OrbitX voice at its most precise.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE MANIFEST -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">The Manifest — Section 07</div>
+        <div class="cb-note">Dark section · 3 active missions · specific seat counts</div>
+      </div>
+      <div class="live-dark">
+        <div class="d-overline">The Manifest</div>
+        <div class="d-h2" style="font-size:28px;margin-bottom:16px;">Three missions.<br><em>Open now.</em></div>
+        <div class="manifest-grid">
+          <div class="manifest-card">
+            <div class="mc-label">Mission</div>
+            <div class="mc-mission">NX-12</div>
+            <div class="mc-window">Q1 2028 · Launch window confirmed</div>
+            <div class="mc-seats">2 of 6 seats remaining</div>
+          </div>
+          <div class="manifest-card">
+            <div class="mc-label">Mission</div>
+            <div class="mc-mission">NX-13</div>
+            <div class="mc-window">Q2 2028 · Launch window open</div>
+            <div class="mc-seats">5 of 6 seats remaining</div>
+          </div>
+          <div class="manifest-card">
+            <div class="mc-label">Mission</div>
+            <div class="mc-mission">NX-14</div>
+            <div class="mc-window">Q3 2028 · Accepting reservations</div>
+            <div class="mc-seats">6 of 6 seats available</div>
+          </div>
+        </div>
+        <div class="manifest-cta-row">
+          <div class="mct-text">No deposit required to begin the conversation.</div>
+          <div class="d-cta" style="white-space:nowrap;">Reserve your position →</div>
+        </div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Scarcity copy</div>
+          <div class="ann-text">"2 of 6 seats remaining." Not "Only 2 left!" The number is a fact, not a pressure mechanism. <strong>The reader has spent his career distinguishing between genuine scarcity and manufactured urgency.</strong> The plain number — without exclamation, without italics, without colour emphasis — is more convincing than any urgency framing because it respects his intelligence.</div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">Friction removal</div>
+          <div class="ann-text">"No deposit required to begin the conversation." <strong>This removes the final remaining commitment anxiety.</strong> The reader is not being asked to transfer $300,000 via a button. He is being invited to speak to a specialist. The financial commitment happens between humans — not between a human and a payment form. That distinction matters enormously at this price point.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPEAK TO A SPECIALIST -->
+    <div class="cb">
+      <div class="cb-header">
+        <div class="cb-section">Speak to a Specialist — Section 08</div>
+        <div class="cb-note">Dark section · 3-field form · named specialist card</div>
+      </div>
+      <div class="live-dark">
+        <div class="d-overline">Speak to a Specialist</div>
+        <div class="d-h2" style="font-size:28px;margin-bottom:8px;">Begin the<br><em>conversation.</em></div>
+        <div class="d-body" style="margin-bottom:20px;">Your mission specialist will contact you within 24 hours. There is no obligation and no deposit at this stage. The first conversation is a briefing — for both of us.</div>
+        <div class="form-grid">
+          <div>
+            <div class="form-fields">
+              <div class="form-field">
+                <div class="form-field-label">Your name</div>
+                <div class="form-field-input">Full name</div>
+              </div>
+              <div class="form-field">
+                <div class="form-field-label">Preferred contact time</div>
+                <div class="form-field-input">e.g. Weekday mornings, IST</div>
+              </div>
+              <div class="form-field">
+                <div class="form-field-label">Mission of interest</div>
+                <div class="form-field-input">NX-12 / NX-13 / NX-14 / Not sure yet</div>
+              </div>
+            </div>
+            <div class="d-cta" style="width:100%;justify-content:center;margin-top:1px;">Request a briefing →</div>
+          </div>
+          <div class="specialist-card">
+            <div class="spec-card-label">Your specialist</div>
+            <div class="spec-avatar"><span class="spec-initials">PS</span></div>
+            <div class="spec-name">Priya Sharma</div>
+            <div class="spec-title">Mission Specialist · Asia-Pacific</div>
+            <div class="spec-desc">Priya has supported 14 civilian passengers through the OrbitX programme. She will contact you directly — no call centre, no automated response.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ann">
+        <div class="ann-col">
+          <div class="ann-label">Three fields only</div>
+          <div class="ann-text">Name, preferred contact time, mission interest. No phone number field — the specialist calls him. No company field — irrelevant to the conversation. No email field — captured from form metadata. <strong>Fewer fields signal that OrbitX already knows enough about its customers to not need to ask basic questions.</strong></div>
+        </div>
+        <div class="ann-col">
+          <div class="ann-label">Named specialist</div>
+          <div class="ann-text">"No call centre, no automated response." The reader has spent his career distinguishing between people who can make decisions and people who cannot. A named specialist — photograph, title, 14 passengers supported — signals that his enquiry lands with a decision-maker. <strong>"Request a briefing" — not Submit, not Send, not Contact. He is requesting access to expertise. That is an entirely different relationship.</strong></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end copy inventory -->
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 08 — CONTENT &amp; COPYWRITING · ORBITX</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 10: Prompt Diary · OrbitX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E0E0E;--ink-mid:#3D3D3D;--ink-muted:#7A7A7A;--ink-faint:#B8B8B8;
+  --paper:#FAF8F4;--accent:#2563C8;--accent-light:#C8DAF7;
+  --rule:#E0DCD5;--tag-bg:#F0EDE8;
+  --space:#020916;--mission:#0A1E3D;--signal:#2563C8;--horizon:#60A5FA;
+  --good-bg:#E8F5EE;--good-text:#1A6B3A;
+  --warn-bg:#FFF4E6;--warn-text:#8B4A1C;
+  --fix-bg:#EEF0FF;--fix-text:#3D4AB7;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+.cover-band{background:var(--space);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(37,99,200,.25),transparent 65%);pointer-events:none;}
+.cover-band::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 10%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--accent-light);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--accent-light),transparent);margin:0 -80px;}
+
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--accent);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--tag-bg);border-left:3px solid var(--accent);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* PROMPT ENTRIES */
+.prompt-entry{border:1px solid var(--rule);overflow:hidden;margin-bottom:3px;}
+.pe-header{background:var(--space);padding:14px 20px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:14px;position:relative;overflow:hidden;}
+.pe-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(37,99,200,.15),transparent);pointer-events:none;}
+.pe-num{font-family:'DM Serif Display',serif;font-size:20px;color:var(--horizon);line-height:1;position:relative;z-index:1;}
+.pe-step{position:relative;z-index:1;}
+.pe-step-name{font-size:14px;font-weight:500;color:#fff;margin-bottom:2px;}
+.pe-step-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.3);}
+.pe-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;position:relative;z-index:1;}
+.badge-worked{background:rgba(30,107,58,.3);color:#5DC889;border:1px solid rgba(30,107,58,.3);}
+.badge-iterated{background:rgba(37,99,200,.2);color:var(--horizon);border:1px solid rgba(37,99,200,.3);}
+.badge-key{background:rgba(200,167,0,.15);color:#D4AF20;border:1px solid rgba(200,167,0,.2);}
+
+.prompt-box{background:rgba(2,9,22,.96);border-bottom:1px solid rgba(255,255,255,.06);padding:0;}
+.pb-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(96,165,250,.4);padding:12px 20px 8px;}
+.pb-text{font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.8;color:rgba(245,245,255,.85);padding:0 20px 16px;white-space:pre-wrap;word-break:break-word;}
+.pb-text em{font-style:normal;color:var(--horizon);}
+
+.pe-analysis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.pa-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.pa-col:last-child{border-right:none;}
+.pa-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;border-radius:2px;display:inline-block;margin-bottom:8px;}
+.label-worked{background:var(--good-bg);color:var(--good-text);}
+.label-issue{background:var(--warn-bg);color:var(--warn-text);}
+.label-lesson{background:var(--fix-bg);color:var(--fix-text);}
+.pa-text{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.pa-text strong{color:var(--ink);font-weight:500;}
+
+.key-lesson{background:var(--space);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;}
+.key-lesson::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(37,99,200,.2),transparent 60%);pointer-events:none;}
+.kl-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent-light);margin-bottom:12px;position:relative;z-index:1;}
+.kl-text{font-family:'DM Serif Display',serif;font-size:22px;color:#fff;line-height:1.45;position:relative;z-index:1;}
+.kl-text em{font-style:italic;color:var(--accent-light);}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:28px 0;}
+.stat-card{background:var(--space);padding:20px 16px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(37,99,200,.18),transparent);}
+.stat-num{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--accent-light);line-height:1;margin-bottom:5px;position:relative;z-index:1;}
+.stat-label{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;font-weight:300;position:relative;z-index:1;}
+
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:28px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .pe-analysis{grid-template-columns:1fr;}
+  .pa-col{border-right:none;border-bottom:1px solid var(--rule);}
+  .pa-col:last-child{border-bottom:none;}
+  .pe-header{grid-template-columns:28px 1fr;}
+  .pe-badge{display:none;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · OrbitX · Brand 02 of 06</div>
+    <h1 class="cover-title">Prompt<br><em>Diary</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 10 — Prompt Diary</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">OrbitX</div></div>
+    <div class="meta-block"><div class="meta-label">Prompts documented</div><div class="meta-value">10 prompts · 5 steps</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — What this document is</div>
+    <h2 class="section-heading">The actual prompts.<br><em>Verbatim.</em></h2>
+    <p class="body-text">This document records every significant prompt used to create OrbitX — the exact words sent to Claude at each step, unedited. These are the creative decisions. The prompts are the brief. What you typed is what drove every output in this project.</p>
+    <p class="body-text">Each entry shows: the prompt exactly as written, what worked in the output, what needed fixing, and the lesson extracted. No reconstruction after the fact. These are the actual instructions.</p>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Total prompts documented</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Prompts that worked first time</div></div>
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">Prompts that required iteration</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Key lessons for the series</div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — The prompt diary · all ten entries</div>
+    <h2 class="section-heading">What I wrote.<br>What <em>happened.</em></h2>
+
+    <!-- 01 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">01</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Steps 04 · 05 · 06 · 07 — Research through Moodboard</div>
+          <div class="pe-step-sub">The repeating trigger prompt · used at each stage</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — used verbatim to advance each step</div>
+        <div class="pb-text">Let's move on to the next step</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">This six-word prompt — used identically at Steps 4, 5, 6, and 7 — triggered fully complete, well-structured documents each time. The quality of the preceding context (brand brief, research data, persona) meant Claude had enough information to proceed without detailed instructions at each subsequent step. <strong>Good context earlier means shorter prompts later.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing at Steps 4 and 6. At Step 5 (persona), the first draft included cross-references to other brands in the series — caught and corrected. At Step 7 (moodboard), the naming system between direction names and vibe words needed a clarification conversation before the document made complete sense.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">A short trigger prompt works when the conversation has sufficient context. Front-load the detail in the brief and the research. The later steps can be launched with minimal instruction because the direction is already established. Six words can move an entire step — if the foundation is right.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">02</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 07 — Moodboard images uploaded</div>
+          <div class="pe-step-sub">Embedding the three Midjourney-generated moodboards</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — after uploading Vast.png · Silent.png · Luminous.png</div>
+        <div class="pb-text">here are the 3 mood board, please embed them in the document</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">All three images embedded correctly on the first attempt — base64 encoded and placed into the exact drop zones in the Step 7 document. The document structure had been built with drop zones in advance, so the replacement was clean. The images matched the direction descriptions and palette swatches already in the document.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing. The embed worked completely. The Midjourney images for directions B (Silent) and C (Luminous) were stronger than expected — particularly the Luminous direction, which produced a cinematic silhouette-at-the-porthole image that became one of the reference points for the landing page visual direction.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Build documents with drop zones in advance. When you know images are coming, structure the HTML to receive them explicitly. The prompt to embed becomes trivial — one sentence — because the document is already waiting for the content. Prepare the container before you have the content.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">03</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 07 — Direction selection</div>
+          <div class="pe-step-sub">Choosing Direction A over B and C</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — direction choice after reviewing all three moodboards</div>
+        <div class="pb-text">i want to go with direction A Vast</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Eight words locked the entire visual direction for OrbitX. Direction A (Cosmonaut/Vast): deep mission blue, Barlow Condensed 900 weight, signal blue accent, aerospace precision. This single decision drove every subsequent step — the palette in the copywriting document, the colour grading of the section images, the starfield in the landing page, and the CSS filter values applied to the three uploaded photographs.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Direction B (Monolith/Silent) and Direction C (Aurora/Luminous) were both strong — particularly the Luminous direction which had the most emotionally powerful imagery. The rejection of C was the harder call. The risk was that violet could tip from "cosmic" to "fantasy" — Direction A held the aerospace credibility that the Arjun persona required.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Direction selection is the highest-leverage decision in the moodboard step. Everything downstream traces back to it. Choose against the risk the persona cannot absorb — not against the direction that is least beautiful. Arjun needed credibility first. Direction A gave him that. Direction C would have been more beautiful and less trusted.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">04</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 08 — Copywriting · standalone correction</div>
+          <div class="pe-step-sub">The 9-word fix that removed cross-brand contamination</div>
+        </div>
+        <span class="pe-badge badge-key">The 9-word fix</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — correction sent mid-step after reviewing first draft</div>
+        <div class="pb-text">This is a fresh document. Do not mention anything about other brands.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What this fixed</span>
+          <div class="pa-text">The first copywriting draft included contrast framing — explaining OrbitX's approach by comparing it to hospitality brands and other industries. Nine words removed an entire section and refocused the document entirely on OrbitX. The copy became immediately cleaner, more confident, and more specific. The document became what it should have been from the start: <strong>a standalone OrbitX document.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">Why it kept happening</span>
+          <div class="pa-text">Claude defaults to contextualising by contrast — explaining what something is by explaining what it is not. This is useful in research and audit documents. It is actively harmful in brand deliverables. A brand should never define itself by reference to others. The pattern appeared in the persona document too. It is a recurring tendency that must be caught at every step.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">The rule for all future brands</span>
+          <div class="pa-text">Add "This is a standalone document. No comparative framing. No references to other brands." to every step prompt as a closing instruction. It takes 12 words to prevent a recurring error. The correction prompt is now a standard part of the process — applied to every brand from Step 3 onward.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">05</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — IA and structure feedback</div>
+          <div class="pe-step-sub">Breaking from the previous project's visual pattern</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — feedback on first landing page build</div>
+        <div class="pb-text">You are using wrong landing page again. I mean the information architecture and content placement on the landing page — they both look the same. Hero banner looks kind of the same. Break the monotony. On the hero banner, make everything centre aligned. Since this is regarding space tourism, add three d elements like rocket a space rocket specifically, or a astronaut's helmet. Maybe a satellite, an actual three d globe. So these elements in different sections can appear on scroll and user should have the capability of interacting with them slightly with the mouse. The colors, I'm fine with the colors and button style. They're looking good. Overall, dark theme is also looking good. But add these elements that will link give it more of a futuristic and well thought out landing page look.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Three specific directions landed immediately and correctly: centre-aligned hero (completely changed the visual register from hospitality to aerospace), 3D interactive objects per section (right instinct for a futuristic space tourism brand), and scroll-triggered appearances. The colour and dark theme confirmation meant those did not need to be rebuilt — only the structure and interactivity did.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The Three.js geometry models — cylinder rockets, sphere globes — were not convincing. The programmatic 3D approach produced geometry that looked like a tutorial project, not a premium space tourism brand. Multiple rounds of iteration on model quality followed before the decision to abandon programmatic 3D entirely in favour of real video and photographs.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Centre-aligned hero = aerospace. Left-aligned hero = hospitality. This single alignment decision is the fastest structural differentiator between two different brand categories. When breaking from a previous project, alignment is the first thing to change. It communicates register before the user reads a single word.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">06</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — 3D model quality feedback</div>
+          <div class="pe-step-sub">The decision point that changed the visual approach</div>
+        </div>
+        <span class="pe-badge badge-iterated">Multiple iterations</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — after reviewing the Three.js geometry models</div>
+        <div class="pb-text">This is still looking really bad. Do you want me to upload OBJ files for three d models, or do you want me to upload references for the type of d models I need.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The question itself was the right creative direction instinct. Rather than accepting poor-quality geometry, the prompt opened two better paths: real 3D model files (OBJ/GLB) or reference images showing the quality standard required. This is the correct response to a tool reaching its quality ceiling — escalate the input quality, not the tool complexity.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Three.js geometry built from primitives — cylinders, spheres, boxes — cannot match the quality of actual 3D models at this stage of tooling. The geometry is only as good as the geometry. Even with detailed ShaderMaterial and PBR materials, a lathe-built rocket reads as a prototype. The final resolution was video + real photography — which delivered far better results faster.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>Real photography and video beats programmatic 3D every time in a portfolio context.</strong> The creative direction decision — what to show — matters more than the technical approach — how to render it. Know when to stop iterating on a tool and change the approach entirely. This prompt marked that moment correctly.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">07</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — Video strategy decision</div>
+          <div class="pe-step-sub">Pivoting from 3D to cinematic video</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — the pivot from 3D models to video</div>
+        <div class="pb-text">can you use a video in the landing page ?</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">Ten words changed the entire visual direction of the landing page. A full-viewport video hero — autoplay, muted, looped — immediately creates the cinematic quality that Three.js geometry could not. The question was the right creative instinct at exactly the right moment: after the 3D approach had been tried and found insufficient, video was the next tier of quality available.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing. The pivot was clean. The video approach was confirmed immediately as technically feasible and visually superior. The follow-up decision — to use real AI-generated images for the section visuals rather than videos for every section — came naturally from the same conversation, reducing complexity while maintaining visual quality.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Short questions can be strategic decisions. "Can you use a video in the landing page?" is not a casual question — it is a creative direction pivot. The brevity of the prompt does not reduce its importance. The ten-word question produced the most impactful change to the entire landing page.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">08</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — AI video prompts for sections</div>
+          <div class="pe-step-sub">Generating the three section video briefs</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — requesting video generation prompts for the AI tool</div>
+        <div class="pb-text">i will use a AI tool creating these videos, i already have the video for the hero section
+Give me seperate prompts to create videos for Vehicle section, passenger section and mission seciton</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The three video prompts were highly specific — naming exact visual moments, colour grades, camera movements, durations, and explicit exclusions. The Vehicle prompt: rocket on pad at dusk, cool blue-white floodlights. The Passengers prompt: gold visor reflection with Earth visible, pull-back reveal. The Mission prompt: interior weightlessness, locked camera, floating objects. Specificity produced usable results.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The mission/apogee prompt initially required an additional exclusion: "Interior view only. No exterior shots. No EVA." AI video tools default to the most common representation of space — which is exterior. The interior weightlessness moment required explicit instruction to rule out the default. Exclusions are as important as inclusions in AI video prompting.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">AI video prompts need three things: what to show, how to show it, and what NOT to show. The third element is the one most often omitted and most often responsible for generic outputs. Always end an AI video prompt with explicit exclusions: "No X. No Y. No Z." The model defaults to the familiar — your job is to define the specific.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">09</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — Final image and video strategy</div>
+          <div class="pe-step-sub">Hero video + three section images + consistent colour grading</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — uploading hero video and three section images</div>
+        <div class="pb-text">i have added a video for the hero section use it like you suggested (full-viewport video background (rocket launch or Earth from orbit) with the headline text centred over it, dark overlay so text is readable)
+
+and instead of videos or 3d models of the other sections i will be adding suitable images use them wisely, and make sure that these image may have a different color tone on all of them, so make them the same color grading so that they have consistency</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The colour grading brief was exactly right: "these images may have a different color tone on all of them, so make them the same color grading so that they have consistency." This produced a CSS filter system applied at different intensities per image — the warmest image (Vehicle, golden dusk rocket) received the most aggressive grade; the coolest (Inside the Vehicle, already blue) the gentlest. Visual consistency across three very different source photographs.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The first-pass grade on the Vehicle image was too aggressive — the rocket's warm exhaust glow was completely cancelled, making it look flat. The fix: reduced hue-rotate from -35deg to -28deg to preserve a hint of warmth at the base while cooling the sky. The exhaust glow needed to survive the grade or the image lost its drama.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When colour grading images for brand consistency, preserve at least one emotionally significant element from each source image. Grade for palette unity, not temperature uniformity. The rocket image needed its warm glow to remain — kill it and the image loses its drama. <strong>Consistency in tone, not uniformity in temperature.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">10</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 10 — Prompt diary correction</div>
+          <div class="pe-step-sub">Using real prompts instead of invented ones</div>
+        </div>
+        <span class="pe-badge badge-iterated">One correction</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Exact prompt — reviewing the first version of this document</div>
+        <div class="pb-text">in step 10 please use actual prompts that i said</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What this fixed</span>
+          <div class="pa-text">The first version of Step 10 used plausible but invented prompts — reconstructed from the project context rather than pulled verbatim from the conversation. This correction produced the document you are reading now: every prompt is exactly what was typed, exactly as it was typed — typos included. The diary is now a true record, not a reconstruction.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">Why the first version was wrong</span>
+          <div class="pa-text">The first draft used well-formed, professional-sounding prompts. The actual prompts were often much shorter, more conversational, and more direct — "can you use a video in the landing page?" versus a paragraph-long prompt. The invented version sounded more competent. The real version is more honest and more useful as a portfolio document.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>The prompt diary is only valuable if the prompts are real.</strong> A polished reconstruction is a fiction. The actual prompts — short, conversational, sometimes vague — demonstrate the real skill: that brief, direct creative direction produces high-quality outputs when the context is right. The brevity is the proof of the process, not a weakness in it.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — Three key lessons · apply to all six brands</div>
+    <h2 class="section-heading">What OrbitX<br><em>taught</em> the series.</h2>
+
+    <div class="key-lesson">
+      <div class="kl-label">Lesson 01 — On document independence</div>
+      <div class="kl-text">Every brand document must stand entirely alone. <em>Never let context from one brand contaminate another.</em> Nine words fixed it every time: "This is a fresh document. Do not mention anything about other brands." Add this as a standard closing instruction to every prompt in every brand.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 02 — On visual quality</div>
+      <div class="kl-text">Real photography and video beats programmatic 3D at this stage of AI tooling. <em>Know when to change the approach entirely.</em> The creative direction decision — what to show — matters more than the technical approach — how to render it. Ten words ("can you use a video in the landing page?") produced the most impactful change in the entire project.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 03 — On short prompts</div>
+      <div class="kl-text">Six words can advance a step. Ten words can change a direction. Nine words can fix a document. <em>Brevity is not vagueness — it is precision.</em> The shortest prompts in this project produced some of its most significant changes. Front-load the context. The prompts can then be short.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 10 — PROMPT DIARY · ORBITX</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

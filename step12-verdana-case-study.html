@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 12: Case Study · Verdana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#FAF7F2;--cream2:#F5F0E8;--stone:#D8D0C4;--sage:#5C7A5F;--sage-light:#8FAE92;--sage-tint:#EEF4EE;--umber:#5C4E42;--ink:#1A1612;--ink-mid:#2E2420;--border:#E0D8CC;--rule:#EDE8E0;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+.cover{background:var(--cream);margin:-80px -80px 20px;padding:80px 80px;border-bottom:1px solid var(--border);}
+.cover-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--sage);margin-bottom:20px;}
+.cover-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:64px;line-height:.95;color:var(--ink);letter-spacing:-.02em;margin-bottom:24px;}
+.cover-title em{font-style:italic;color:var(--sage);}
+.cover-sub{font-size:18px;line-height:1.6;color:var(--umber);max-width:600px;}
+.brief-box{background:var(--cream2);border-left:3px solid var(--sage);padding:24px 28px;margin:32px 0;font-size:15px;line-height:1.75;}
+.section{margin-bottom:48px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:32px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:18px;}
+.heading em{font-style:italic;color:var(--sage);}
+.body-text{font-size:16px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.highlight{background:var(--sage-tint);border-left:3px solid var(--sage);padding:14px 18px;margin:20px 0;font-size:15px;line-height:1.7;}
+.highlight strong{color:var(--ink);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin:28px 0;}
+.grid-item{border:1px solid var(--border);padding:24px;background:var(--cream2);}
+.grid-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--ink);margin-bottom:12px;}
+.grid-text{font-size:14px;line-height:1.7;color:var(--umber);}
+.timeline{margin:28px 0;}
+.timeline-item{padding:18px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:80px 1fr;gap:20px;}
+.timeline-item:last-child{border-bottom:none;}
+.timeline-step{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--sage);font-weight:600;}
+.timeline-text{font-size:15px;line-height:1.7;color:var(--ink-mid);}
+.outcome-box{background:linear-gradient(135deg,rgba(92,122,95,.08),rgba(238,244,238,.4));border:1px solid rgba(92,122,95,.2);border-radius:12px;padding:28px;margin:28px 0;}
+.outcome-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:12px;}
+.outcome-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-style:italic;color:var(--ink);margin-bottom:8px;}
+.outcome-text{font-size:15px;line-height:1.75;color:var(--umber);}
+.footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-text{font-family:'DM Mono',monospace;font-size:10px;color:#aaa;letter-spacing:.1em;}
+@media(max-width:640px){.document{padding:24px 20px;}.cover{margin:-24px -20px 20px;padding:40px 24px;}.cover-title{font-size:36px;}.grid{grid-template-columns:1fr;}.section-label::after{display:none;}}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover">
+  <div class="cover-eyebrow">From Prompt to Production · Brand 05 of 06</div>
+  <h1 class="cover-title">Verdana<br><em>Case Study</em></h1>
+  <p class="cover-sub">A premium US clean beauty brand built through structured design research and formulaic execution. The process from market research to production-ready landing page.</p>
+</div>
+
+<!-- THE BRIEF -->
+<div class="section">
+  <div class="section-label">01 — The brief</div>
+  <h2 class="heading">Three lines.<br><em>Everything locked.</em></h2>
+
+  <div class="brief-box">
+    <strong>Market:</strong> US clean beauty · millennial/Gen Z · $80–$300<br>
+    <strong>Direction:</strong> Warm & botanical · cream · sage · earthy · ingredient-forward<br>
+    <strong>Buyer:</strong> Woman · 25–35 · aesthetic-led · texture and packaging first
+  </div>
+
+  <p class="body-text">Verdana is positioned as a response to a specific market gap. The Step 4 industry research identified that the US clean beauty market is $11.4B, growing at 12.8% annually, and saturated with two dominant player types: heritage luxury (Tatcha, La Mer) and disruptive science-first (Drunk Elephant, The Ordinary). Verdana owns neither position. Instead, Verdana is built to answer a question competitors leave unanswered: <em>"What happens when a brand combines warmth + ingredient transparency + design minimalism?"</em></p>
+
+  <div class="highlight">
+    <strong>Design thesis:</strong> "Tatcha has the ceremony. Drunk Elephant has the science. Augustinus Bader has the authority. Verdana has all three — and the warmth that none of them do."
+  </div>
+</div>
+
+<!-- THE BUYER -->
+<div class="section">
+  <div class="section-label">02 — The buyer</div>
+  <h2 class="heading">Sloane Mitchell<br><em>29 · Brooklyn</em></h2>
+
+  <div class="grid">
+    <div class="grid-item">
+      <div class="grid-title">Who she is</div>
+      <div class="grid-text">UX Designer at a FinTech startup. $94K salary. $340/month skincare spend. 12K Instagram followers. Buys skincare on the recommendation of design-literate peers, not on advertising.</div>
+    </div>
+    <div class="grid-item">
+      <div class="grid-title">How she shops</div>
+      <div class="grid-text">Discovers on TikTok or Instagram via texture and origin content. Verifies using INCIDecoder and CosDNA. Photographs every product before using it. Reads the INCI list before ordering. Stops looking for the next thing once a product proves itself.</div>
+    </div>
+  </div>
+
+  <p class="body-text">Sloane is not Verdana's only buyer, but she is the north-star buyer — the one every design decision maps to. The Step 5 persona research identified that Sloane's purchase journey has six stages: discover (texture-based content), research (ingredient verification), compare (across 2–3 similar products), decide (based on formula + visual consistency), purchase, and retreat (stops looking).</p>
+
+  <p class="body-text">Verdana's landing page structure mirrors this journey. The hero wins the discover stage. The ingredient statement wins the research stage. The products section wins the compare stage. The testimonial from Elena — written in exactly Sloane's voice — wins the decide stage.</p>
+</div>
+
+<!-- THE AUDIT -->
+<div class="section">
+  <div class="section-label">03 — The competitive gap</div>
+  <h2 class="heading">What Tatcha,<br><em>Drunk Elephant, and Bader missed.</em></h2>
+
+  <p class="body-text">The Step 6 competitive visual audit scored three category leaders on five dimensions: Design · Ingredient transparency · Authority · Sourcing · Warmth. The findings were decisive:</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-step">Warmth (W)</div>
+      <div class="timeline-text"><strong>Tatcha 5/5.</strong> The pastel palette and cherry blossoms read as inherently warm. But warmth is achieved through aesthetic, not formula visibility.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-step">Ingredient (I)</div>
+      <div class="timeline-text"><strong>Drunk Elephant 2/5.</strong> Marketing copy mentions "clinical efficacy" but ingredient percentages are nowhere on the homepage. Buyers must leave the page to find the INCI list.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-step">Transparency gap</div>
+      <div class="timeline-text"><strong>Universal finding: Zero competitors combine high warmth with high ingredient visibility.</strong> Tatcha has warmth but hides the formula. Drunk Elephant has science but communicates in marketing language, not ingredient precision.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-step">The opportunity</div>
+      <div class="timeline-text"><strong>Own the intersection:</strong> Warmth as an aesthetic choice + ingredient transparency as a structural choice. This combination is claimed by no competitor in the $80–$300 tier.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DIRECTION -->
+<div class="section">
+  <div class="section-label">04 — Direction selection</div>
+  <h2 class="heading">Ultra-minimal won.<br><em>Against intuition.</em></h2>
+
+  <p class="body-text">The Step 7 moodboard exercise produced three directions. All three were strong. Direction A (Botanical / Verdure) and Direction B (Apothecary / Ritual) were visually beautiful and aligned with the brief. Direction C (Pared-back / Still) was counterintuitive — ultra-minimal photography, wide-tracked type, the product as the only visual hero.</p>
+
+  <p class="body-text">Direction C was selected because it was the most unexpected. The audit had revealed that warmth is already crowded territory. Competing on warmth alone meant competing directly with Tatcha. Instead, Direction C (still, minimal, formula-focused) moved Verdana into a visual register occupied by no other clean beauty brand at this price tier.</p>
+
+  <div class="highlight">
+    <strong>The direction lock became the identity lock:</strong> "The formula. Nothing else." This single line, in Cormorant Garamond 300 italic, describes both the visual system (minimal, nothing extraneous) and the brand philosophy (formula is what matters).
+  </div>
+</div>
+
+<!-- COPY STRATEGY -->
+<div class="section">
+  <div class="section-label">05 — Copy strategy</div>
+  <h2 class="heading">Six voice rules.<br><em>One tone.</em></h2>
+
+  <p class="body-text">The Step 8 copywriting locked six rules that apply to every word on the page:</p>
+
+  <ol style="font-size:15px;line-height:1.8;color:var(--umber);margin-left:20px;">
+    <li><strong>Formula before feeling.</strong> Lead with what is in the jar — name it, percentage it, source it.</li>
+    <li><strong>Specific over evocative.</strong> "5% bakuchiol, cold-pressed" not "nature's answer to retinol."</li>
+    <li><strong>No price apology.</strong> $128. The formula justifies itself.</li>
+    <li><strong>Short sentences. Full stops.</strong> Direction C's spacing reads best in declarative fragments.</li>
+    <li><strong>Never claim "natural."</strong> Name the ingredient, the source, the process. That is the proof.</li>
+    <li><strong>Standalone document.</strong> No comparative framing. Define on Verdana's terms only.</li>
+  </ol>
+
+  <p class="body-text" style="margin-top:20px;">These rules produced copy that does not sell. It informs. Elena's testimonial — "I read the INCI before I ordered. I checked the bakuchiol percentage on CosDNA. I verified the squalane source. Then I bought it" — is the outcome. Copy written for Sloane, by Sloane's voice.</p>
+</div>
+
+<!-- LANDING PAGE -->
+<div class="section">
+  <div class="section-label">06 — Production</div>
+  <h2 class="heading">The landing page.<br><em>Nine sections.</em></h2>
+
+  <p class="body-text">The Step 9 landing page follows the IA structure locked in Step 8. Each section answers one question from Sloane's purchase journey:</p>
+
+  <div class="timeline">
+    <div class="timeline-item"><div class="timeline-step">01 Hero</div><div class="timeline-text">Is this the brand that understands what I want? Win in 5 seconds.</div></div>
+    <div class="timeline-item"><div class="timeline-step">02 Ingredients</div><div class="timeline-text">What is actually in it? At what percentage? Sourced from where?</div></div>
+    <div class="timeline-item"><div class="timeline-step">03 Ritual</div><div class="timeline-text">What does using this feel like? Will it fit my morning?</div></div>
+    <div class="timeline-item"><div class="timeline-step">04 Products</div><div class="timeline-text">What do you make? Is there a full routine?</div></div>
+    <div class="timeline-item"><div class="timeline-step">05 Faces</div><div class="timeline-text">Has someone exactly like me used this?</div></div>
+    <div class="timeline-item"><div class="timeline-step">06 Proof</div><div class="timeline-text">What was the actual result? How long did it take?</div></div>
+    <div class="timeline-item"><div class="timeline-step">07 Sourcing</div><div class="timeline-text">Where do the botanicals come from? Can I trust that?</div></div>
+    <div class="timeline-item"><div class="timeline-step">08 Final CTA</div><div class="timeline-text">How do I begin?</div></div>
+  </div>
+
+  <div class="highlight">
+    <strong>Design additions in production:</strong> Floating glassmorphism navbar (detached, pill-shaped, 20px top offset). 20px border-radius on all images. 16px minimum body text with 4.5:1 contrast on cream backgrounds. Glass effect overlays on face testimonials, proof metrics, ingredient notes, and final CTA badges.
+  </div>
+</div>
+
+<!-- OUTCOME -->
+<div class="section">
+  <div class="outcome-box">
+    <div class="outcome-label">Step 14 — Final Outcome</div>
+    <div class="outcome-title">Verdana is <em>complete.</em></div>
+    <div class="outcome-text">From market research (Step 4) through production-ready landing page (Step 9), Verdana demonstrates how structured design research produces a coherent brand identity. Every decision — from the choice of ultra-minimal Direction C to the placement of ingredient percentages as the second section — flows from the research. The result is a brand that does not compete on aspiration or price, but on honesty. Sloane knows what she is buying because Verdana tells her, precisely, what she is buying.</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-text">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026</div>
+  <div class="footer-text">STEP 12 — CASE STUDY · VERDANA</div>
+</div>
+
+</div>
+</body>
+</html>

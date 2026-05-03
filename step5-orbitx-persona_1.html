@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 05: Customer Persona · OrbitX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #0E0E0E;
+    --ink-mid:    #3D3D3D;
+    --ink-muted:  #7A7A7A;
+    --ink-faint:  #B8B8B8;
+    --paper:      #FAF8F4;
+    --accent:     #2563C8;
+    --accent-light:#C8DAF7;
+    --rule:       #E0DCD5;
+    --tag-bg:     #F0EDE8;
+    --space-bg:   #020916;
+    --space-mid:  #0A1E3D;
+  }
+
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{font-size:16px;}
+  body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+  .document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+  /* COVER */
+  .cover-band{background:var(--space-bg);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+  .cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(37,99,200,.25),transparent 65%);pointer-events:none;}
+  .cover-band::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 45% 10%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 75% 30%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 90% 15%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 30% 60%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 85% 65%,rgba(255,255,255,.5),transparent);pointer-events:none;}
+  .project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+  .project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent);}
+  .cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+  .cover-title em{font-style:italic;color:var(--accent-light);}
+  .cover-meta{text-align:right;position:relative;z-index:1;}
+  .meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+  .meta-value{font-size:13px;color:#fff;font-weight:300;}
+  .meta-block{margin-bottom:20px;}
+  .meta-block:last-child{margin-bottom:0;}
+  .accent-rule{height:3px;background:linear-gradient(to right,var(--accent),var(--accent-light),transparent);margin:0 -80px;}
+
+  .doc-body{padding-top:64px;}
+  .section{margin-bottom:56px;}
+  .section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+  .section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+  .section-heading em{font-style:italic;color:var(--accent);}
+  .body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+  .page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+  .note-box{background:var(--tag-bg);border-left:3px solid var(--accent);padding:18px 22px;margin:24px 0;}
+  .note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+  .note-box strong{color:var(--ink);}
+
+  /* PERSONA HERO CARD */
+  .persona-hero{background:var(--space-bg);margin:0 -80px;padding:48px 80px;position:relative;overflow:hidden;}
+  .persona-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 85% 50%,rgba(37,99,200,.2),transparent 60%);pointer-events:none;}
+  .persona-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 40% 10%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 70% 30%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 88% 18%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 55% 60%,rgba(255,255,255,.3),transparent),radial-gradient(1px 1px at 25% 75%,rgba(255,255,255,.4),transparent);pointer-events:none;}
+  .persona-hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center;}
+
+  /* Avatar */
+  .persona-avatar{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#0A1E3D 0%,#1A3A6B 100%);border:2px solid rgba(37,99,200,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .avatar-initials{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--accent-light);font-weight:400;}
+
+  .persona-name{font-family:'DM Serif Display',serif;font-size:2.4rem;font-weight:400;color:#fff;letter-spacing:-.02em;line-height:1.05;margin-bottom:8px;}
+  .persona-name em{font-style:italic;color:var(--accent-light);}
+  .persona-title{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,218,247,.5);margin-bottom:20px;}
+  .persona-tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .ptag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;border:1px solid rgba(37,99,200,.35);color:rgba(200,218,247,.65);border-radius:2px;}
+
+  /* QUICK STATS ROW */
+  .quick-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin:24px 0;}
+  .qs-card{background:var(--tag-bg);padding:18px 14px;}
+  .qs-num{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--accent);line-height:1;margin-bottom:4px;}
+  .qs-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);line-height:1.4;}
+  .qs-source{font-family:'DM Mono',monospace;font-size:8px;color:var(--ink-faint);margin-top:6px;letter-spacing:.06em;}
+
+  /* BEHAVIOUR GRID */
+  .behaviour-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:24px 0;}
+  .beh-card{border:1px solid var(--rule);padding:20px;}
+  .beh-num{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .beh-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.3;}
+  .beh-body{font-size:13px;color:var(--ink-mid);line-height:1.65;}
+
+  /* COMPARISON TABLE */
+  .compare-table{width:100%;border-collapse:collapse;font-size:13px;margin:20px 0;}
+  .compare-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:#fff;padding:10px 14px;text-align:left;}
+  .compare-table td{padding:12px 14px;border-bottom:1px solid var(--rule);color:var(--ink-mid);vertical-align:top;line-height:1.55;}
+  .compare-table td:first-child{font-weight:500;color:var(--ink);white-space:nowrap;}
+  .compare-table tr:last-child td{border-bottom:none;}
+  .compare-table tr:nth-child(even) td{background:var(--tag-bg);}
+
+  /* DEVICE CONTEXTS */
+  .device-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:24px 0;}
+  .dev-card{background:var(--tag-bg);padding:18px 16px;}
+  .dev-icon{font-size:20px;margin-bottom:8px;}
+  .dev-context{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+  .dev-body{font-size:12px;color:var(--ink-muted);line-height:1.55;}
+
+  /* TRUST MOMENT */
+  .trust-box{background:var(--space-bg);padding:32px 36px;margin:24px 0;position:relative;overflow:hidden;}
+  .trust-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 20% 50%,rgba(37,99,200,.15),transparent);pointer-events:none;}
+  .trust-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent-light);margin-bottom:12px;position:relative;z-index:1;}
+  .trust-text{font-family:'DM Serif Display',serif;font-size:20px;color:#fff;line-height:1.5;position:relative;z-index:1;}
+  .trust-text em{font-style:italic;color:var(--accent-light);}
+
+  /* DESIGN IMPLICATIONS */
+  .implication-row{display:grid;grid-template-columns:40px 1fr;gap:16px;align-items:start;padding:18px 0;border-bottom:1px solid var(--rule);}
+  .implication-row:last-child{border-bottom:none;}
+  .imp-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.1em;margin-top:2px;}
+  .imp-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+  .imp-body{font-size:13px;color:var(--ink-mid);line-height:1.65;}
+
+  /* FOOTER */
+  .doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;}
+  .footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+  .footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+  /* RESPONSIVE */
+  @media(max-width:640px){
+    .document{padding:24px 20px;}
+    .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+    .cover-title{font-size:30px;}
+    .accent-rule{margin:0 -20px;}
+    .page-rule{margin:40px -20px;}
+    .persona-hero{margin:0 -20px;padding:32px 20px;}
+    .persona-hero-inner{grid-template-columns:1fr;gap:24px;}
+    .persona-avatar{width:80px;height:80px;}
+    .avatar-initials{font-size:1.8rem;}
+    .quick-stats{grid-template-columns:1fr 1fr;}
+    .behaviour-grid{grid-template-columns:1fr;}
+    .device-strip{grid-template-columns:1fr 1fr;}
+    .section-heading{font-size:24px;}
+    .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · OrbitX · Brand 02 of 06</div>
+      <h1 class="cover-title">Customer<br><em>Persona</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+      <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 05 — Persona</div></div>
+      <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">OrbitX</div></div>
+      <div class="meta-block"><div class="meta-label">Persona</div><div class="meta-value">Arjun Mehta</div></div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1: THE PERSONA -->
+    <div class="section">
+      <div class="section-label">01 — The ideal customer</div>
+      <h2 class="section-heading">Meet Arjun.<br>He has already <em>done everything else.</em></h2>
+
+      <p class="body-text">OrbitX's customer is not a thrill-seeker. He is not buying a rollercoaster. He is a person who has built something significant in his life — a company, a body of work, a legacy — and who is now looking for the one experience that cannot be replicated, purchased again, or upgraded. Space is not on his bucket list. It is the last thing on it.</p>
+    </div>
+
+    <div class="persona-hero">
+      <div class="persona-hero-inner">
+        <div class="persona-avatar">
+          <div class="avatar-initials">AM</div>
+        </div>
+        <div>
+          <div class="persona-name">Arjun <em>Mehta</em></div>
+          <div class="persona-title">52 · Founder &amp; Chairman · Mumbai / Dubai / Singapore</div>
+          <div class="persona-tags">
+            <span class="ptag">Ultra-HNW</span>
+            <span class="ptag">Early adopter</span>
+            <span class="ptag">Legacy-driven</span>
+            <span class="ptag">Risk-calibrated</span>
+            <span class="ptag">Asia-Pacific</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: WHO HE IS -->
+    <div class="section">
+      <div class="section-label">02 — Who he is</div>
+      <h2 class="section-heading">The person<br>behind the <em>profile.</em></h2>
+
+      <div class="quick-stats">
+        <div class="qs-card">
+          <div class="qs-num">52</div>
+          <div class="qs-label">Age — matching the suborbital market average</div>
+          <div class="qs-source">Spaceport Lounge, Feb 2026</div>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">$40M+</div>
+          <div class="qs-label">Net worth — the dominant wealth band for space tourism customers</div>
+          <div class="qs-source">S&amp;S Insider, Mar 2026</div>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">3</div>
+          <div class="qs-label">Cities he operates from — Mumbai, Dubai, Singapore</div>
+          <div class="qs-source">Asia-Pacific emerging market — SNS Insider, 2026</div>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">26yrs</div>
+          <div class="qs-label">Since he started his first company — this is a person who builds things</div>
+          <div class="qs-source">Persona construct</div>
+        </div>
+        <div class="qs-card">
+          <div class="qs-num">1st</div>
+          <div class="qs-label">In his network to do this — being first matters to him</div>
+          <div class="qs-source">Amra &amp; Elma, Nov 2025</div>
+        </div>
+      </div>
+
+      <p class="body-text">Arjun founded a logistics technology company in Mumbai in 1999. He sold a majority stake in 2018 and now chairs three portfolio companies across India, the UAE, and Singapore. He flies business class on autopilot. He has stayed in every six-star hotel on the list. He climbed Kilimanjaro in 2019. He drove a Formula 3 car at Silverstone in 2022. Each of these was a version of the same question: what does it feel like to be at the edge of something? Space is the final answer to that question.</p>
+
+      <p class="body-text">He is not reckless. He spent six months researching the safety record of New Shepard before making any inquiries. He asked his cardiologist about the physiological effects of launch G-forces before he told his wife he was considering it. He will read OrbitX's vehicle specifications before he reads the experience description. He needs to trust the engineering before he allows himself to want the experience.</p>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: BEHAVIOURS -->
+    <div class="section">
+      <div class="section-label">03 — Six defining behaviours</div>
+      <h2 class="section-heading">How Arjun<br><em>decides.</em></h2>
+
+      <div class="behaviour-grid">
+        <div class="beh-card">
+          <div class="beh-num">Behaviour 01</div>
+          <div class="beh-title">He researches before he expresses interest</div>
+          <div class="beh-body">Arjun will have read everything publicly available about OrbitX before his first contact. He will know the vehicle's safety record, the training duration, the altitude reached, and the names of previous passengers. The first time he interacts with the site he already knows whether he wants to go. He is looking for confirmation, not education.</div>
+        </div>
+        <div class="beh-card">
+          <div class="beh-num">Behaviour 02</div>
+          <div class="beh-title">He moves through the decision with one trusted advisor</div>
+          <div class="beh-body">Not a committee. One person — his EA, or a long-term colleague — who manages the logistics. He will not fill in a form. He will not send an email to a generic address. If the OrbitX website does not offer a clearly human point of contact — a name, a title, a direct line — he will stop. He is accustomed to speaking to a person who is expecting his call.</div>
+        </div>
+        <div class="beh-card">
+          <div class="beh-num">Behaviour 03</div>
+          <div class="beh-title">He views scarcity as a quality signal, not a pressure tactic</div>
+          <div class="beh-body">Being told there are 6 available seats does not make Arjun feel rushed. It makes him feel he is in the right place. Scarcity in his world means quality — his own business had waiting lists at its peak. He interprets limited availability as a signal that OrbitX controls the experience rather than scaling it. He does not want to be on a flight with 40 people.</div>
+        </div>
+        <div class="beh-card">
+          <div class="beh-num">Behaviour 04</div>
+          <div class="beh-title">He will tell the story more than he will relive the experience</div>
+          <div class="beh-body">The flight is 11 minutes. The story lasts a lifetime. Arjun is acutely aware that going to space will define the dinner party version of himself for the next decade. He is partly buying the experience and partly buying the narrative that follows it. OrbitX's design must give him the language to describe what he is about to do — before, during, and after.</div>
+        </div>
+        <div class="beh-card">
+          <div class="beh-num">Behaviour 05</div>
+          <div class="beh-title">He reads the page on a 14" laptop at 11pm in a hotel room</div>
+          <div class="beh-body">Not on a phone. Not in an office. He opens OrbitX's website in a rare quiet moment — on a work trip, after dinner, when the schedule has briefly cleared. He has 20 minutes. The page must earn his time in the first 60 seconds or he closes the tab and adds it to a list he will return to — which he sometimes does and sometimes does not.</div>
+        </div>
+        <div class="beh-card">
+          <div class="beh-num">Behaviour 06</div>
+          <div class="beh-title">He does not want to be sold to</div>
+          <div class="beh-body">Any language that feels like marketing — superlatives, urgency copy, "book now" buttons, countdown timers — will register as a mismatch. He is accustomed to being the one people want something from. The OrbitX website must feel like it is informing him of an opportunity, not persuading him toward a purchase. The tone of a briefing, not a brochure.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: ARJUN VS ROHIT -->
+    <div class="section">
+      <div class="section-label">04 — Persona contrast · Arjun vs Rohit</div>
+      <h2 class="section-heading">Why this persona<br>is <em>different.</em></h2>
+
+      <p class="body-text">The Ember &amp; Oak persona — Rohit Kapoor, 38, VP of Product, ₹45–70L HHI — was making a discretionary luxury purchase. He needed to be convinced. Arjun has already decided in principle. He needs to be given a good reason not to go with a competitor. These are fundamentally different design problems.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Dimension</th><th>Rohit Kapoor · Ember &amp; Oak</th><th>Arjun Mehta · OrbitX</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Purchase size</td>
+            <td>₹8,000–₹20,000 per meal · routine</td>
+            <td>$250,000–$600,000 · a single, considered decision</td>
+          </tr>
+          <tr>
+            <td>Decision timeline</td>
+            <td>Days — books in advance for a special occasion</td>
+            <td>Months — research, medical, family, then commitment</td>
+          </tr>
+          <tr>
+            <td>Primary trust signal</td>
+            <td>Cooking method + scarcity (28 seats)</td>
+            <td>Vehicle safety record + named previous passengers</td>
+          </tr>
+          <tr>
+            <td>Discovery context</td>
+            <td">Mobile, commute, casual browse</td>
+            <td>Laptop, hotel room, 20 quiet minutes at 11pm</td>
+          </tr>
+          <tr>
+            <td>CTA expectation</td>
+            <td>"Reserve a Table" — familiar hospitality language</td>
+            <td>"Speak to a mission specialist" — human, not transactional</td>
+          </tr>
+          <tr>
+            <td>What the purchase represents</td>
+            <td>A good evening. A considered treat.</td>
+            <td>A permanent chapter in his biography.</td>
+          </tr>
+          <tr>
+            <td>Risk tolerance</td>
+            <td>Low — this is entertainment, not adventure</td>
+            <td>Calibrated — he has assessed the risk and accepted it</td>
+          </tr>
+          <tr>
+            <td>What breaks the trust</td>
+            <td>Generic copy, no wood type visible, "Book Now"</td>
+            <td>Anything that feels like a brochure or a sales pitch</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 5: DEVICE CONTEXTS -->
+    <div class="section">
+      <div class="section-label">05 — How and where Arjun encounters OrbitX</div>
+      <h2 class="section-heading">The four<br><em>contexts.</em></h2>
+
+      <div class="device-strip">
+        <div class="dev-card">
+          <div class="dev-icon">💻</div>
+          <div class="dev-context">Hotel laptop · 11pm</div>
+          <div class="dev-body">Primary encounter. 20 quiet minutes. Full desktop viewport. He reads everything. This is the decision moment. The page must earn his time in 60 seconds.</div>
+        </div>
+        <div class="dev-card">
+          <div class="dev-icon">📱</div>
+          <div class="dev-context">Phone · Business lounge</div>
+          <div class="dev-body">Quick reference. He has saved the page and is re-reading specific sections — the vehicle spec, the training schedule — before a call with his EA. Mobile must render key facts cleanly.</div>
+        </div>
+        <div class="dev-card">
+          <div class="dev-icon">🖥</div>
+          <div class="dev-context">Office · Due diligence phase</div>
+          <div class="dev-body">He has asked a trusted colleague to review OrbitX. They are looking at the site together on a large monitor. The page must communicate credibility to someone who did not seek it out.</div>
+        </div>
+        <div class="dev-card">
+          <div class="dev-icon">📧</div>
+          <div class="dev-context">Email referral</div>
+          <div class="dev-body">A peer who already booked sent him a link with one line: "This is what I did last year." He opens it from a cold start with maximum expectation. The first viewport must justify the referral immediately.</div>
+        </div>
+      </div>
+
+      <div class="trust-box">
+        <div class="trust-label">The 60-second trust test · what Arjun decides in the first viewport</div>
+        <div class="trust-text">Is this technically credible? Are the people behind this worth trusting? Is the experience <em>genuinely scarce</em> — or manufactured? Does this feel like a company I would have built — or one I would have passed on?</div>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 6: DESIGN IMPLICATIONS -->
+    <div class="section">
+      <div class="section-label">06 — Design implications</div>
+      <h2 class="section-heading">What Arjun<br><em>demands</em> from the design.</h2>
+
+      <div class="implication-row">
+        <div class="imp-num">01</div>
+        <div>
+          <div class="imp-title">Technical credibility must appear before the experience narrative</div>
+          <div class="imp-body">The vehicle name, flight history, altitude, and safety certifications belong in the hero or immediately below it — not in a dedicated "Safety" page buried in the nav. Arjun will not navigate there. If he cannot see the credentials immediately, he will assume they are not strong enough to display prominently.</div>
+        </div>
+      </div>
+
+      <div class="implication-row">
+        <div class="imp-num">02</div>
+        <div>
+          <div class="imp-title">The CTA must never say "Book Now" or "Buy a Ticket"</div>
+          <div class="imp-body">"Speak to a mission specialist" is correct. "Reserve your manifest position" is correct. "Join the waitlist" is acceptable. Any language that positions Arjun as a customer buying a product will register as a mismatch. He is a mission candidate being considered for a programme. The framing must honour that.</div>
+        </div>
+      </div>
+
+      <div class="implication-row">
+        <div class="imp-num">03</div>
+        <div>
+          <div class="imp-title">Previous passengers are the most powerful social proof available</div>
+          <div class="imp-body">Arjun will look for people like himself — founders, chairs, accomplished individuals — who have already done this. Named passengers with brief biographical context are more convincing than testimonials. "Passenger 34 — Founder, fintech sector, Mumbai, flew October 2026" tells him everything he needs to know: someone in his peer group went, and they trusted it.</div>
+        </div>
+      </div>
+
+      <div class="implication-row">
+        <div class="imp-num">04</div>
+        <div>
+          <div class="imp-title">The training programme is a feature, not a disclaimer</div>
+          <div class="imp-body">Two days of pre-flight training at the spaceport is not a barrier — for Arjun it is part of the experience. The Formula 3 day at Silverstone had a briefing and a technical debrief. That was part of what made it worthwhile. OrbitX's design should present the training schedule as a premium itinerary, not a requirement to be minimised.</div>
+        </div>
+      </div>
+
+      <div class="implication-row">
+        <div class="imp-num">05</div>
+        <div>
+          <div class="imp-title">Give him the language before the experience</div>
+          <div class="imp-body">Arjun will describe this to people for years. The copy on OrbitX's page will become his vocabulary. "At 100km above the Earth, the atmosphere disappears. What you see is not a view — it is the actual planet, suspended in actual darkness." That line will be how he describes it at dinner. The copy is not just selling the experience. It is giving him the words to own it.</div>
+        </div>
+      </div>
+
+      <div class="implication-row">
+        <div class="imp-num">06</div>
+        <div>
+          <div class="imp-title">The visual language must feel aerospace, not adventure tourism</div>
+          <div class="imp-body">Adventure tourism design — bright colours, action photography, bold sans-serif CTAs — is for a different customer. Arjun is not buying an extreme sport. He is joining a programme. The visual register should reference mission control, aerospace engineering, and precision manufacturing — not skydiving or mountain expeditions. Dark, precise, and vast. Not loud.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 05 — CUSTOMER PERSONA · ORBITX</div>
+      <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 13: Behance Guide · Pawside</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF8F0;--coral:#FF6B6B;--teal:#4ECDC4;--yellow:#FFE66D;--ink:#2B1810;
+  --ink-mid:#4A3628;--paper:#FAF8F4;--rule:#E0DCD5;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--paper);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:#fff;}
+
+.cover-band{background:linear-gradient(135deg,var(--coral),var(--teal));margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;}
+.cover-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 40%,rgba(255,255,255,.25),transparent 65%);pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:rgba(255,255,255,.5);}
+.cover-title{font-family:'DM Serif Display',serif;font-size:44px;line-height:1.05;color:#fff;letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.meta-value{font-size:13px;color:#fff;font-weight:300;}
+.meta-block{margin-bottom:20px;}
+
+.accent-rule{height:3px;background:linear-gradient(to right,var(--coral),var(--teal),var(--yellow));margin:0 -80px;}
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--coral);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'DM Serif Display',serif;font-size:32px;line-height:1.15;letter-spacing:-.01em;color:var(--ink);margin-bottom:24px;}
+.section-heading em{font-style:italic;color:var(--coral);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+.project-card{background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(78,205,196,.08));border:1px solid var(--rule);border-radius:8px;padding:28px;margin:20px 0;}
+.card-number{font-family:'DM Serif Display',serif;font-size:28px;color:var(--coral);line-height:1;margin-bottom:12px;}
+.card-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--ink);margin-bottom:12px;}
+.card-content{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.card-content ul{margin-left:20px;margin-top:8px;}
+.card-content li{margin-bottom:6px;}
+
+.tip-box{background:rgba(255,235,109,.15);border-left:4px solid var(--yellow);padding:20px;border-radius:6px;margin:20px 0;}
+.tip-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);font-weight:700;margin-bottom:8px;}
+.tip-text{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+
+.footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-mid);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-mid);text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Pawside · Brand 06 of 06</div>
+    <h1 class="cover-title">Behance<br><em>Guide</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 13 — Behance Guide</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Pawside</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — What goes on Behance</div>
+    <h2 class="section-heading">How to present <em>Pawside.</em></h2>
+    <p class="body-text">Behance is a portfolio platform for creative professionals. The Pawside project will be presented as part of the "From Prompt to Production" series — six hypothetical brands, each built through a 14-step process using AI as the execution engine.</p>
+    <p class="body-text">The presentation strategy: show the full methodology, not just the final design. Viewers should understand the thinking, the process, the decisions, the iterations. This is a case study in collaborative design, not a finished brand pitch.</p>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — Project Structure on Behance</div>
+    <h2 class="section-heading">Organize like <em>this.</em></h2>
+
+    <div class="project-card">
+      <div class="card-number">01</div>
+      <div class="card-title">Cover Image</div>
+      <div class="card-content">
+        <p><strong>What:</strong> A hero image that represents Pawside's brand visually.</p>
+        <p><strong>Content:</strong> High-contrast hero image from landing page (dog mid-jump, rotated -3deg, with playful typography overlay). Include palette colors (Coral, Teal, Yellow) visible. Include brand name "Pawside" prominently.</p>
+        <p><strong>Dimensions:</strong> 1920x1440px (landscape, 4:3 ratio). Behance recommends this size for maximum impact.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">02</div>
+      <div class="card-title">Project Title & Description</div>
+      <div class="card-content">
+        <p><strong>Title:</strong> "Pawside — Premium Dog Grooming Brand Design" or "Pawside — From Prompt to Production #6"</p>
+        <p><strong>Description (3-4 sentences):</strong></p>
+        <p>"Pawside is a hypothetical premium dog grooming D2C brand designed using AI as the execution engine. The project demonstrates a 14-step methodology: industry research, persona development, visual audit, moodboard direction, copywriting, landing page design, design audit, redesign, prompt diary, before & after, case study, and portfolio integration.</p>
+        <p>The brand celebrates real dogs, not Instagram dogs. Copy tone is humorous and authentic. Design is playful and energetic. This case study shows how specific design language, strategic auditing, and consistent execution produce distinctive brand experiences."</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">03</div>
+      <div class="card-title">Slide 01 — Research</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Industry research document screenshot or summary.</p>
+        <p><strong>Content:</strong> Show the research framework (market size, CAGR, competitor analysis, pricing, brand trends). Include the key insight: "The pet grooming market is $32B+ with 14.2% CAGR. Competitors deliver 1-2 of three value propositions (transparency, community, personality). Pawside delivers all three."</p>
+        <p><strong>Why:</strong> Demonstrates research rigor. Shows that design is grounded in data, not guesswork.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">04</div>
+      <div class="card-title">Slide 02 — Persona</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Persona document or portrait.</p>
+        <p><strong>Content:</strong> Maya Chen, 34, Austin TX, Product Manager, $142K HHI. Golden Retriever named Biscuit. $380/year dog care spend. Five-stage decision journey (Discovery → Verification → Research → Reassurance → Purchase).</p>
+        <p><strong>Why:</strong> Persona is the creative north star. Every design decision should align with what Maya needs and values.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">05</div>
+      <div class="card-title">Slide 03 — Competitor Audit</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Audit visual with scoring matrix.</p>
+        <p><strong>Content:</strong> Show the five competitors scored on Design, Ingredient Transparency, Social Proof, Copy Confidence, Mobile Experience. Include the gap analysis table: what none of them do well. Include the design opportunity statement.</p>
+        <p><strong>Why:</strong> Shows strategic thinking. Demonstrates how competitive landscape informed Pawside's positioning.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">06</div>
+      <div class="card-title">Slide 04 — Moodboard Directions</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Four moodboard directions, Playful highlighted.</p>
+        <p><strong>Content:</strong> Show Direction A (Warmth), B (Precision), C (Sacred), D (Playful). Include palette colors, typography specimen, and vibe for each. Highlight the Playful direction and explain why it was selected.</p>
+        <p><strong>Why:</strong> Visualizes creative options and the selection process. Shows that Playful was deliberate, not default.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">07</div>
+      <div class="card-title">Slide 05 — Copy & Voice</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Copy samples with voice rules.</p>
+        <p><strong>Content:</strong> Show the six voice rules. Include 2-3 headline/body copy pairs that exemplify the voice. Example: "Cleans without stripping. Your dog will smell like they got professional grooming, not a chemical bath." Explain that copy is informative-first, persuasive-second.</p>
+        <p><strong>Why:</strong> Copy and design must align. Showing voice clarifies the brand personality.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">08</div>
+      <div class="card-title">Slide 06 — Landing Page v1 (Before)</div>
+      <div class="card-content">
+        <p><strong>What:</strong> First landing page design iteration.</p>
+        <p><strong>Content:</strong> Full screenshot or scrolling preview. Show the formal, safe, predictable design. Explain that while structurally sound, it lacks personality.</p>
+        <p><strong>Why:</strong> Sets up the redesign. Shows the starting point and why iteration was necessary.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">09</div>
+      <div class="card-title">Slide 07 — Design Audit</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Audit visual with seven problems and solutions.</p>
+        <p><strong>Content:</strong> Show the problem-solution pairs: (1) Formal grid → Asymmetrical, (2) Timid colors → Bold full-width blocks, (3) Safe type → Oversized headlines, (4) Boxed images → Dynamic treatment, (5) No illustrations → Paw prints + emojis, (6) Even spacing → Varied rhythm, (7) Static → Animated.</p>
+        <p><strong>Why:</strong> Demonstrates design thinking. Shows how to identify structural problems (not cosmetic ones) and propose strategic solutions.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">10</div>
+      <div class="card-title">Slide 08 — Landing Page v2 (After)</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Redesigned landing page.</p>
+        <p><strong>Content:</strong> Full screenshot or scrolling preview. Show the asymmetrical layout, bold colors, oversized typography, animated paw prints, varied spacing. Explain that all audit recommendations were implemented.</p>
+        <p><strong>Why:</strong> The payoff. Shows how strategic thinking produced a distinctive, playful design.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">11</div>
+      <div class="card-title">Slide 09 — Before & After Comparison</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Side-by-side comparison of key sections.</p>
+        <p><strong>Content:</strong> Hero (rigid vs breathing space), Colors (timid vs bold), Typography (safe vs playful), Images (boxed vs dynamic), Interactions (static vs animated).</p>
+        <p><strong>Why:</strong> Makes the transformation visible. Viewers immediately understand the impact of the redesign.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">12</div>
+      <div class="card-title">Slide 10 — Prompt Diary Excerpt</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Key prompts from the design process.</p>
+        <p><strong>Content:</strong> Show 3-4 critical prompts (moodboard direction request, design audit request, redesign implementation, prompt diary concept). Include both the prompt and the result.</p>
+        <p><strong>Why:</strong> This is a project about AI-assisted design. Showing actual prompts demonstrates the collaborative process with the AI.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">13</div>
+      <div class="card-title">Slide 11 — Case Study Insights</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Key learnings from the project.</p>
+        <p><strong>Content:</strong> Show the five key lessons: (1) Specific design language beats generic direction words, (2) Audit before iterating, (3) Master prompts save time, (4) Spatial language matters, (5) Animations create aliveness.</p>
+        <p><strong>Why:</strong> Positions this as educational. Future viewers can apply these principles to their own work.</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-number">14</div>
+      <div class="card-title">Final Slide — Design System</div>
+      <div class="card-content">
+        <p><strong>What:</strong> Design system summary or brand guidelines.</p>
+        <p><strong>Content:</strong> Palette (Coral, Teal, Yellow, Ink), Typography (Cormorant Garamond, DM Sans, DM Mono), Key patterns (asymmetrical layouts, full-width sections, micro-interactions), Brand thesis ("Pawside makes grooming products for real dogs. Not Instagram dogs.").</p>
+        <p><strong>Why:</strong> Leaves viewers with a complete understanding of the brand system. Reinforces that this is a cohesive, documented brand, not just a pretty landing page.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — Design Tips for Behance Presentation</div>
+    <h2 class="section-heading">How to show <em>your work.</em></h2>
+
+    <div class="tip-box">
+      <div class="tip-label">Tip 01: Use High-Quality Images</div>
+      <div class="tip-text">All screenshots should be crisp, high-resolution. At least 1200px wide. Use 2x resolution if possible. Blurry screenshots look unprofessional. Behance viewers expect high production quality.</div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Tip 02: Include Context & Explanation</div>
+      <div class="tip-text">Every slide should have a brief caption explaining what viewers are looking at and why it matters. Don't assume viewers understand the methodology. Context helps non-designers understand the thinking.</div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Tip 03: Show Iteration, Not Just Final</div>
+      <div class="tip-text">Include before & after. Show that you iterated. Show the design audit and the resulting changes. Iteration is more interesting than perfection. It demonstrates process and thinking.</div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Tip 04: Tell a Story</div>
+      <div class="tip-text">Arrange slides to tell a narrative: Problem → Research → Direction → Design → Audit → Redesign → Result. Don't just dump screenshots. Lead viewers through your thinking.</div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Tip 05: Highlight the Distinctive Part</div>
+      <div class="tip-text">What makes this project unique? For Pawside, it's the AI-assisted design process and the strategic audit methodology. Emphasize what's different, not what's expected.</div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Tip 06: Include Project Details</div>
+      <div class="tip-text">At the end, include a project details slide: Tools used (Claude, Midjourney, HTML/CSS), timeframe, team (just you or collaboration), and learnings. This metadata adds credibility.</div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">Tip 07: Optimize for Mobile Viewing</div>
+      <div class="tip-text">Many Behance viewers use mobile. Ensure text is readable at small sizes. Use high contrast. Avoid tiny type or subtle colors. Mobile-first thinking improves overall presentation.</div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">04 — Project Metadata</div>
+    <h2 class="section-heading">Fill this out <em>correctly.</em></h2>
+
+    <div class="project-card">
+      <div class="card-title">Project Title</div>
+      <div class="card-content">
+        <p>"Pawside — Premium Dog Grooming D2C Brand Design" or "From Prompt to Production #6: Pawside"</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-title">Category</div>
+      <div class="card-content">
+        <p>Graphic Design > Branding</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-title">Tags</div>
+      <div class="card-content">
+        <p>brand design, branding, d2c, e-commerce, landing page, web design, ai-assisted design, case study, design thinking, color palette, typography, ui design</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-title">Tools Used</div>
+      <div class="card-content">
+        <p>Claude (AI design execution), Midjourney (image generation), HTML/CSS (landing page), Figma (optional, if mockups used)</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-title">Completion Date</div>
+      <div class="card-content">
+        <p>[Current date when uploading to Behance]</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-title">Client Type</div>
+      <div class="card-content">
+        <p>Self-Initiated / Hypothetical Brand (not a real client)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">05 — Series Positioning</div>
+    <h2 class="section-heading">Situate in the <em>series.</em></h2>
+    <p class="body-text">The Pawside project is Brand 06 of 06 in the "From Prompt to Production" series. On your Behance profile, link to the other five brands:</p>
+    <p><strong>Brand 01 — Ember & Oak</strong> (Luxury home goods, high-end ceramics, warm minimalism)</p>
+    <p><strong>Brand 02 — OrbitX</strong> (Civilian space tourism, vast cosmos palette, cosmonaut aesthetic)</p>
+    <p><strong>Brand 03 — Bumblebee World</strong> (Children's educational platform, yellow-primary palette, playful learning)</p>
+    <p><strong>Brand 04 — NeuralDesk</strong> (B2B productivity software, arctic clarity, red accent)</p>
+    <p><strong>Brand 05 — Verdana</strong> (Clean beauty, ingredient-first, pared-back minimal)</p>
+    <p><strong>Brand 06 — Pawside</strong> (Pet wellness D2C, playful, joyful, dog-centric)</p>
+    <p style="margin-top:24px;"><strong>Series Overview:</strong> Six hypothetical brands, each built through a 14-step process using Claude as the execution engine. Each brand demonstrates different design aesthetics, target audiences, and methodologies. The series shows the breadth of design thinking across product categories and brand personalities.</p>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 13 — BEHANCE GUIDE · PAWSIDE</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

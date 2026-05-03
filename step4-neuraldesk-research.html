@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 4: Industry Research · NeuralDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF;--surface:#F7F7F9;--surface-mid:#EFEFEF;--border:#E0E0E0;
+  --red:#E8000D;--red-hover:#FF1A26;--red-tint:#FFF0F0;--red-soft:#FFD6D8;
+  --ink:#0A0A0F;--ink-mid:#3D3D4A;--ink-muted:#7A7A8C;--ink-faint:#B8B8C8;
+  --rule:#EFEFEF;--paper:#FFFFFF;
+  --good-bg:#F0FBF4;--good-text:#1B6B3A;
+  --warn-bg:#FFFBF0;--warn-text:#8B5E00;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--surface);font-family:'Space Grotesk',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{
+  background:var(--white);
+  margin:-80px -80px 0;padding:56px 80px 48px;
+  display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;
+  position:relative;overflow:hidden;
+  border-bottom:1px solid var(--rule);
+}
+.cover-band::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(to right,var(--red),var(--red-soft),transparent);
+}
+/* Subtle dot grid */
+.cover-band::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(232,0,13,.06) 1px,transparent 1px);
+  background-size:28px 28px;pointer-events:none;
+}
+.project-series{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--red);opacity:.7;
+  margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;
+}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--red);opacity:.5;}
+.cover-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;
+  line-height:.95;color:var(--ink);letter-spacing:-.03em;position:relative;z-index:1;
+}
+.cover-title em{font-style:normal;color:var(--red);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--rule);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--red);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;
+  line-height:1.1;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px;
+}
+.section-heading em{font-style:normal;color:var(--red);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+/* ── NOTE BOX ── */
+.note-box{
+  background:var(--red-tint);border-left:3px solid var(--red);
+  padding:18px 22px;margin:24px 0;
+}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:28px 0;}
+.stat-card{
+  background:var(--surface);border:1px solid var(--rule);
+  padding:22px 18px;position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--red);
+}
+.stat-num{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2rem;
+  color:var(--red);line-height:1;margin-bottom:5px;
+}
+.stat-label{font-size:11px;color:var(--ink-muted);line-height:1.4;font-weight:400;}
+
+/* ── DATA TABLE ── */
+.data-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.data-table th{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;background:var(--ink);color:var(--white);
+  padding:11px 14px;text-align:left;
+}
+.data-table td{
+  padding:12px 14px;border-bottom:1px solid var(--rule);
+  font-size:13px;color:var(--ink-mid);line-height:1.55;vertical-align:top;
+}
+.data-table tr:hover td{background:var(--surface);}
+.data-table td:first-child{color:var(--ink);font-weight:500;}
+.td-red{color:var(--red);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;}
+.td-good{color:var(--good-text);font-family:'IBM Plex Mono',monospace;font-size:12px;}
+.td-warn{color:var(--warn-text);font-family:'IBM Plex Mono',monospace;font-size:12px;}
+
+/* ── COMPETITOR CARDS ── */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:20px 0;}
+.comp-card{background:var(--surface);border:1px solid var(--rule);padding:22px 20px;}
+.comp-card-full{background:var(--surface);border:1px solid var(--rule);padding:22px 20px;margin-bottom:2px;}
+.comp-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:4px;}
+.comp-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px;}
+.comp-scores{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.comp-score{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 8px;}
+.cs-strong{background:var(--good-bg);color:var(--good-text);border:1px solid rgba(27,107,58,.15);}
+.cs-mid{background:var(--warn-bg);color:var(--warn-text);border:1px solid rgba(139,94,0,.15);}
+.cs-weak{background:var(--red-tint);color:var(--red);border:1px solid var(--red-soft);}
+.comp-body{font-size:12.5px;color:var(--ink-mid);line-height:1.65;}
+.comp-body strong{color:var(--ink);}
+.comp-gap{
+  background:var(--red-tint);border-left:3px solid var(--red);
+  padding:10px 14px;margin-top:10px;
+  font-size:11.5px;color:var(--ink-mid);
+  line-height:1.6;
+}
+
+/* ── TREND CARDS ── */
+.trend-list{display:flex;flex-direction:column;gap:1px;margin:20px 0;}
+.trend-row{
+  display:grid;grid-template-columns:48px 1fr auto;
+  align-items:start;gap:0;
+  border:1px solid var(--rule);border-bottom:none;
+  background:var(--white);
+}
+.trend-row:first-child{border-radius:2px 2px 0 0;}
+.trend-row:last-child{border-bottom:1px solid var(--rule);border-radius:0 0 2px 2px;}
+.trend-row:hover{background:var(--surface);}
+.trend-num{
+  background:var(--red);border-right:1px solid var(--red-soft);
+  padding:16px 8px;display:flex;align-items:center;justify-content:center;
+  align-self:stretch;
+}
+.trend-num span{font-family:'IBM Plex Mono',monospace;font-size:9px;color:rgba(255,255,255,.85);letter-spacing:.1em;}
+.trend-content{padding:14px 18px;}
+.trend-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.trend-desc{font-size:12px;color:var(--ink-muted);line-height:1.55;}
+.trend-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;padding:3px 10px;white-space:nowrap;
+  align-self:start;margin:14px 14px 0 0;
+}
+.badge-dominant{background:var(--ink);color:var(--white);}
+.badge-emerging{background:var(--surface);color:var(--ink-mid);border:1px solid var(--border);}
+.badge-fading{background:var(--red-tint);color:var(--red);border:1px solid var(--red-soft);}
+
+/* ── OPPORTUNITY BOX ── */
+.opportunity{
+  background:var(--ink);
+  padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;
+}
+.opportunity::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(to right,var(--red),var(--red-soft),transparent);
+}
+.opportunity::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(232,0,13,.08) 1px,transparent 1px);
+  background-size:24px 24px;pointer-events:none;
+}
+.opp-label{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(232,0,13,.5);
+  margin-bottom:12px;position:relative;z-index:1;
+}
+.opp-text{
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;
+  color:var(--white);line-height:1.55;position:relative;z-index:1;
+}
+.opp-text em{font-style:normal;color:var(--red-soft);}
+
+/* ── FOOTER ── */
+.doc-footer{
+  margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-left{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:32px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .page-rule{margin:40px -20px;}
+  .section-heading{font-size:22px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .comp-grid{grid-template-columns:1fr;}
+  .trend-row{grid-template-columns:36px 1fr;}
+  .trend-badge{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · NeuralDesk · Brand 04 of 06</div>
+    <h1 class="cover-title">Industry<br><em>Research</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 04 — Industry Research</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">NeuralDesk</div></div>
+    <div class="meta-block"><div class="meta-label">Industry</div><div class="meta-value">AI SaaS · Data analysis & reporting</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <div class="section">
+    <div class="section-label">01 — Market size & growth</div>
+    <h2 class="section-heading">The market NeuralDesk<br><em>is entering.</em></h2>
+    <p class="body-text">The global AI in data analytics market is one of the fastest-growing segments in enterprise software. Organisations of every size are moving data analysis from spreadsheets and BI tools into AI-augmented platforms that surface insight without requiring a data science team. The self-serve, product-led segment is the fastest-growing sub-category — and the most design-sensitive.</p>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">$33.4B</div><div class="stat-label">Global AI analytics market size 2024 — Grand View Research, Jan 2026</div></div>
+      <div class="stat-card"><div class="stat-num">27.6%</div><div class="stat-label">CAGR projected through 2030 — Grand View Research, Jan 2026</div></div>
+      <div class="stat-card"><div class="stat-num">73%</div><div class="stat-label">of companies plan to increase AI analytics investment in 2025–26 — McKinsey, 2025</div></div>
+      <div class="stat-card"><div class="stat-num">$9.4B</div><div class="stat-label">Self-serve analytics SaaS segment alone — Forrester, Q4 2025</div></div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Segment</th><th>2024 Size</th><th>2026 Projection</th><th>Key driver</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Enterprise BI & analytics</td><td class="td-warn">$18.2B</td><td class="td-warn">$24.1B</td><td>Cloud migration of legacy tools</td></tr>
+        <tr><td>AI-augmented self-serve analytics</td><td class="td-red">$9.4B</td><td class="td-red">$14.8B</td><td>Non-technical teams needing insight without analysts</td></tr>
+        <tr><td>Natural language query / AI chat-to-data</td><td class="td-good">$5.8B</td><td class="td-good">$11.2B</td><td>GPT-era expectation: ask a question, get a chart</td></tr>
+        <tr><td>Automated reporting & scheduling</td><td class="td-warn">$4.2B</td><td class="td-warn">$6.9B</td><td>Reducing analyst time on recurring report generation</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note-box">
+      <p><strong>The NeuralDesk opportunity sits squarely in the AI-augmented self-serve analytics segment</strong> — the fastest-growing sub-category. The buyer is a team lead or analyst who needs insight without waiting for a data engineer. The product must feel powerful enough to trust but approachable enough to use without training.</p>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">02 — Buyer profile</div>
+    <h2 class="section-heading">Who actually<br><em>signs up.</em></h2>
+    <p class="body-text">The self-serve AI analytics buyer is not the CTO or the Chief Data Officer. Those buyers go through procurement, demos, and security reviews. The self-serve buyer is a practitioner: someone who needs answers from data today, has a company card, and will sign up if the product demonstrates value within 10 minutes of landing on the page.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Attribute</th><th>Profile</th><th>Design implication</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Job title</td><td>Product Manager, Marketing Analyst, Growth Lead, Operations Manager, Founder/CEO at Series A–B startup</td><td>Copy must speak to business outcomes — not technical architecture</td></tr>
+        <tr><td>Primary pain</td><td>Waiting days for a report that should take minutes. Relying on one analyst who is always at capacity.</td><td>Lead with time-to-insight, not feature lists</td></tr>
+        <tr><td>Decision process</td><td>Solo decision for tools under ₹5,000/month. Reads 2–3 competitor sites before deciding. Starts free trial without speaking to sales.</td><td>Friction-free sign-up. No demo required. Pricing visible.</td></tr>
+        <tr><td>Trust signals needed</td><td>Recognisable company logos. Specific metric results ("reduced reporting time by 70%"). Data security certifications (SOC 2, GDPR).</td><td>Social proof must be specific — company names and outcomes, not generic praise</td></tr>
+        <tr><td>Primary device</td><td>15" laptop, work hours, Chrome browser. May be evaluating 3 tabs simultaneously.</td><td>Value must land in the first viewport. Fast load. No autoplay.</td></tr>
+        <tr><td>What kills the decision</td><td>"Contact sales for pricing." Vague claims. Complex onboarding. No free tier.</td><td>Pricing on the page. Specific proof. One-click trial.</td></tr>
+      </tbody>
+    </table>
+
+    <p class="body-text" style="margin-top:20px;">The self-serve buyer makes the decision in the same session they discover the product — or not at all. <strong>The landing page is the sales team.</strong> There is no follow-up call to handle objections.</p>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">03 — Competitor landscape</div>
+    <h2 class="section-heading">Five competitors.<br><em>Five gaps.</em></h2>
+    <p class="body-text">Five direct competitors in the AI data analysis and self-serve analytics space were audited — scored against five criteria: Design quality (D), Clarity of value proposition (C), Self-serve ease (S), Trust signals (T), and Visual differentiation (V) on a 1–5 scale.</p>
+
+    <div class="comp-card-full">
+      <div class="comp-name">Tableau (Salesforce)</div>
+      <div class="comp-tag">Enterprise BI · tableau.com</div>
+      <div class="comp-scores">
+        <span class="comp-score cs-strong">D: 4/5</span>
+        <span class="comp-score cs-weak">C: 2/5</span>
+        <span class="comp-score cs-weak">S: 1/5</span>
+        <span class="comp-score cs-strong">T: 5/5</span>
+        <span class="comp-score cs-mid">V: 3/5</span>
+      </div>
+      <div class="comp-body">The category's most recognised brand — and its most enterprise-locked experience. Tableau's landing page assumes the visitor already knows what Tableau is and is ready to speak to sales. Zero pricing on the homepage. "Get a demo" is the only CTA. <strong>A self-serve buyer lands here and leaves in 30 seconds.</strong></div>
+      <div class="comp-gap">Gap: Tableau has the trust but not the self-serve accessibility. NeuralDesk takes the trust signals; rejects the sales gate.</div>
+    </div>
+
+    <div class="comp-grid">
+      <div class="comp-card">
+        <div class="comp-name">Looker Studio</div>
+        <div class="comp-tag">Google · Free · BI reporting</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-mid">D: 3/5</span>
+          <span class="comp-score cs-mid">C: 3/5</span>
+          <span class="comp-score cs-strong">S: 5/5</span>
+          <span class="comp-score cs-strong">T: 4/5</span>
+          <span class="comp-score cs-weak">V: 1/5</span>
+        </div>
+        <div class="comp-body">Free, frictionless sign-up, Google brand trust. But Looker Studio requires significant setup and does not surface AI-generated insight. <strong>It tells you what happened; it cannot tell you why or what to do next.</strong> Zero visual differentiation.</div>
+        <div class="comp-gap">Gap: Self-serve access with no AI insight layer. NeuralDesk takes the accessibility; adds the intelligence.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Power BI (Microsoft)</div>
+        <div class="comp-tag">Microsoft · Enterprise · Windows-first</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-mid">D: 3/5</span>
+          <span class="comp-score cs-weak">C: 2/5</span>
+          <span class="comp-score cs-weak">S: 2/5</span>
+          <span class="comp-score cs-strong">T: 5/5</span>
+          <span class="comp-score cs-weak">V: 2/5</span>
+        </div>
+        <div class="comp-body">Deep Microsoft ecosystem integration, strong enterprise trust. But the landing page is dated, the self-serve path is unclear, and the value proposition requires BI terminology fluency. <strong>A marketing analyst who has never used BI software will not feel confident here.</strong></div>
+        <div class="comp-gap">Gap: High trust, low approachability for non-technical buyers. NeuralDesk targets exactly this buyer.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Polymer Search</div>
+        <div class="comp-tag">AI analytics · Self-serve · SMB focus</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-mid">D: 3/5</span>
+          <span class="comp-score cs-strong">C: 4/5</span>
+          <span class="comp-score cs-strong">S: 4/5</span>
+          <span class="comp-score cs-mid">T: 3/5</span>
+          <span class="comp-score cs-weak">V: 2/5</span>
+        </div>
+        <div class="comp-body">The closest competitor to NeuralDesk's positioning — self-serve, AI-augmented, accessible to non-technical users. Clear value prop, free plan available. But the visual design is plain and forgettable. <strong>Polymer tells the right story in the wrong register.</strong></div>
+        <div class="comp-gap">Gap: Right audience, wrong design quality. NeuralDesk takes the positioning; upgrades the visual credibility.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">ThoughtSpot</div>
+        <div class="comp-tag">AI analytics · Natural language query</div>
+        <div class="comp-scores">
+          <span class="comp-score cs-strong">D: 4/5</span>
+          <span class="comp-score cs-strong">C: 4/5</span>
+          <span class="comp-score cs-mid">S: 3/5</span>
+          <span class="comp-score cs-strong">T: 4/5</span>
+          <span class="comp-score cs-strong">V: 4/5</span>
+        </div>
+        <div class="comp-body">The most visually ambitious competitor — strong typography, bold natural language querying claims. But ThoughtSpot prices at enterprise level and the demo-request gate prevents self-serve discovery. <strong>Best design in category, enterprise-only access.</strong></div>
+        <div class="comp-gap">Gap: Best design in category, enterprise-only access. NeuralDesk takes the visual language; opens the door.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">04 — Universal gaps · what no competitor does</div>
+    <h2 class="section-heading">What the category<br><em>leaves open.</em></h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Gap</th><th>What the category does</th><th>NeuralDesk opportunity</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Design quality at self-serve price</td><td>High design = enterprise-only. Self-serve tools look like MVPs.</td><td class="td-red">ThoughtSpot-level visual quality at a self-serve price point.</td></tr>
+        <tr><td>Outcome-led copy</td><td>Every competitor leads with features. None lead with the outcome the buyer actually wants.</td><td class="td-red">Lead with the outcome: "Your answer in 60 seconds."</td></tr>
+        <tr><td>Pricing transparency</td><td>Tableau, Power BI, ThoughtSpot all hide pricing behind a demo request or sales gate.</td><td class="td-red">Pricing visible on the homepage. No gate. No call.</td></tr>
+        <tr><td>Non-technical buyer confidence</td><td>All five competitors use data engineering terminology in their hero copy. The non-technical buyer feels excluded.</td><td class="td-red">"Ask a question. Get an answer. Share the chart." No jargon in the first viewport.</td></tr>
+        <tr><td>Speed-to-value demonstration</td><td>No competitor shows how quickly a new user can get from zero to insight.</td><td class="td-red">"From your spreadsheet to your first insight in under 60 seconds."</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">05 — Visual design trends · AI SaaS 2025–26</div>
+    <h2 class="section-heading">What the category<br><em>looks like.</em></h2>
+
+    <div class="trend-list">
+      <div class="trend-row">
+        <div class="trend-num"><span>T01</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Clean light mode as credibility signal in self-serve</div>
+          <div class="trend-desc">While enterprise tools (Linear, Vercel, ThoughtSpot) default to dark mode, the fastest-growing self-serve SaaS products — Notion, Airtable, Webflow, Loom — use clean white interfaces. Light mode communicates approachability and clarity. For a non-technical buyer, white reads as "I can use this" while dark reads as "this is for developers."</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T02</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Animated data visualisations as hero content</div>
+          <div class="trend-desc">Showing the product in motion — charts building, data flowing, dashboards populating — has replaced static screenshots in the highest-converting AI SaaS hero sections. The animation communicates speed and intelligence simultaneously. Static "product screenshot" heroes are now associated with legacy software.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T03</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Single bold accent colour on white — no gradient soup</div>
+          <div class="trend-desc">The most credible SaaS interfaces in 2025–26 have moved away from the purple-to-blue gradient on white that dominated the previous generation. One strong, deliberate accent colour — used sparingly on CTAs, data callouts, and key moments — reads as confident, designed, and trustworthy. Multiple competing accent colours read as unresolved.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T04</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Natural language UI demonstration at hero level</div>
+          <div class="trend-desc">Showing a prompt field with a natural language query — "What were my top-performing campaigns last quarter?" — has become the most effective conversion tool for AI analytics products. It makes the use case immediate and removes the abstraction of "AI analytics" into a specific, recognisable action any buyer can picture themselves performing.</div>
+        </div>
+        <span class="trend-badge badge-emerging">Emerging</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T05</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Logo-wall social proof above the fold</div>
+          <div class="trend-desc">Recognisable company logos in the first viewport — before any feature explanation — have overtaken testimonial quotes as the primary trust signal in B2B SaaS. The logic: if companies the buyer knows use this tool, the credibility question is answered before it is asked.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T06</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Pricing on the homepage as a trust signal</div>
+          <div class="trend-desc">Showing pricing on the homepage — clearly, with plan comparison — has become a primary trust signal in self-serve SaaS. It says: we have nothing to hide, we respect your time. The self-serve buyer will make this decision in one session or not at all — hiding the price costs conversions.</div>
+        </div>
+        <span class="trend-badge badge-emerging">Emerging</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T07</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Monospace typography as precision signal</div>
+          <div class="trend-desc">IBM Plex Mono and Space Mono used sparingly — for data labels, metric values, and eyebrow text — signal precision and technical credibility without making the product feel developer-only. Used at small sizes for labels only, it reads as craft detail rather than technical barrier.</div>
+        </div>
+        <span class="trend-badge badge-emerging">Emerging</span>
+      </div>
+      <div class="trend-row">
+        <div class="trend-num"><span>T08</span></div>
+        <div class="trend-content">
+          <div class="trend-title">Card-based UI previews with light shadow depth</div>
+          <div class="trend-desc">Floating UI cards — showing dashboard widgets, chart previews, or report thumbnails — with subtle shadows against white backgrounds have become the standard product preview in self-serve analytics tools. They communicate the product's output (insight) rather than its process (data pipeline), which is exactly right for a non-technical buyer.</div>
+        </div>
+        <span class="trend-badge badge-dominant">Dominant</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">06 — Design opportunity statement</div>
+    <h2 class="section-heading">The territory<br><em>NeuralDesk owns.</em></h2>
+
+    <p class="body-text">The AI analytics market is bifurcated: enterprise tools with high design credibility and no self-serve access; self-serve tools with low design credibility and full access. No product at this moment occupies the position of ThoughtSpot-quality design at Polymer's price point and friction level — on a clean, white, approachable interface that a marketing analyst trusts on first sight.</p>
+
+    <p class="body-text">The buyer NeuralDesk targets has been conditioned by Notion, Airtable, and Loom to expect software that is both beautiful and immediately usable. They will not accept a tool that looks like an MVP. And they will not wait three weeks for a sales cycle.</p>
+
+    <div class="opportunity">
+      <div class="opp-label">Design opportunity · NeuralDesk · 2026</div>
+      <div class="opp-text">Tableau has the trust. Looker Studio has the access. ThoughtSpot has the design. <em>NeuralDesk is the first to have all three</em> — at a price point the self-serve buyer can approve without a meeting, with an onboarding flow they can complete before their next standup.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 04 — INDUSTRY RESEARCH · NEURALDESK</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

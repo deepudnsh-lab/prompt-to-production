@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 10: Prompt Diary · Verdana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF7F2;--cream2:#F5F0E8;--stone:#D8D0C4;--stone2:#C8C0B4;
+  --sage:#5C7A5F;--sage-light:#8FAE92;--sage-tint:#EEF4EE;
+  --umber:#5C4E42;--umber-light:#8A7A6A;
+  --ink:#1A1612;--ink-mid:#2E2420;--ink-muted:#8A7A6A;--ink-faint:#C4B8A8;
+  --warm:#C4855A;--warm-tint:#FBF1EB;--warm-soft:#E8C4A8;
+  --white:#FFFFFF;--border:#E0D8CC;--rule:#EDE8E0;
+  --good-bg:#EEF4EE;--good-text:#2D5E30;
+  --warn-bg:#FDF6EE;--warn-text:#7A5020;
+  --fix-bg:#F5F0E8;--fix-text:#5C4E42;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{background:var(--cream);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(92,122,95,.07) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--sage);opacity:.8;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--sage);opacity:.6;}
+.cover-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:56px;line-height:.95;color:var(--ink);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--sage);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--border);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--sage);}
+.body-text{font-size:16px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:28px 0;}
+.stat-card{background:var(--cream);border:1px solid var(--border);padding:22px 18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sage);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:2.2rem;color:var(--sage);line-height:1;margin-bottom:5px;}
+.stat-label{font-size:11px;color:var(--ink-muted);line-height:1.4;}
+
+/* ── PROMPT ENTRIES ── */
+.prompt-entry{border:1px solid var(--border);overflow:hidden;margin-bottom:3px;}
+
+.pe-header{background:var(--ink);padding:14px 20px;display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:14px;position:relative;overflow:hidden;}
+.pe-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(92,122,95,.12),transparent);pointer-events:none;}
+.pe-num{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--sage-light);line-height:1;position:relative;z-index:1;}
+.pe-step{position:relative;z-index:1;}
+.pe-step-name{font-size:14px;font-weight:500;color:#fff;margin-bottom:2px;}
+.pe-step-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,.3);}
+.pe-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;position:relative;z-index:1;}
+.badge-worked{background:rgba(45,94,48,.3);color:#5DC889;border:1px solid rgba(45,94,48,.3);}
+.badge-iterated{background:rgba(92,122,95,.2);color:var(--sage-light);border:1px solid rgba(92,122,95,.3);}
+.badge-key{background:rgba(196,133,90,.15);color:var(--warm-soft);border:1px solid rgba(196,133,90,.2);}
+
+/* Prompt box */
+.prompt-box{background:rgba(26,22,18,.97);border-bottom:1px solid rgba(255,255,255,.06);padding:0;}
+.pb-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(143,174,146,.4);padding:12px 20px 8px;}
+.pb-text{font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.75;color:rgba(245,245,235,.82);padding:0 20px 16px;white-space:pre-wrap;word-break:break-word;}
+.pb-text em{font-style:normal;color:var(--sage-light);}
+
+/* Analysis */
+.pe-analysis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+.pa-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.pa-col:last-child{border-right:none;}
+.pa-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;border-radius:2px;display:inline-block;margin-bottom:8px;}
+.label-worked{background:var(--good-bg);color:var(--good-text);}
+.label-issue{background:var(--warn-bg);color:var(--warn-text);}
+.label-lesson{background:var(--fix-bg);color:var(--fix-text);}
+.pa-text{font-size:13px;color:var(--ink-mid);line-height:1.65;}
+.pa-text strong{color:var(--ink);font-weight:500;}
+
+/* ── KEY LESSON ── */
+.key-lesson{background:var(--ink);padding:36px 40px;margin-top:32px;position:relative;overflow:hidden;}
+.key-lesson::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);}
+.key-lesson::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(92,122,95,.06) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
+.kl-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(143,174,146,.45);margin-bottom:12px;position:relative;z-index:1;}
+.kl-text{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:22px;font-style:italic;color:#fff;line-height:1.45;position:relative;z-index:1;}
+.kl-text em{font-style:normal;color:var(--sage-light);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .pe-analysis{grid-template-columns:1fr;}
+  .pa-col{border-right:none;border-bottom:1px solid var(--rule);}
+  .pa-col:last-child{border-bottom:none;}
+  .pe-header{grid-template-columns:28px 1fr;}
+  .pe-badge{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Verdana · Brand 05 of 06</div>
+    <h1 class="cover-title">Prompt<br><em>Diary</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 10 — Prompt Diary</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Verdana</div></div>
+    <div class="meta-block"><div class="meta-label">Prompts documented</div><div class="meta-value">10 prompts · 6 steps</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- INTRO -->
+  <div class="section">
+    <div class="section-label">01 — What this document is</div>
+    <h2 class="section-heading">The actual prompts.<br><em>Verbatim.</em></h2>
+    <p class="body-text">This document records every significant prompt used to create Verdana — the exact words sent to Claude at each step, what the output was, what was wrong with it, and what the fix was. No editing after the fact. These are the actual instructions that produced the final output.</p>
+    <p class="body-text">Each entry shows: the prompt as written, what worked, what needed iteration, and the lesson that applies to future projects. The prompts are the decisions.</p>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Total prompts documented across all steps</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Prompts that worked first time without iteration</div></div>
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">Prompts that required at least one correction</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Key lessons extracted that apply to all 6 brands</div></div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- PROMPTS -->
+  <div class="section">
+    <div class="section-label">02 — The prompt diary · all ten entries</div>
+    <h2 class="section-heading">What I wrote.<br>What <em>happened.</em></h2>
+
+    <!-- PROMPT 01 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">01</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 04 — Industry Research</div>
+          <div class="pe-step-sub">Market sizing · competitor landscape · design trends</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">Brief locked. Building Step 4 now.
+
+Verdana — Brand 05 of 06
+- Market: US clean beauty · millennial/Gen Z · $80–$300
+- Direction: Warm & botanical · cream · sage · earthy · ingredient-forward
+- Buyer: Woman · 25–35 · aesthetic-led · texture and packaging first</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The three-line brief locked the market, direction, and buyer before the first document was built. Market data returned well-sourced — Grand View Research (Jan 2026), Mintel 2025, Euromonitor 2025. The competitor scoring table (Tatcha 19/25, Drunk Elephant 17/25, Augustinus Bader 16/25) arrived cleanly on the first pass. <strong>The design opportunity statement — "Tatcha has the ceremony. Drunk Elephant has the science. Augustinus Bader has the authority. Verdana has all three" — arrived verbatim in the first draft and was not changed.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing significant on the first pass. The only adjustment was a request to reconcile market segment figures — some cited 2024 base year data, others 2025. Correction applied: verify all stats use consistent base year and flag any variance. This is the same error that appeared in OrbitX Step 4 — base year consistency must be specified upfront.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">A three-line brief — market, direction, buyer — is the minimum viable brief for a research document. It constrains the output without over-specifying it. The design opportunity statement wrote itself once those three constraints were in place. Always lock these three before asking for research.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 02 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">02</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 05 — Customer Persona</div>
+          <div class="pe-step-sub">Sloane Mitchell · UX Designer · 29 · Brooklyn NY</div>
+        </div>
+        <span class="pe-badge badge-iterated">One iteration</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">lets use an american persona  Quick update to the persona — keeping everything else identical, just shifting Vikram to an American buyer with the right market context. Update persona name, location and currency references to American context</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The correction was quick and precise — name, location, and currency updated without losing any of the behaviour detail. Sloane Mitchell, 29, Brooklyn, $94K, $340/month skincare spend emerged as a credible and specific buyer. The six behaviours section arrived strongly on the first pass — especially B04 (photographs every product before using it) and B06 (treats skincare as an investment, not an indulgence). <strong>The buyer thesis — "Sloane does not choose between beautiful and effective. She requires both." — arrived in the first draft unchanged.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The first draft used an Indian buyer name (Vikram) which was inconsistent with the US clean beauty market brief. The correction — "lets use an american persona" — was the entire prompt. It was enough. The lesson: the persona document inherits the market constraint from Step 4. If Step 4 specifies US market, Step 5 should auto-apply US context. The fact that it did not is a reminder to always restate the market in the persona prompt explicitly.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Always restate the target market at the top of the persona prompt — do not assume it carries over from Step 4. "US market, American buyer" takes four words and prevents a nationality mismatch that requires a correction round. The same error appeared in the NeuralDesk persona (Vikram → Marcus Webb). This is a recurring pattern worth catching at the brief stage.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 03 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">03</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 06 — Competitor Visual Audit</div>
+          <div class="pe-step-sub">Tatcha · Drunk Elephant · Augustinus Bader</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">good, do the next step now</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The five-dimension scoring system (D · I · A · S · W) produced a genuinely useful comparison. <strong>The W (Warmth &amp; Botanicals) score was the revelation — all three competitors scored 1 or 2.</strong> This confirmed the audit finding from Step 4: the warmth gap is not theoretical, it is visually absent from every competitor homepage. The three annotation prompts were specific enough to produce annotated screenshots usable on the first generation. The universal gap table was the strongest output in the document.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The annotated screenshots came back with scores that differed from the initial estimates in the document. Tatcha's actual annotation scored W: 5/5 (not 2/5 as initially estimated) — the warm pastel palette reads as warm even if the brand origin is Japanese, not botanical. Scores were updated in the document to match exactly what the annotations showed. <strong>Always update the document scores to match the actual annotated output — not the pre-annotation estimate.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Pre-score estimates before annotation are useful for structuring the document, but they must be treated as provisional. The annotation is the truth — the document must be updated to match it. In Verdana's case, the W score discovery (Tatcha 5/5 warmth) actually sharpened the brief: Verdana needs warmth AND ingredient transparency, because Tatcha already has the warmth. The combination is what Verdana uniquely owns.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 04 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">04</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 07 — Moodboard · Direction selection</div>
+          <div class="pe-step-sub">Three directions · Direction C Still selected</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Direction lock prompt — verbatim</div>
+        <div class="pb-text">Q: Which direction are you locking for Verdana?
+A: Direction C — Pared-back / Still · cream · stone · ultra-minimal · formula-first</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">All three Midjourney moodboards were usable on the first generation. The bento-box grid instruction ("9 panels at 16:9 landscape ratio, like a real designer's client presentation") produced structured, professional outputs across all three directions. Direction C (Still) — the single frosted glass jar on marble, "THE FORMULA. NOTHING ELSE." in wide-tracked caps, the ingredient label close-up "5% Bakuchiol · 2% Squalane" — was immediately the most distinctive against the competitor set. <strong>Direction C was the most counterintuitive choice given that warmth was Verdana's stated differentiator — and it was the right one.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Direction A (Verdure) and Direction B (Ritual) both read as category-expected for premium clean beauty. Beautiful executions, but not differentiated from Youth to the People or Tatcha at a visual level. The choice of Direction C was the correction — moving to ultra-minimal when the audit showed that warmth was already crowded territory. The moodboard exercise revealed that the least obvious direction was the most distinctive one.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When all three moodboard directions are strong, choose the one that is most unexpected given the category. Direction A (botanical warmth) was what every brief for a clean beauty brand would produce. Direction C (pared-back minimal) was what none of them had. <strong>The audit gap is not always the most visible gap — it is sometimes the gap left by every competitor's assumption about what the category must look like.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 05 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">05</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 07 — Midjourney Prompts</div>
+          <div class="pe-step-sub">Direction C · Still · as used verbatim</div>
+        </div>
+        <span class="pe-badge badge-worked">Worked first time</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Midjourney prompt · Direction C (Still) — as used</div>
+        <div class="pb-text">Create a professional brand moodboard for a premium US clean beauty skincare brand called Verdana with an ultra-minimal, ingredient-first aesthetic, targeting design-literate millennial women aged 25–35. Layout: bento-box grid collage of 9 panels at 16:9 landscape ratio, like a real designer's client presentation. Include: a single frosted glass skincare jar on a marble surface — nothing else in the frame, maximum white space, soft morning light, close-up of a cream ingredient list printed in DM Mono typeface on warm cream paper — "5% Bakuchiol · 2% Squalane · 0.5% Phytol" — clean, nothing decorative, an abstract photograph of still water on a stone surface — cool sage green tones, extreme calm, a product flatlay — one jar, one dropper, linen cloth, one sprig of sage — nothing extra, a colour palette strip showing Warm White <em>#FAF7F2</em> · Off-White <em>#F5F0E8</em> · Stone <em>#D8D0C4</em> · Forest Sage <em>#5C7A5F</em> · Muted Umber <em>#8A7A6A</em> · Deep Ink <em>#1A1612</em>, typography specimen "The formula. Nothing else." in ultra-light wide-tracked sans-serif on warm cream, a macro photograph of a single drop of serum on a stone surface catching morning light — no other elements, a close-up of the product label — just the brand name and ingredient percentages, clean sage type on cream, and the word <em>"Still"</em> large in ultra-light wide-tracked uppercase in forest sage on warm cream. --ar 16:9 --style raw --v 6</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The moodboard generated correctly on the first attempt. Naming the hex codes in the prompt caused Midjourney to include a colour palette strip — the single most professional detail in the output. "Like a real designer's client presentation" set the quality register accurately. <strong>The ingredient label panel ("5% Bakuchiol · 2% Squalane · 0.5% Phytol" in DM Mono on cream) was the most distinctive panel — it made the moodboard feel like an actual Verdana design artefact, not just mood reference imagery.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Direction B (Ritual) came back slightly too dark — the apothecary workspace felt more gothic than premium. The fix: "luxury design agency presentation" added to the prompt. Direction A (Verdure) was clean on the first generation. Direction C (Still) required no regeneration — the extreme minimal brief ("nothing else in the frame," "maximum white space") translated directly into the correct visual register.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">For ultra-minimal directions, exclusions in the Midjourney prompt are as important as inclusions. "Nothing else in the frame," "no other elements," "nothing extra" — these negative instructions are what produces the stillness. Without them, the model adds context objects to fill space. The minimal aesthetic requires explicit instruction to remain minimal. Hex codes in the palette strip instruction make the output immediately usable as a design artefact.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 06 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">06</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Step 08 — Copywriting · IA decision</div>
+          <div class="pe-step-sub">Seven sections · formula-first structure</div>
+        </div>
+        <span class="pe-badge badge-iterated">One iteration</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">lets do the next step now</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The seven-section IA was correct on the first pass — each section mapped exactly to a question from Sloane's purchase journey documented in Step 5. The hero headline "The formula. Nothing else." arrived in the first draft and was not changed. The ingredient statement as the second section (not the fifth) was the most important structural decision — placing it where Sloane goes immediately after the hero. <strong>Elena's testimonial ("I read the INCI before I ordered. I checked the bakuchiol percentage on CosDNA.") was the strongest single piece of copy in the document.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">The six voice rules section in the first draft included a rule that referenced how Verdana differs from "conventional skincare brands." Required correction: remove comparative framing. A brand's copy document should define itself on its own terms — not by contrast to a generic category. This is the same error that appeared across OrbitX and NeuralDesk Step 8 documents. The pattern is consistent: Claude defaults to contrast framing; it must be caught and removed every time.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">Add "no comparative framing — define on own terms only" to every Step 8 prompt as a standard closing instruction. This prevents the recurring error of Claude contextualising a brand by what it is not rather than what it is. The voice rule about not apologising for price — "state the price, move on" — is the most important single rule for a premium brand. It should be rule 01, not rule 03.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 07 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">07</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — Image strategy</div>
+          <div class="pe-step-sub">11 images · single master prompt · zip delivery</div>
+        </div>
+        <span class="pe-badge badge-key">Key decision</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude — the correction that changed the image workflow</div>
+        <div class="pb-text">No. I don't want to add these prompts individually. I want one single prompt that I can copy paste in any of these image creating AI tools. And this one single prompt should be able to all the images that you need and zip them and give me a downloadable zip folder. Rewrite the prompt. And share it with me.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What this fixed</span>
+          <div class="pa-text">The original approach produced 11 individual prompts — one per image — which required 11 separate copy-paste operations. The correction produced a single master prompt that instructs the AI tool to generate all 11 images, name them correctly, and package them as a downloadable zip. <strong>This is the correct workflow for any brand that requires multiple images — one master prompt, one generation session, one download.</strong> ChatGPT (GPT-4o with image generation) handles this end-to-end including the zip creation.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What the original approach missed</span>
+          <div class="pa-text">The first version of the image brief had individual prompts with individual filenames — useful as documentation but impractical as a workflow tool. A designer working across 6 brands cannot spend 45 minutes copy-pasting 11 prompts per brand. The master prompt approach reduces the image generation workflow to: copy once, paste once, download once. The brief becomes a tool, not a reference document.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>Every image brief for future brands should be a single master prompt, not a collection of individual prompts.</strong> The master prompt includes: global style rules once at the top, then all image descriptions with filenames, then one closing instruction to package as a zip. This is the standard workflow for Steps 4–14 brands 06 onward. The designer's time is the constraint — the prompt structure should minimise the number of manual actions required.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 08 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">08</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — Visual direction</div>
+          <div class="pe-step-sub">Body text · contrast · border radius · glassmorphism</div>
+        </div>
+        <span class="pe-badge badge-iterated">One iteration</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">the body font is too small to read and lacks contrast, i also think we should have a corner radius of 20 for all images. also use glass morphism where ever you can, i would like to see it especially on the navbar, instead of a full width nav bar lets create smaller floating navbar in glass effect</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The floating pill navbar — `position:fixed; top:20px; left:50%; transform:translateX(-50%); border-radius:100px; backdrop-filter:blur(32px)` — immediately separated Verdana from a standard full-width nav. Glass effects applied to: hero eyebrow pill, face cell overlays (frosted glass card replacing the dark gradient), proof metric cards, ingredient note pill, sourcing detail pill, and final CTA badges. <strong>The 20px border radius on all images softened the ultra-minimal aesthetic — making the product shots feel tactile rather than sterile.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Body text was 14px with umber `#8A7A6A` — readable on white but too light for a brand whose copy carries significant weight. Corrected to 16px and umber darkened to `#5C4E42`. The ingredient source notes at 11.5px were also too small — corrected to 14px. The contrast gap was most visible on the ritual steps section where the 13px step text at `#4A4038` was difficult to read on the cream2 background.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">For a brand where copy is a primary design element — where ingredient percentages and sourcing specifics must be read, not just seen — type size and contrast are not finishing details, they are functional requirements. <strong>16px minimum for all body text. Contrast ratio of at least 4.5:1 for any text on cream backgrounds.</strong> Check both on the actual background colour — umber that reads well on white can fail on cream. The glassmorphism floating navbar is now standard for Verdana and Brand 06.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 09 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">09</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — Continuing build</div>
+          <div class="pe-step-sub">Reconnecting after a session break</div>
+        </div>
+        <span class="pe-badge badge-iterated">Session continuation</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">Prompt sent to Claude</div>
+        <div class="pb-text">lets continue from where we left off</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What worked</span>
+          <div class="pa-text">The memory system and project context allowed seamless continuation — the landing page state, all 11 embedded images, and all visual updates from the previous session were preserved. The file was located, verified (11 images, all 9 sections present), and shared without any re-briefing required. <strong>The project memory across sessions means Verdana's design decisions compound — each session builds on the last without re-explaining context.</strong></div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed fixing</span>
+          <div class="pa-text">Nothing needed fixing in the session continuation itself. The pattern to note: "lets continue from where we left off" is a valid prompt but requires the AI to reconstruct state from memory and file checks. The more reliable approach is to specify which step is next: "lets do step 10 — prompt diary." This removes ambiguity and produces a faster, more focused response.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text">When resuming a long project across sessions, specify the next step explicitly rather than asking the AI to determine where you left off. "Continue from where we left off" works when the project state is clear; "Let's do Step 10 — Prompt Diary" works every time. <strong>The step number is the fastest possible context signal — it maps directly to the 14-step process and leaves no ambiguity about what comes next.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT 10 -->
+    <div class="prompt-entry">
+      <div class="pe-header">
+        <div class="pe-num">10</div>
+        <div class="pe-step">
+          <div class="pe-step-name">Landing Page — The one-line direction</div>
+          <div class="pe-step-sub">The single instruction that built the page</div>
+        </div>
+        <span class="pe-badge badge-key">The briefest prompt</span>
+      </div>
+      <div class="prompt-box">
+        <div class="pb-label">The prompt — 8 words that built the landing page</div>
+        <div class="pb-text">lets build the landing page, also please remember that since this is a skin care brand we we will have to add really detailed mock up of the products and also really good images of beautiful faces, so for all the images that we will be using in this landing page i want you to give me a single prompt that can create all these images and add them in a zip file for me to easily download(you should also be able to read this zip file) I will use this prompt on any other image creating AI tool like Gemini or Chat gpt.</div>
+      </div>
+      <div class="pe-analysis">
+        <div class="pa-col">
+          <span class="pa-label label-worked">What this produced</span>
+          <div class="pa-text">A single prompt built the complete landing page structure (9 sections, all copy from Step 8, all placeholder zones for 11 images), generated the image manifest as a downloadable zip, and established the master image prompt workflow. <strong>The instruction to include "detailed mockups of products and really good images of beautiful faces" was the key creative direction</strong> — it elevated the brief from "build a landing page" to "build a luxury skincare landing page that looks like a magazine editorial."</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-issue">What needed clarifying</span>
+          <div class="pa-text">The original image brief produced 11 individual prompts. The correction — "I want one single prompt that I can copy paste in any of these image creating AI tools" — was the key iteration. The master prompt approach is significantly more efficient: one copy operation versus eleven. The zip file delivery adds another layer of efficiency — images arrive pre-named and ready to embed. This workflow is now standard for Brand 06.</div>
+        </div>
+        <div class="pa-col">
+          <span class="pa-label label-lesson">Lesson</span>
+          <div class="pa-text"><strong>For a skincare brand (or any brand where photography is the primary design element), the image brief is as important as the copy brief.</strong> "Really detailed mockups" and "really good images of beautiful faces" — two phrases — set the quality register for the entire landing page. Without this specificity, the image brief produces generic stock-photo-level outputs. With it, the outputs are editorial-quality and brand-specific. Specificity of expectation produces specificity of result.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end prompts -->
+
+  <div class="page-rule"></div>
+
+  <!-- KEY LESSONS -->
+  <div class="section">
+    <div class="section-label">03 — Three key lessons · apply to all six brands</div>
+    <h2 class="section-heading">What Verdana<br><em>taught the series.</em></h2>
+
+    <div class="key-lesson">
+      <div class="kl-label">Lesson 01 — On direction selection</div>
+      <div class="kl-text">When all three moodboard directions are strong, choose the most unexpected one. <em>The audit gap is not always the most visible gap</em> — it is sometimes the gap left by every competitor's assumption about what the category must look like. Direction C (ultra-minimal) was counterintuitive for a warmth-differentiator brand. It was the right choice precisely because it was counterintuitive.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 02 — On image workflow</div>
+      <div class="kl-text">Every image brief should be a single master prompt. Not a collection of individual prompts. <em>One copy, one paste, one download.</em> The master prompt includes global style rules once, all image descriptions with filenames, and one closing instruction to package as a zip. This is the standard workflow for Brand 06 onward.</div>
+    </div>
+
+    <div class="key-lesson" style="margin-top:3px;">
+      <div class="kl-label">Lesson 03 — On copy as a design element</div>
+      <div class="kl-text">For a brand where copy carries the primary design weight — where ingredient percentages must be read, not just seen — type size and contrast are functional requirements, not finishing details. <em>16px minimum. 4.5:1 contrast ratio minimum.</em> Check both on the actual background colour. The glassmorphism floating navbar and 20px image radius are now standard for the remaining brand in this series.</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 10 — PROMPT DIARY · VERDANA</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

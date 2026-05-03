@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 8: Copywriting · Verdana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FAF7F2;--cream-mid:#F5F0E8;--stone:#D8D0C4;--stone-mid:#C8C0B4;
+  --sage:#5C7A5F;--sage-light:#8FAE92;--sage-tint:#EEF4EE;
+  --umber:#8A7A6A;--ink:#1A1612;--ink-mid:#4A4038;--ink-muted:#8A7A6A;--ink-faint:#C4B8A8;
+  --warm:#C4855A;--warm-tint:#FBF1EB;--warm-soft:#E8C4A8;
+  --white:#FFFFFF;--border:#E0D8CC;--rule:#EDE8E0;
+  --good-bg:#EEF4EE;--good-text:#2D5E30;
+  --warn-bg:#FDF6EE;--warn-text:#7A5020;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);line-height:1.7;}
+.document{max-width:960px;margin:0 auto;padding:80px;background:var(--white);}
+
+/* ── COVER ── */
+.cover-band{background:var(--cream);margin:-80px -80px 0;padding:56px 80px 48px;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.cover-band::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);}
+.cover-band::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(92,122,95,.07) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;}
+.project-series{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--sage);opacity:.8;margin-bottom:16px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.project-series::before{content:'';display:inline-block;width:28px;height:1px;background:var(--sage);opacity:.6;}
+.cover-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:56px;line-height:.95;color:var(--ink);letter-spacing:-.02em;position:relative;z-index:1;}
+.cover-title em{font-style:italic;color:var(--sage);}
+.cover-meta{text-align:right;position:relative;z-index:1;}
+.meta-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;}
+.meta-value{font-size:13px;color:var(--ink);font-weight:500;}
+.meta-block{margin-bottom:20px;}
+.meta-block:last-child{margin-bottom:0;}
+.accent-rule{height:1px;background:var(--border);margin:0 -80px;}
+
+/* ── BODY ── */
+.doc-body{padding-top:64px;}
+.section{margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--sage);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule);}
+.section-heading{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:34px;line-height:1.1;letter-spacing:-.01em;color:var(--ink);margin-bottom:20px;}
+.section-heading em{font-style:italic;color:var(--sage);}
+.body-text{font-size:15px;line-height:1.85;color:var(--ink-mid);margin-bottom:16px;}
+.page-rule{height:1px;background:var(--rule);margin:56px -80px;}
+.note-box{background:var(--sage-tint);border-left:3px solid var(--sage);padding:18px 22px;margin:24px 0;}
+.note-box p{font-size:13px;color:var(--ink-mid);line-height:1.7;}
+.note-box strong{color:var(--ink);}
+
+/* ── DIRECTION LOCK ── */
+.dir-lock{background:var(--ink);padding:20px 28px;margin-bottom:32px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;flex-wrap:wrap;}
+.dir-lock::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--sage),var(--sage-light),transparent);}
+.dl-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px;}
+.dl-value{font-family:'DM Sans',sans-serif;font-weight:500;font-size:.95rem;color:var(--white);}
+.dl-div{width:1px;height:40px;background:rgba(255,255,255,.1);}
+
+/* ── VOICE RULES ── */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:20px 0;}
+.vc{background:var(--cream);border:1px solid var(--border);padding:18px 20px;}
+.vc-rule{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--sage);margin-bottom:6px;}
+.vc-do{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:4px;}
+.vc-dont{font-size:12px;color:var(--ink-faint);text-decoration:line-through;}
+.vc-note{font-size:11.5px;color:var(--ink-muted);margin-top:6px;line-height:1.55;}
+
+/* ── IA TABLE ── */
+.ia-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.ia-table th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--ink);color:var(--white);padding:11px 14px;text-align:left;}
+.ia-table td{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink-mid);line-height:1.55;vertical-align:top;}
+.ia-table tr:hover td{background:var(--cream);}
+.ia-table td:first-child{font-family:'DM Mono',monospace;font-size:11px;color:var(--sage);font-weight:500;white-space:nowrap;}
+.ia-table td:nth-child(2){color:var(--ink);font-weight:500;}
+
+/* ── COPY BLOCKS ── */
+.copy-block{border:1px solid var(--border);overflow:hidden;margin-bottom:3px;}
+.cb-header{background:var(--ink);padding:12px 20px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;}
+.cb-num{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:18px;color:var(--sage-light);line-height:1;}
+.cb-title{font-size:13px;font-weight:500;color:var(--white);}
+.cb-tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;}
+.tag-hero{background:rgba(92,122,95,.2);color:var(--sage-light);border:1px solid rgba(92,122,95,.2);}
+.tag-trust{background:rgba(138,122,106,.2);color:#C4B8A8;border:1px solid rgba(138,122,106,.2);}
+.tag-ingred{background:rgba(92,122,95,.15);color:var(--sage-light);border:1px solid rgba(92,122,95,.15);}
+.tag-ritual{background:rgba(196,133,90,.15);color:var(--warm-soft);border:1px solid rgba(196,133,90,.15);}
+.tag-proof{background:rgba(212,168,83,.15);color:#D4A853;border:1px solid rgba(212,168,83,.12);}
+.tag-price{background:rgba(138,122,106,.15);color:#C4B8A8;border:1px solid rgba(138,122,106,.15);}
+.tag-cta{background:rgba(92,122,95,.2);color:var(--sage-light);border:1px solid rgba(92,122,95,.2);}
+
+/* Copy preview — Direction C Still aesthetic */
+.copy-preview{background:var(--cream-mid);padding:28px 32px;border-bottom:1px solid var(--border);}
+.cp-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--sage);margin-bottom:14px;opacity:.7;}
+.cp-headline{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:2rem;font-style:italic;color:var(--ink);letter-spacing:.01em;line-height:1.15;margin-bottom:12px;}
+.cp-headline em{font-style:normal;color:var(--sage);font-weight:500;}
+.cp-rule{width:32px;height:1px;background:var(--sage);margin:14px 0;opacity:.5;}
+.cp-sub{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--umber);line-height:1.75;max-width:480px;margin-bottom:16px;}
+.cp-ingred{font-family:'DM Mono',monospace;font-size:11px;color:var(--sage);line-height:2;letter-spacing:.06em;margin-bottom:16px;}
+.cp-ingred span{color:var(--ink-faint);font-size:9px;letter-spacing:.04em;}
+.cp-cta-row{display:flex;gap:16px;align-items:center;margin-top:14px;}
+.cp-cta-primary{background:var(--sage);color:var(--white);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:11px 24px;}
+.cp-cta-ghost{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--umber);}
+.cp-logos{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+.cp-logo-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);}
+.cp-logo-pill{background:var(--stone);padding:3px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--umber);}
+.cp-step-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-top:4px;}
+.cp-step{background:var(--white);border:1px solid var(--border);padding:14px 16px;}
+.cp-step-num{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:6px;}
+.cp-step-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.cp-step-text{font-size:11px;color:var(--umber);line-height:1.55;}
+.cp-testi{background:var(--white);border:1px solid var(--border);padding:18px 20px;}
+.cp-quote{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--ink-mid);line-height:1.75;margin-bottom:10px;}
+.cp-attr{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);}
+.cp-pricing-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;}
+.cp-plan{background:var(--white);border:1px solid var(--border);padding:16px;}
+.cp-plan.feat{border-color:var(--sage);}
+.cp-plan.feat::before{content:'';display:block;height:2px;background:var(--sage);margin:-16px -16px 12px;}
+.cp-plan-name{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--umber);margin-bottom:8px;}
+.cp-plan-price{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.8rem;color:var(--ink);line-height:1;margin-bottom:3px;}
+.cp-plan-price.sage{color:var(--sage);}
+.cp-plan-per{font-family:'DM Mono',monospace;font-size:9px;color:var(--ink-faint);}
+
+/* Annotation cols */
+.cb-cols{display:grid;grid-template-columns:1fr 1fr;}
+.cb-col{padding:16px 18px;border-right:1px solid var(--rule);}
+.cb-col:last-child{border-right:none;}
+.cb-col-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:3px 8px;display:inline-block;margin-bottom:8px;border-radius:2px;}
+.l-decision{background:var(--good-bg);color:var(--good-text);}
+.l-rationale{background:var(--cream);color:var(--ink-muted);}
+.cb-col-text{font-size:12px;color:var(--ink-mid);line-height:1.65;}
+.cb-col-text strong{color:var(--ink);}
+
+/* ── FOOTER ── */
+.doc-footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;}
+.footer-right{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-align:right;}
+
+@media(max-width:640px){
+  .document{padding:24px 20px;}
+  .cover-band{margin:-24px -20px 0;padding:40px 24px 32px;grid-template-columns:1fr;}
+  .cover-title{font-size:36px;}
+  .accent-rule,.page-rule{margin:0 -20px;}
+  .voice-grid,.cb-cols,.cp-step-row,.cp-pricing-row{grid-template-columns:1fr;}
+  .cb-header{grid-template-columns:auto 1fr;}
+  .cb-tag{display:none;}
+  .dl-div{display:none;}
+  .doc-footer{flex-direction:column;gap:8px;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="document">
+
+<div class="cover-band">
+  <div>
+    <div class="project-series">From Prompt to Production · Verdana · Brand 05 of 06</div>
+    <h1 class="cover-title">Content &amp;<br><em>Copywriting</em></h1>
+  </div>
+  <div class="cover-meta">
+    <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+    <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 08 — Copywriting</div></div>
+    <div class="meta-block"><div class="meta-label">Brand</div><div class="meta-value">Verdana</div></div>
+    <div class="meta-block"><div class="meta-label">Direction locked</div><div class="meta-value">C — Pared-back / Still</div></div>
+  </div>
+</div>
+
+<div class="accent-rule"></div>
+
+<div class="doc-body">
+
+  <!-- DIRECTION LOCK -->
+  <div class="dir-lock">
+    <div><div class="dl-label">Direction locked</div><div class="dl-value">C — Pared-back / Still</div></div>
+    <div class="dl-div"></div>
+    <div><div class="dl-label">Palette</div><div class="dl-value">Warm White · Stone · Forest Sage #5C7A5F · Muted Umber · Deep Ink</div></div>
+    <div class="dl-div"></div>
+    <div><div class="dl-label">Typography</div><div class="dl-value">Cormorant Garamond 300 italic display · DM Mono ingredient labels · DM Sans 300 body</div></div>
+    <div class="dl-div"></div>
+    <div><div class="dl-label">Register</div><div class="dl-value">Ultra-minimal · formula-first · nothing apologised for</div></div>
+  </div>
+
+  <!-- 01 VOICE RULES -->
+  <div class="section">
+    <div class="section-label">01 — Voice rules</div>
+    <h2 class="section-heading">How Verdana<br><em>speaks.</em></h2>
+    <p class="body-text">All copy is written before any layout decision. Direction C's Still register demands copy that matches the visual restraint — specific, quiet, and completely uninterested in persuading anyone who has not already arrived. Six rules govern every word.</p>
+
+    <div class="voice-grid">
+      <div class="vc">
+        <div class="vc-rule">Rule 01 · Formula before feeling</div>
+        <div class="vc-do">Lead with what is in the jar. Name it. Percentage it. Source it.</div>
+        <div class="vc-dont">Experience the transformative power of nature's finest botanicals.</div>
+        <div class="vc-note">Sloane reads the INCI list. She will know if the copy and the formula disagree. Lead with the truth.</div>
+      </div>
+      <div class="vc">
+        <div class="vc-rule">Rule 02 · Specific over evocative</div>
+        <div class="vc-do">5% bakuchiol. Cold-pressed. Psoralea corylifolia. Nothing added.</div>
+        <div class="vc-dont">Nature's answer to retinol. Gentle yet powerful. Deeply transformative.</div>
+        <div class="vc-note">Every claim must be verifiable. "Deeply transformative" cannot be tested. "5% bakuchiol" can.</div>
+      </div>
+      <div class="vc">
+        <div class="vc-rule">Rule 03 · No price apology</div>
+        <div class="vc-do">$128. The Botanical Cream.</div>
+        <div class="vc-dont">Accessible luxury. Without the markup. Worth every penny.</div>
+        <div class="vc-note">Sloane interprets price justification as insecurity. State the price. Move on. The formula justifies itself.</div>
+      </div>
+      <div class="vc">
+        <div class="vc-rule">Rule 04 · Short sentences. No trails.</div>
+        <div class="vc-do">The formula. Nothing else.</div>
+        <div class="vc-dont">A carefully crafted formula that works in harmony with your skin's natural renewal cycle to gently...</div>
+        <div class="vc-note">Direction C's wide-tracked Cormorant italic reads best in declarative fragments. Long sentences fight the aesthetic.</div>
+      </div>
+      <div class="vc">
+        <div class="vc-rule">Rule 05 · Never claim "natural"</div>
+        <div class="vc-do">"Bakuchiol from Psoralea corylifolia, cold-pressed within 48 hours of harvest."</div>
+        <div class="vc-dont">100% natural. Made with nature's ingredients. Clean and green.</div>
+        <div class="vc-note">"Natural" is the most distrusted word in clean beauty. Name the ingredient, name the source, name the process. That is the proof.</div>
+      </div>
+      <div class="vc">
+        <div class="vc-rule">Rule 06 · Standalone document</div>
+        <div class="vc-do">This document is complete and self-contained.</div>
+        <div class="vc-dont">Unlike conventional skincare brands, Verdana…</div>
+        <div class="vc-note">No comparative framing in brand copy. Verdana defines itself on its own terms. The formula speaks for itself.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 02 IA -->
+  <div class="section">
+    <div class="section-label">02 — Information architecture</div>
+    <h2 class="section-heading">Seven sections.<br><em>Seven things Sloane needs to see.</em></h2>
+
+    <p class="body-text">The landing page is structured as Sloane's purchase evaluation — from the moment the packaging stops her scroll to the moment she adds to cart. Each section answers the specific question she has at that point in the journey documented in Step 5.</p>
+
+    <table class="ia-table">
+      <thead>
+        <tr><th>Section</th><th>Name</th><th>Sloane's question</th><th>Copy objective</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td>Hero</td><td>Is this the brand that understands what I want?</td><td>The formula. The vibe. Nothing else. Win in 5 seconds.</td></tr>
+        <tr><td>02</td><td>Ingredient statement</td><td>What is actually in it? At what percentage?</td><td>Named ingredients, named percentages, named sources. Above the fold.</td></tr>
+        <tr><td>03</td><td>The ritual</td><td>What does using this feel like? Will it fit my morning?</td><td>Two sentences. Texture. Time. That is all.</td></tr>
+        <tr><td>04</td><td>The products</td><td>What do you make? Is there a full routine?</td><td>Three products. One line each. Nothing oversold.</td></tr>
+        <tr><td>05</td><td>Social proof</td><td>Has someone exactly like me used this?</td><td>One testimonial from an ingredient-literate buyer. Specific outcome. Named person.</td></tr>
+        <tr><td>06</td><td>The sourcing</td><td>Where do the botanicals come from? Can I trust that?</td><td>Named farm. Named harvest window. Named process. One paragraph.</td></tr>
+        <tr><td>07</td><td>Start the ritual</td><td>How do I begin?</td><td>One CTA. No credit card mention. No discount. Just: start.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-rule"></div>
+
+  <!-- 03 ALL COPY -->
+  <div class="section">
+    <div class="section-label">03 — Complete copy · all seven sections</div>
+    <h2 class="section-heading">Every word.<br><em>Before any layout.</em></h2>
+
+    <!-- SECTION 01 — HERO -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">01</div>
+        <div class="cb-title">Hero — the first thing Sloane sees</div>
+        <span class="cb-tag tag-hero">Hero</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">Botanical skincare · ingredient-first · $80–$180</div>
+        <div class="cp-headline">The formula.<br><em>Nothing else.</em></div>
+        <div class="cp-rule"></div>
+        <div class="cp-sub">Three botanicals. Named percentages. Cold-pressed within 48 hours of harvest. No fragrance. No fillers. Nothing you did not ask for.</div>
+        <div class="cp-cta-row">
+          <div class="cp-cta-primary">Begin the ritual</div>
+          <div class="cp-cta-ghost">→ Read the formula</div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"The formula. Nothing else."</strong> — four words, a full stop, and a line break. Direction C's Cormorant Garamond 300 italic at 4rem requires copy this spare. The period after "formula" is not a stylistic choice — it is a statement of completeness. The "nothing else" answers Sloane's first suspicion: what are you hiding? Nothing. The sub-copy uses exclusions as much as claims — "No fragrance. No fillers. Nothing you did not ask for." This is the voice pattern that earns Sloane's trust fastest.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why this structure</span>
+          <div class="cb-col-text">Two CTAs — <strong>"Begin the ritual"</strong> for the buyer who is ready, <strong>"Read the formula"</strong> for the buyer who needs one more piece of evidence. "Begin the ritual" is not "Shop now" or "Add to cart" — it frames the purchase as the start of something, not the completion of a transaction. This is the language Sloane uses about her own routine ("I do my ritual every morning") and it signals that Verdana understands her relationship with skincare.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 02 — INGREDIENT STATEMENT -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">02</div>
+        <div class="cb-title">Ingredient statement — the most important section on the page</div>
+        <span class="cb-tag tag-ingred">Ingredients</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">What is in the Botanical Cream</div>
+        <div class="cp-ingred">
+          5% Bakuchiol <span>Psoralea corylifolia · cold-pressed · Bihar, India</span><br>
+          2% Squalane <span>Sugarcane-derived · not shark liver · COSMOS certified</span><br>
+          0.5% Phytol <span>Chlorophyll-derived · stimulates collagen synthesis</span><br>
+          93.5% Base <span>Aloe vera, shea butter, jojoba — no fragrance, no silicones, no parabens</span>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-top:10px;">Full INCI list available on every product page. No exceptions.</div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>The ingredient statement is a structural element of the homepage — not a footnote buried on a product page.</strong> Every ingredient is named, percentaged, and sourced. The sourcing detail ("Bihar, India · cold-pressed") is the evidence that Verdana knows its supply chain. The squalane source note ("not shark liver") answers a specific concern Sloane has researched — it proves the brand reads the same communities she does. "Full INCI list available on every product page. No exceptions." is the transparency commitment stated plainly.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why this placement</span>
+          <div class="cb-col-text">Sloane's purchase journey (Step 5, Stage 02) goes directly to ingredient investigation after the hero. <strong>By placing the ingredient statement as the second section, Verdana removes the friction of that journey.</strong> She does not need to open INCIDecoder. She does not need to hunt for the product page. The formula is the second thing she sees — because it is the second thing she wants to know. This is the most direct possible response to the audit finding that ingredient transparency is the universal gap across all three competitors.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 03 — THE RITUAL -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">03</div>
+        <div class="cb-title">The ritual — texture and time</div>
+        <span class="cb-tag tag-ritual">Ritual</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">The ritual</div>
+        <div class="cp-headline" style="font-size:1.5rem;margin-bottom:10px;"><em>Two minutes. Every morning.</em></div>
+        <div class="cp-sub" style="margin-bottom:0;">Press three drops into clean skin. The texture absorbs completely — no residue, no shine. You will not notice it is there. Your skin will.</div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"Two minutes. Every morning."</strong> — the ritual section answers the texture question and the time question simultaneously, in the first line. Sloane buys on texture (Step 5, B02) — "The texture absorbs completely — no residue, no shine" is a specific sensory claim she can verify on first use. The final line ("You will not notice it is there. Your skin will.") is the only moment of emotional register in the section — earned by everything specific that preceded it.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why only two sentences of description</span>
+          <div class="cb-col-text">Direction C's pared-back register means the ritual section earns its restraint. <strong>A 200-word description of "how to apply" is a wellness brand move, not a premium brand move.</strong> Premium brands trust their buyer to know how to use a serum. What Sloane needs from this section is confirmation that the texture will work for her routine ("no residue, no shine") and permission to trust the product without being guided through it like a tutorial.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 04 — PRODUCTS -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">04</div>
+        <div class="cb-title">The products — three formulas, one line each</div>
+        <span class="cb-tag tag-ingred">Products</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">The collection</div>
+        <div class="cp-step-row">
+          <div class="cp-step">
+            <div class="cp-step-num">$128</div>
+            <div class="cp-step-title">Botanical Cream</div>
+            <div class="cp-step-text">5% bakuchiol · 2% squalane · 0.5% phytol. The complete formula.</div>
+          </div>
+          <div class="cp-step">
+            <div class="cp-step-num">$96</div>
+            <div class="cp-step-title">Radiance Serum</div>
+            <div class="cp-step-text">7% vitamin C (L-ascorbic) · 3% niacinamide · 1% alpha arbutin. For visible tone.</div>
+          </div>
+          <div class="cp-step">
+            <div class="cp-step-num">$84</div>
+            <div class="cp-step-title">Barrier Balm</div>
+            <div class="cp-step-text">12% ceramide complex · 4% beta-glucan · 2% cholesterol. To close the routine.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>Each product is described in one line — the key percentages, nothing else.</strong> The product name and the price appear before the description. Price before description signals confidence — Verdana does not bury the number to avoid the conversation. Each product description follows the same format: percentages, then one outcome phrase. "For visible tone." "To close the routine." These are functional, not aspirational — they tell Sloane what the product does in the routine, not how it will make her feel.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why three products only</span>
+          <div class="cb-col-text">The Step 4 trend analysis identified "slow beauty — fewer products, deeper rituals" as an emerging dominant trend in the $80–$300 tier. <strong>Three products signals curation, not limitation.</strong> Sloane is not looking for 40 SKUs — she wants a complete routine she can trust and repeat. Three products maps exactly to her behaviour (Step 5): she has six products from four brands, suggesting she needs two products per brand to feel the brand is complete. Three gives her one extra product of trust.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 05 — SOCIAL PROOF -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">05</div>
+        <div class="cb-title">Social proof — one testimonial, ingredient-literate</div>
+        <span class="cb-tag tag-proof">Social proof</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-testi">
+          <div class="cp-quote">"I read the INCI before I ordered. I checked the bakuchiol percentage on CosDNA. I verified the squalane source. Then I bought it. Six weeks in — my skin barrier is the strongest it has been in years. I have stopped looking for the next thing."</div>
+          <div class="cp-attr">Elena R. · 31 · product designer, Portland · using Verdana since October 2025</div>
+        </div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>The testimonial is written in Sloane's exact voice.</strong> "I read the INCI before I ordered" — this is how Sloane shops. "I checked the bakuchiol percentage on CosDNA" — this is what Sloane does. The testimonial works because it describes the exact purchase behaviour from Step 5 and then delivers a specific, time-bounded outcome ("six weeks in") with an emotional payoff that is not hyperbolic ("I have stopped looking for the next thing"). Elena is 31, a product designer, in Portland — Sloane's demographic and professional world exactly.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why only one testimonial on the homepage</span>
+          <div class="cb-col-text">Three testimonials is the SaaS model. <strong>One testimonial is the luxury model.</strong> Augustinus Bader, La Mer, and Tatcha do not stack six testimonials in a carousel — they present one curated voice with authority and let it carry the weight. Direction C's minimal aesthetic reinforces this: a wall of five-star reviews would be visually and tonally wrong. One testimonial from someone exactly like Sloane, saying exactly what Sloane would say, is more persuasive than fifty generic ones.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 06 — SOURCING -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">06</div>
+        <div class="cb-title">The sourcing — where the botanicals come from</div>
+        <span class="cb-tag tag-trust">Sourcing</span>
+      </div>
+      <div class="copy-preview">
+        <div class="cp-eyebrow">The source</div>
+        <div class="cp-headline" style="font-size:1.4rem;margin-bottom:10px;"><em>Bihar, India. October harvest.</em></div>
+        <div class="cp-sub" style="margin-bottom:0;">Our bakuchiol is sourced from a single cooperative farm in Bihar, India — where Psoralea corylifolia grows in the monsoon season and is harvested once annually. Cold-pressed within 48 hours. No solvent extraction. The 5% concentration in our Botanical Cream reflects the highest evidence-backed threshold for visible skin renewal without irritation.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:12px;">Supply chain documentation available on request.</div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"Bihar, India. October harvest."</strong> — the section headline names a place and a time. This is the most specific possible claim about sourcing and it signals immediately that Verdana knows exactly where its ingredients come from. The body paragraph explains the process ("cold-pressed within 48 hours"), the method exclusion ("no solvent extraction"), and the formula decision rationale ("the highest evidence-backed threshold") — all in four sentences. "Supply chain documentation available on request" is the final trust signal: the evidence exists and Verdana will share it.</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why sourcing gets its own section</span>
+          <div class="cb-col-text">Sloane (Step 5, B03) uses INCIDecoder and CosDNA to verify ingredients she cannot decode herself. <strong>The sourcing section pre-empts her next research step.</strong> By telling her where the bakuchiol comes from and how it is processed, Verdana answers the question she would otherwise spend 20 minutes researching independently. Brands that answer research questions before they are asked convert buyers who would otherwise tab away to verify. This section turns Sloane's due diligence from a risk into a confirmation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 07 — FINAL CTA -->
+    <div class="copy-block">
+      <div class="cb-header">
+        <div class="cb-num">07</div>
+        <div class="cb-title">Final CTA — one action, one line of reassurance</div>
+        <span class="cb-tag tag-cta">CTA</span>
+      </div>
+      <div class="copy-preview" style="text-align:center;padding:36px 32px;">
+        <div class="cp-eyebrow" style="justify-content:center;display:flex;">When you are ready</div>
+        <div class="cp-headline" style="text-align:center;font-size:1.8rem;margin-bottom:14px;"><em>Begin the ritual.</em></div>
+        <div class="cp-cta-row" style="justify-content:center;">
+          <div class="cp-cta-primary">Shop the collection</div>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin-top:16px;">Free shipping over $80 · Returns within 30 days · No account required</div>
+      </div>
+      <div class="cb-cols">
+        <div class="cb-col">
+          <span class="cb-col-label l-decision">Copy decisions</span>
+          <div class="cb-col-text"><strong>"When you are ready"</strong> — not "Don't miss out" or "Limited quantities." Verdana does not create urgency because urgency is incompatible with the premium register. The buyer who has scrolled through six sections of ingredient specificity and sourcing documentation is already decided — she does not need pressure. "Begin the ritual" restates the hero CTA language and closes the loop. <strong>The reassurance line answers the three remaining objections in one line:</strong> shipping (free over $80 — she is spending $128), returns (30 days), account creation (not required).</div>
+        </div>
+        <div class="cb-col">
+          <span class="cb-col-label l-rationale">Why one button only</span>
+          <div class="cb-col-text">The hero section has two CTAs because Sloane may not be ready at arrival. The final section has one because <strong>if she has read the ingredient percentages, the sourcing origin, and the testimonial from Elena — she is ready.</strong> A second CTA ("Or book a consultation" / "Try a sample first") introduces doubt at the critical moment. Direction C's pared-back aesthetic makes this especially true: a second button in this context reads as uncertainty. One button. Centred. Quiet. Confident.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-rule"></div>
+
+  <div class="section">
+    <div class="section-label">04 — A note on this document</div>
+    <h2 class="section-heading">Formula first.<br><em>Always.</em></h2>
+    <p class="body-text">Every word above was written before any layout decision. The information architecture was designed first — Sloane's seven questions, in the sequence she asks them. Then the copy was written to answer each question. Then the visual preview was added to show how Direction C's Pared-back / Still aesthetic frames each section.</p>
+    <p class="body-text">The pared-back register of Direction C makes copy quality more visible than in any other design direction — there is nowhere for weak copy to hide. When the page has almost no decoration, every word is exposed. The ingredient percentages, the sourcing specifics, and the testimonial from Elena must earn their place or the page collapses into blankness.</p>
+    <div class="note-box">
+      <p><strong>Next step:</strong> Step 09 — Landing Page Build. All copy above is final and locked. The landing page will be built to serve this copy. This is a standalone document for Verdana — no references to any other brand in this series.</p>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 08 — COPYWRITING · VERDANA</div>
+    <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

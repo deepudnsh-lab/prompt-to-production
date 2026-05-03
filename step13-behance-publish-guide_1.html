@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Prompt to Production — Step 13: Behance Publish Guide · Ember & Oak</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0E0E0E;
+    --ink-mid: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --ink-faint: #B8B8B8;
+    --paper: #FAF8F4;
+    --accent: #C85A2A;
+    --accent-light: #F0D4C4;
+    --rule: #E0DCD5;
+    --tag-bg: #F0EDE8;
+    --void: #0E0A06;
+    --cream: #F5EDD8;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--paper); font-family:'DM Sans',sans-serif; color:var(--ink); font-size:15px; line-height:1.7; }
+  .document { max-width:960px; margin:0 auto; padding:80px; background:#fff; }
+
+  /* COVER */
+  .cover-band { background:var(--ink); margin:-80px -80px 0; padding:56px 80px 48px; display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px; }
+  .project-series { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.25em; text-transform:uppercase; color:var(--accent-light); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+  .project-series::before { content:''; display:inline-block; width:28px; height:1px; background:var(--accent); }
+  .cover-title { font-family:'DM Serif Display',serif; font-size:44px; line-height:1.05; color:#fff; letter-spacing:-.02em; }
+  .cover-title em { font-style:italic; color:var(--accent-light); }
+  .cover-meta { text-align:right; }
+  .meta-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px; }
+  .meta-value { font-size:13px; color:#fff; font-weight:300; }
+  .meta-block { margin-bottom:20px; }
+  .meta-block:last-child { margin-bottom:0; }
+  .accent-rule { height:3px; background:linear-gradient(to right,var(--accent),var(--accent-light),transparent); margin:0 -80px; }
+
+  .doc-body { padding-top:64px; }
+  .section { margin-bottom:56px; }
+  .section-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--rule); }
+  .section-heading { font-family:'DM Serif Display',serif; font-size:32px; line-height:1.15; letter-spacing:-.01em; color:var(--ink); margin-bottom:20px; }
+  .section-heading em { font-style:italic; color:var(--accent); }
+  .body-text { font-size:15px; line-height:1.85; color:var(--ink-mid); margin-bottom:16px; }
+  .page-rule { height:1px; background:var(--rule); margin:56px -80px; }
+  .note-box { background:var(--tag-bg); border-left:3px solid var(--accent); padding:18px 22px; margin:24px 0; }
+  .note-box p { font-size:13px; color:var(--ink-mid); line-height:1.7; }
+  .note-box strong { color:var(--ink); }
+
+  /* ── BEHANCE MOCKUP ── */
+  .behance-mock {
+    border:1px solid var(--rule);
+    overflow:hidden;
+    margin:24px 0;
+  }
+
+  .bh-topbar {
+    background:#1A1A2E;
+    padding:10px 18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .bh-dot { width:10px; height:10px; border-radius:50%; }
+  .bh-logo {
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    font-weight:500;
+    color:#fff;
+    margin-left:6px;
+  }
+
+  .bh-cover {
+    background:var(--void);
+    padding:48px 40px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .bh-cover::before {
+    content:'';
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse 70% 60% at 80% 50%,rgba(200,90,42,.14),transparent 60%);
+  }
+
+  .bh-cover-inner { position:relative; z-index:1; }
+
+  .bh-series-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:rgba(200,90,42,.6);
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .bh-series-label::before { content:''; width:16px; height:1px; background:var(--accent); flex-shrink:0; }
+
+  .bh-title {
+    font-family:'Cormorant Garamond',serif;
+    font-weight:300;
+    font-size:42px;
+    line-height:.95;
+    letter-spacing:-.03em;
+    color:var(--cream);
+    margin-bottom:12px;
+  }
+
+  .bh-title em { font-style:italic; color:rgba(200,90,42,.8); }
+
+  .bh-sub {
+    font-family:'DM Mono',monospace;
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:rgba(245,237,216,.35);
+    margin-bottom:24px;
+  }
+
+  .bh-tags {
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+
+  .bh-tag {
+    font-family:'DM Mono',monospace;
+    font-size:8px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:4px 10px;
+    border:1px solid rgba(200,90,42,.25);
+    color:rgba(200,90,42,.6);
+    border-radius:2px;
+  }
+
+  .bh-meta-row {
+    background:rgba(245,237,216,.03);
+    border-top:1px solid rgba(245,237,216,.06);
+    padding:12px 40px;
+    display:flex;
+    gap:32px;
+  }
+
+  .bh-meta-item {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:rgba(245,237,216,.25);
+  }
+
+  /* ── PUBLISH CHECKLIST ── */
+  .checklist {
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    margin:24px 0;
+  }
+
+  .check-item {
+    display:grid;
+    grid-template-columns:32px 1fr auto;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    border:1px solid var(--rule);
+    background:#fff;
+  }
+
+  .check-box {
+    width:22px;
+    height:22px;
+    border:1px solid var(--rule);
+    border-radius:3px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+
+  .check-box.done {
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-size:11px;
+  }
+
+  .check-box.todo { color:transparent; }
+
+  .check-label {
+    font-size:14px;
+    color:var(--ink);
+    font-weight:400;
+    line-height:1.4;
+  }
+
+  .check-label.done-text { color:var(--ink-muted); }
+
+  .check-tag {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    padding:2px 8px;
+    border-radius:2px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+
+  .tag-done   { background:var(--tag-bg); color:var(--ink-muted); }
+  .tag-action { background:#FFF4E6; color:#8B4A1C; }
+  .tag-write  { background:#EEF0FF; color:#3D4AB7; }
+
+  /* ── ASSET TABLE ── */
+  .asset-table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    margin:20px 0;
+  }
+
+  .asset-table th {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    background:var(--ink);
+    color:#fff;
+    padding:10px 14px;
+    text-align:left;
+  }
+
+  .asset-table td {
+    padding:12px 14px;
+    border-bottom:1px solid var(--rule);
+    color:var(--ink-mid);
+    vertical-align:top;
+    line-height:1.55;
+  }
+
+  .asset-table td:first-child {
+    font-weight:500;
+    color:var(--ink);
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    white-space:nowrap;
+  }
+
+  .asset-table tr:last-child td { border-bottom:none; }
+  .asset-table tr:nth-child(even) td { background:var(--tag-bg); }
+
+  .status-ready { color:#1A6B3A; font-weight:500; }
+  .status-action { color:#8B4A1C; font-weight:500; }
+
+  /* ── TEXT BLOCKS ── */
+  .copy-block {
+    background:var(--tag-bg);
+    border:1px solid var(--rule);
+    padding:20px 22px;
+    margin:12px 0;
+  }
+
+  .copy-block-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+
+  .copy-block-text {
+    font-size:14px;
+    color:var(--ink);
+    line-height:1.75;
+  }
+
+  .copy-block-text em { font-style:italic; color:var(--ink-muted); }
+
+  /* ── ORDER BLOCKS ── */
+  .order-strip {
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    margin:20px 0;
+  }
+
+  .order-item {
+    display:grid;
+    grid-template-columns:40px 1fr auto;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    border:1px solid var(--rule);
+    background:#fff;
+  }
+
+  .order-num {
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    color:var(--accent);
+    font-weight:500;
+    text-align:center;
+  }
+
+  .order-file {
+    font-size:13px;
+    color:var(--ink);
+  }
+
+  .order-file span {
+    display:block;
+    font-family:'DM Mono',monospace;
+    font-size:10px;
+    color:var(--ink-muted);
+    margin-top:2px;
+  }
+
+  .order-type {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    white-space:nowrap;
+  }
+
+  /* ── SERIES OVERVIEW ── */
+  .series-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:2px;
+    margin:24px 0;
+  }
+
+  .series-card {
+    background:var(--tag-bg);
+    padding:20px;
+    border:1px solid var(--rule);
+  }
+
+  .series-card.active {
+    background:var(--void);
+    border-color:var(--accent);
+  }
+
+  .series-num {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+
+  .series-brand {
+    font-family:'DM Serif Display',serif;
+    font-size:20px;
+    color:var(--ink);
+    margin-bottom:4px;
+    line-height:1.1;
+  }
+
+  .series-card.active .series-brand { color:var(--cream); }
+
+  .series-industry {
+    font-size:12px;
+    color:var(--ink-muted);
+  }
+
+  .series-card.active .series-industry { color:rgba(245,237,216,.4); }
+
+  .series-status {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    margin-top:10px;
+  }
+
+  .status-complete { color:#1A6B3A; }
+  .status-next     { color:var(--accent); }
+  .status-pending  { color:var(--ink-faint); }
+
+  /* ── FINAL DARK BOX ── */
+  .final-box {
+    background:var(--ink);
+    padding:40px 48px;
+    margin-top:32px;
+  }
+
+  .final-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--accent-light);
+    margin-bottom:14px;
+  }
+
+  .final-headline {
+    font-family:'DM Serif Display',serif;
+    font-size:28px;
+    color:#fff;
+    line-height:1.3;
+    margin-bottom:28px;
+  }
+
+  .final-headline em { font-style:italic; color:var(--accent-light); }
+
+  .final-cols {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2px;
+  }
+
+  .final-col {
+    padding:18px 20px;
+    border:1px solid rgba(245,237,216,.07);
+  }
+
+  .final-col-label {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--accent-light);
+    margin-bottom:10px;
+  }
+
+  .final-col-text {
+    font-size:13px;
+    color:rgba(245,237,216,.65);
+    line-height:1.65;
+  }
+
+  /* FOOTER */
+  .doc-footer { margin-top:80px; padding-top:24px; border-top:1px solid var(--rule); display:flex; justify-content:space-between; align-items:center; }
+  .footer-left { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; }
+  .footer-right { font-family:'DM Mono',monospace; font-size:10px; color:var(--ink-faint); letter-spacing:.1em; text-align:right; }
+
+  /* RESPONSIVE */
+  @media (max-width:640px) {
+    .document { padding:24px 20px; }
+    .cover-band { margin:-24px -20px 0; padding:40px 24px 32px; grid-template-columns:1fr; gap:20px; }
+    .cover-title { font-size:30px; }
+    .cover-meta { text-align:left; }
+    .accent-rule { margin:0 -20px; }
+    .page-rule { margin:40px -20px; }
+    .section-heading { font-size:24px; }
+    .bh-cover { padding:32px 20px; }
+    .bh-title { font-size:30px; }
+    .bh-meta-row { padding:12px 20px; flex-wrap:wrap; gap:14px; }
+    .check-item { grid-template-columns:32px 1fr; }
+    .check-tag { display:none; }
+    .order-item { grid-template-columns:32px 1fr; }
+    .order-type { display:none; }
+    .series-grid { grid-template-columns:1fr 1fr; }
+    .final-cols { grid-template-columns:1fr; }
+    .final-box { padding:28px 20px; }
+    .final-headline { font-size:22px; }
+    .doc-footer { flex-direction:column; gap:8px; align-items:flex-start; }
+    .footer-right { text-align:left; }
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <div class="cover-band">
+    <div>
+      <div class="project-series">From Prompt to Production · Ember &amp; Oak · Final Step</div>
+      <h1 class="cover-title">Process Summary<br>&amp; <em>Behance Guide</em></h1>
+    </div>
+    <div class="cover-meta">
+      <div class="meta-block"><div class="meta-label">Designer</div><div class="meta-value">Deepu Dinesh</div></div>
+      <div class="meta-block"><div class="meta-label">Document</div><div class="meta-value">Step 13 — Publish Guide</div></div>
+      <div class="meta-block"><div class="meta-label">Status</div><div class="meta-value">Ready to publish · Brand 01 of 06</div></div>
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="doc-body">
+
+    <!-- SECTION 1: WHAT THIS DOCUMENT IS -->
+    <div class="section">
+      <div class="section-label">01 — What this document is for</div>
+      <h2 class="section-heading">Everything you need<br>to <em>publish</em> this<br>on Behance.</h2>
+
+      <p class="body-text">This is the final step for Ember &amp; Oak. The landing page is built, all 12 process documents are complete, and the case study is documented. What remains is the Behance publication — setting up the project page, writing the descriptions, choosing the right assets to feature, and framing the work for the people who will read it.</p>
+
+      <p class="body-text">This document covers: the Behance project title and description (ready to copy and paste), the exact order to present assets, the tags to use for discoverability, the cover image specification, and how to frame the series for the five remaining brands.</p>
+
+      <div class="note-box">
+        <p><strong>Who reads your Behance:</strong> Design directors at product companies and agencies, senior designers evaluating a potential peer, and recruiters scanning for signal. The first 5 seconds of your Behance project page are the equivalent of the first 5 seconds of the Ember &amp; Oak landing page — the same rules apply. Specific beats generic. Method beats outcome. Restraint beats noise.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 2: BEHANCE PROJECT SETUP -->
+    <div class="section">
+      <div class="section-label">02 — Behance project setup</div>
+      <h2 class="section-heading">What to write.<br><em>Word for word.</em></h2>
+
+      <!-- Simulated Behance cover -->
+      <div class="behance-mock">
+        <div class="bh-topbar">
+          <div class="bh-dot" style="background:#FF5F57;"></div>
+          <div class="bh-dot" style="background:#FEBC2E;"></div>
+          <div class="bh-dot" style="background:#28C840;"></div>
+          <div class="bh-logo">Behance</div>
+        </div>
+
+        <div class="bh-cover">
+          <div class="bh-cover-inner">
+            <div class="bh-series-label">From Prompt to Production · Case Study Series · 2026</div>
+            <div class="bh-title">Ember &amp; <em>Oak</em></div>
+            <div class="bh-sub">Wood-fired fine dining · Bangalore · AI-directed web design</div>
+            <div class="bh-tags">
+              <span class="bh-tag">UI Design</span>
+              <span class="bh-tag">Brand Identity</span>
+              <span class="bh-tag">Web Design</span>
+              <span class="bh-tag">AI + Design</span>
+              <span class="bh-tag">Fine Dining</span>
+              <span class="bh-tag">Case Study</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bh-meta-row">
+          <span class="bh-meta-item">Deepu Dinesh</span>
+          <span class="bh-meta-item">April 2026</span>
+          <span class="bh-meta-item">Brand 01 of 06</span>
+          <span class="bh-meta-item">Tools: Claude · Midjourney · HTML / CSS / JS</span>
+        </div>
+      </div>
+
+      <!-- Project title -->
+      <div class="copy-block">
+        <div class="copy-block-label">Behance project title · copy this exactly</div>
+        <div class="copy-block-text">From Prompt to Production — Ember &amp; Oak · AI-Directed Web Design · Fine Dining</div>
+      </div>
+
+      <!-- Short description -->
+      <div class="copy-block">
+        <div class="copy-block-label">Short description · shown in Behance search results · 2 sentences max</div>
+        <div class="copy-block-text">A complete, research-led web design process for a hypothetical wood-fire fine dining restaurant in Bangalore — executed through AI direction. 11 documented steps from industry research and brand naming through moodboarding, copywriting, and a production-quality landing page.</div>
+      </div>
+
+      <!-- Full description -->
+      <div class="copy-block">
+        <div class="copy-block-label">Full project description · paste into Behance project overview</div>
+        <div class="copy-block-text">
+          <strong>The project</strong><br>
+          Ember &amp; Oak is the first brand in <em>From Prompt to Production</em> — a self-initiated case study series demonstrating a complete web design process executed through AI direction. I am the creative director and domain expert. Claude (Anthropic) is the execution engine.<br><br>
+
+          <strong>The process</strong><br>
+          11 steps. Each documented as a standalone HTML file. Industry research with sourced statistics. A persona built from real demographic data. A competitor visual audit across Canlis, Eleven Madison Park, and the India category average. Three AI-generated moodboard directions on Midjourney. Complete copywriting before any layout decision. Three layout concepts, one selected. A production-quality landing page — single HTML file, no framework, mobile-first.<br><br>
+
+          <strong>The design direction</strong><br>
+          Direction A — Noir. Near-black base (#0E0A06). Ember orange (#C85A2A) as the only accent — the colour of actual fire, not gold. Cormorant Garamond Light for all display. DM Mono for all labels. The cooking method — specific wood types per dish — made visible at hero level. "28 guests each evening" at the first viewport. "Reserve a Table," not "Book Now."<br><br>
+
+          <strong>The brief</strong><br>
+          Design a landing page that closes the gap no competitor closes: warm within dark mode, cooking method visible, scarcity explicit, reservation friction-free. Every design decision traces back to a specific research finding or persona insight. Nothing was decided by taste alone.<br><br>
+
+          <strong>Tools used</strong><br>
+          Claude (Anthropic) · Midjourney · Google Fonts · Unsplash · Pure HTML / CSS / JS
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="copy-block">
+        <div class="copy-block-label">Behance tags · add all of these for discoverability</div>
+        <div class="copy-block-text">UI Design · Web Design · Brand Identity · UX Design · AI Design · Prompt Engineering · Fine Dining · Case Study · Landing Page · Dark Mode · Typography · Cormorant Garamond · HTML CSS · Behance India · Design Process · Moodboard · Copywriting · Restaurant Design · Design System · 2026</div>
+      </div>
+
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 3: ASSET ORDER -->
+    <div class="section">
+      <div class="section-label">03 — What to show and in what order</div>
+      <h2 class="section-heading">The exact sequence<br>of <em>assets.</em></h2>
+
+      <p class="body-text">Behance projects are read like a scroll — the first image is the most critical, the drop-off after the first scroll is steep. Every asset shown should earn its place. The sequence below is ordered to tell the story in the fastest, clearest way possible for a design director scanning the page.</p>
+
+      <div class="order-strip">
+
+        <div class="order-item">
+          <div class="order-num">01</div>
+          <div class="order-file">
+            Cover image — the final landing page hero section
+            <span>Screenshot the hero section of ember-and-oak-landing.html at 1400px wide · crop to 1400×900 · save as cover.jpg</span>
+          </div>
+          <div class="order-type">Screenshot</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">02</div>
+          <div class="order-file">
+            Full landing page — desktop view
+            <span>Screenshot the full page at 1400px wide · stitch sections vertically in Figma or use GoFullPage · shows the complete scroll experience</span>
+          </div>
+          <div class="order-type">Screenshot</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">03</div>
+          <div class="order-file">
+            Landing page — mobile view side by side
+            <span>Screenshot at 390px (iPhone 14 width) showing hero + menu sections · place 3 screens side by side in Figma on a dark background</span>
+          </div>
+          <div class="order-type">Composite</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">04</div>
+          <div class="order-file">
+            The 3 moodboards — all three directions on one slide
+            <span>A__Noir.png · B__Ritual.png · C__Smoke.png · arrange side by side in Figma at equal width · add direction labels below each</span>
+          </div>
+          <div class="order-type">Composite</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">05</div>
+          <div class="order-file">
+            Selected direction — Direction A Noir full size
+            <span>A__Noir.png at full resolution · this is the visual identity system in one image · let it breathe with padding around it</span>
+          </div>
+          <div class="order-type">Moodboard image</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">06</div>
+          <div class="order-file">
+            Process overview — the 14-step framework
+            <span>Screenshot step1-project-brief.html — the process section specifically · crop to show only the step grid · resize to 1400px wide</span>
+          </div>
+          <div class="order-type">Screenshot</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">07</div>
+          <div class="order-file">
+            Competitor visual audit — the annotated screenshots
+            <span>Your annotated Canlis + EMP screenshots from step6-ember-oak-audit.html · if not yet completed, screenshot the drop zone section showing the instructions · shows research rigour</span>
+          </div>
+          <div class="order-type">Screenshot</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">08</div>
+          <div class="order-file">
+            The menu section — close-up
+            <span>Screenshot just the menu section of the landing page at 1400px · the dish photos + wood tags + dish names at this scale show the design system detail clearly</span>
+          </div>
+          <div class="order-type">Screenshot</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">09</div>
+          <div class="order-file">
+            Before &amp; After — the transformation
+            <span>Screenshot the split frame comparison from step11-ember-oak-before-after.html · the category average vs Ember &amp; Oak side by side · one of the most legible "what changed" visuals in the project</span>
+          </div>
+          <div class="order-type">Screenshot</div>
+        </div>
+
+        <div class="order-item">
+          <div class="order-num">10</div>
+          <div class="order-file">
+            Prompt diary — one key entry
+            <span>Screenshot the "9-word fix" entry (Prompt 11) from step10-ember-oak-prompt-diary.html · the shortest prompt with the most impact · great conversation starter</span>
+          </div>
+          <div class="order-type">Screenshot</div>
+        </div>
+
+      </div>
+
+      <div class="note-box">
+        <p><strong>Cover image is everything.</strong> On Behance, 80% of click decisions are made from the thumbnail. The hero section of the landing page — dark, atmospheric, "Where fire meets flavour" in Cormorant Garamond at large scale — is the strongest visual in the project. Use it as the cover. Do not use a process document as the cover.</p>
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 4: PRE-PUBLISH CHECKLIST -->
+    <div class="section">
+      <div class="section-label">04 — Pre-publish checklist</div>
+      <h2 class="section-heading">Before you<br><em>hit publish.</em></h2>
+
+      <div class="checklist">
+
+        <div class="check-item">
+          <div class="check-box done">✓</div>
+          <div class="check-label done-text">Industry research complete with named sources and years</div>
+          <div class="check-tag tag-done">Done · Step 04</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box done">✓</div>
+          <div class="check-label done-text">Persona built from real demographic data — not invented</div>
+          <div class="check-tag tag-done">Done · Step 05</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box done">✓</div>
+          <div class="check-label done-text">3 moodboard images generated on Midjourney and embedded</div>
+          <div class="check-tag tag-done">Done · Step 07</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box done">✓</div>
+          <div class="check-label done-text">All landing page copy written before layout was designed</div>
+          <div class="check-tag tag-done">Done · Step 08</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box done">✓</div>
+          <div class="check-label done-text">Landing page works on mobile — test on your phone before publishing</div>
+          <div class="check-tag tag-done">Done · Step 11</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box done">✓</div>
+          <div class="check-label done-text">Fire cursor working on desktop · calendar icon removed from form</div>
+          <div class="check-tag tag-done">Done · Step 11</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Screenshot the landing page hero at 1400px wide for the Behance cover</div>
+          <div class="check-tag tag-action">To do · manual</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Screenshot full landing page with GoFullPage and stitch in Figma</div>
+          <div class="check-tag tag-action">To do · manual</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Take mobile screenshots at 390px and arrange 3 screens side by side in Figma</div>
+          <div class="check-tag tag-action">To do · manual</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Add your annotated screenshots to the Step 6 competitor audit document</div>
+          <div class="check-tag tag-action">To do · manual</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Create Behance project · paste the title and description from Section 02 of this document</div>
+          <div class="check-tag tag-action">To do · Behance</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Upload assets in the order specified in Section 03 · upload cover image first</div>
+          <div class="check-tag tag-action">To do · Behance</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Add all tags from Section 02 for discoverability</div>
+          <div class="check-tag tag-action">To do · Behance</div>
+        </div>
+
+        <div class="check-item">
+          <div class="check-box todo">○</div>
+          <div class="check-label">Set project visibility to Public · add to your "Featured" work</div>
+          <div class="check-tag tag-action">To do · Behance</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 5: ALL DELIVERABLES -->
+    <div class="section">
+      <div class="section-label">05 — Complete deliverables · Ember &amp; Oak</div>
+      <h2 class="section-heading">Every file.<br><em>What it is.</em></h2>
+
+      <table class="asset-table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>What it is</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>step1-project-brief.html</td>
+            <td>The series manifesto — big idea, 14-step process, tools, scope, ethical constraints</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step2-industry-scoring.html</td>
+            <td>16 industries scored against 4 criteria — top 6 selected, 10 set aside with rationale</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step3-brand-naming.html</td>
+            <td>4 naming candidates × 6 brands — scored, one selected per brand with rejection rationale</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step4-ember-oak-research.html</td>
+            <td>Industry research · market data · 8 visual trends · 5 competitor analyses · design opportunity</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step5-ember-oak-persona.html</td>
+            <td>Rohit Kapoor ICP · demographics · 6 behaviours · pain points · trust triggers · design implications</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step6-ember-oak-audit.html</td>
+            <td>Competitor visual audit · 3 sites · 5 criteria · gap summary · design opportunity statement</td>
+            <td class="status-action">Add screenshots</td>
+          </tr>
+          <tr>
+            <td>step7-ember-oak-moodboard.html</td>
+            <td>3 moodboard directions with AI-generated images embedded · selection rationale</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step8-ember-oak-copy.html</td>
+            <td>All landing page copy · live dark-mode preview per section · annotation of every word choice</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step10-ember-oak-prompt-diary.html</td>
+            <td>11 actual prompts verbatim · what each produced · what needed refinement · 5 lessons</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step11-ember-oak-before-after.html</td>
+            <td>Category average vs. Ember &amp; Oak · 9 design decisions compared · transformation summary</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>step12-ember-oak-case-study.html</td>
+            <td>Full case study documentation · brief · process timeline · 4 key decisions · identity system · what it demonstrates</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>ember-and-oak-landing.html</td>
+            <td>The final landing page · 5 sections · fire cursor · mobile-first · reservation form · all images</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+          <tr>
+            <td>A__Noir.png · B__Ritual.png · C__Smoke.png</td>
+            <td>The three AI-generated moodboard images from Midjourney</td>
+            <td class="status-ready">Ready</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="page-rule"></div>
+
+    <!-- SECTION 6: WHAT'S NEXT -->
+    <div class="section">
+      <div class="section-label">06 — What comes next</div>
+      <h2 class="section-heading">Five more brands.<br>Same process.<br><em>Different worlds.</em></h2>
+
+      <p class="body-text">Ember &amp; Oak is Brand 01 of 06. The same 14-step process now repeats for each of the five remaining brands — each one a completely different industry, aesthetic register, and design challenge. Together the six brands demonstrate range. Individually each one demonstrates depth.</p>
+
+      <div class="series-grid">
+
+        <div class="series-card active">
+          <div class="series-num">Brand 01 · Complete</div>
+          <div class="series-brand">Ember &amp; Oak</div>
+          <div class="series-industry">Fine dining · Bangalore</div>
+          <div class="series-status status-complete">✓ Published</div>
+        </div>
+
+        <div class="series-card">
+          <div class="series-num">Brand 02 · Next</div>
+          <div class="series-brand">OrbitX</div>
+          <div class="series-industry">Space tourism · Aspirational</div>
+          <div class="series-status status-next">→ Up next</div>
+        </div>
+
+        <div class="series-card">
+          <div class="series-num">Brand 03</div>
+          <div class="series-brand">Bumblebee World</div>
+          <div class="series-industry">Kids EdTech · Joyful</div>
+          <div class="series-status status-pending">Pending</div>
+        </div>
+
+        <div class="series-card">
+          <div class="series-num">Brand 04</div>
+          <div class="series-brand">NeuralDesk</div>
+          <div class="series-industry">AI SaaS · B2B tech</div>
+          <div class="series-status status-pending">Pending</div>
+        </div>
+
+        <div class="series-card">
+          <div class="series-num">Brand 05</div>
+          <div class="series-brand">Verdana</div>
+          <div class="series-industry">Luxury skincare · Beauty</div>
+          <div class="series-status status-pending">Pending</div>
+        </div>
+
+        <div class="series-card">
+          <div class="series-num">Brand 06</div>
+          <div class="series-brand">Pawside</div>
+          <div class="series-industry">Pet care · D2C</div>
+          <div class="series-status status-pending">Pending</div>
+        </div>
+
+      </div>
+
+      <div class="note-box">
+        <p><strong>How to frame the series on Behance:</strong> Each brand is a separate Behance project. All six share the "From Prompt to Production" series name and the same document design system — so a recruiter who clicks one project immediately recognises it as part of a larger body of work. Cross-link all six projects to each other in the description. The series framing is what turns six individual projects into a portfolio statement.</p>
+      </div>
+
+      <div class="final-box">
+        <div class="final-label">The series thesis · what all six brands together demonstrate</div>
+        <div class="final-headline">A design lead who can <em>direct AI</em> across six industries, six visual registers, and six completely different design problems — with the same rigour, the same process, and the same standard of documentation each time.</div>
+        <div class="final-cols">
+          <div class="final-col">
+            <div class="final-col-label">What a recruiter sees</div>
+            <div class="final-col-text">13 years of design experience applied to a new category of tool. Not "I used AI to make things faster." Rather: "I used AI to demonstrate a level of process rigour and design range that would take a team of five to produce manually — and I directed every decision."</div>
+          </div>
+          <div class="final-col">
+            <div class="final-col-label">What a design director sees</div>
+            <div class="final-col-text">A designer who understands research, can write a brief, can direct a visual identity, can write copy, can identify a design gap, and can build the thing. The AI is the evidence that these skills exist across multiple domains — not a shortcut, a multiplier.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div class="footer-left">FROM PROMPT TO PRODUCTION · DEEPU DINESH · 2026<br>STEP 13 — BEHANCE PUBLISH GUIDE · EMBER &amp; OAK</div>
+      <div class="footer-right">deepudnsh@gmail.com<br>Behance · Dribbble</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
