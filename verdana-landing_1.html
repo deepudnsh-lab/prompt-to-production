@@ -28,6 +28,19 @@ nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:200;heig
 .nav-cta{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;background:var(--sage);color:#fff;padding:9px 20px;text-decoration:none;cursor:none;transition:background .25s;}
 .nav-cta:hover{background:#4A6A4D;}
 
+/* HAMBURGER MENU */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:201;}
+.hamburger span{width:24px;height:2px;background:var(--ink);transition:all .3s ease;}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(8px,8px);}
+.hamburger.active span:nth-child(2){opacity:0;}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-7px);}
+
+.mobile-menu{display:none;position:fixed;top:74px;left:0;right:0;background:rgba(250,247,242,.98);backdrop-filter:blur(32px);flex-direction:column;gap:0;z-index:200;box-shadow:0 4px 12px rgba(26,22,18,.1);max-height:calc(100vh - 74px);overflow-y:auto;}
+.mobile-menu a{padding:16px 24px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--umber);border-bottom:1px solid rgba(92,122,95,.1);transition:all .2s;}
+.mobile-menu a:hover{background:rgba(92,122,95,.1);color:var(--sage);}
+.mobile-menu a.mobile-cta{background:var(--sage);color:#fff;font-weight:500;border:none;}
+.mobile-menu.active{display:flex;}
+
 /* HERO */
 .hero{min-height:100vh;padding-top:0;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;}
 .hero-copy{display:flex;flex-direction:column;justify-content:center;padding:120px 64px 80px 80px;position:relative;z-index:2;}
@@ -166,8 +179,11 @@ footer{background:var(--ink);padding:40px 80px;display:flex;align-items:center;j
 .d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}
 
 @media(max-width:900px){
-  nav{padding:0 24px;}
+  nav{padding:0 16px;min-width:auto;max-width:calc(100vw - 32px);width:auto;left:16px;right:16px;transform:translateX(0);border-radius:12px;}
+  .nav-logo{font-size:1.1rem;}
   .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .nav-cta{display:none;}
   .hero{grid-template-columns:1fr;min-height:auto;}
   .hero-image{height:60vw;}
   .hero-copy{padding:80px 24px 60px;}
@@ -205,8 +221,17 @@ footer{background:var(--ink);padding:40px 80px;display:flex;align-items:center;j
     <li><a href="#products">Products</a></li>
     <li><a href="#sourcing">Sourcing</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   <a href="#products" class="nav-cta">Begin the ritual</a>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#ingredients">The Formula</a>
+  <a href="#ritual">The Ritual</a>
+  <a href="#products">Products</a>
+  <a href="#sourcing">Sourcing</a>
+  <a href="#products" class="mobile-cta">Begin the ritual</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -446,6 +471,12 @@ footer{background:var(--ink);padding:40px 80px;display:flex;align-items:center;j
 </footer>
 
 <script>
+// Hamburger Menu
+const hamburger=document.getElementById('hamburger'),mobileMenu=document.getElementById('mobileMenu');
+function toggleMenu(){hamburger.classList.toggle('active');mobileMenu.classList.toggle('active');}
+hamburger.addEventListener('click',toggleMenu);
+mobileMenu.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{hamburger.classList.remove('active');mobileMenu.classList.remove('active');}));
+
 const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});

@@ -371,11 +371,24 @@ footer ul li a:hover{opacity:1;color:var(--tiger-orange);}
 /* ── MOBILE NAV ── */
 .ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
 .ham span{display:block;width:22px;height:2px;background:var(--text-h);border-radius:2px;transition:background .35s;}
+.ham.active span:nth-child(1){transform:rotate(45deg) translate(8px,8px);background:var(--tiger-orange);}
+.ham.active span:nth-child(2){opacity:0;}
+.ham.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-7px);background:var(--tiger-orange);}
+
+.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:899;flex-direction:column;gap:0;padding:0;}
+.mobile-menu a{display:block;padding:16px 5%;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-p);text-decoration:none;border-bottom:1px solid var(--border);transition:color .2s,background .2s;}
+.mobile-menu a:hover{color:var(--tiger-orange);background:rgba(255,107,53,.08);}
+.mobile-menu .mobile-cta{background:var(--tiger-orange);color:#fff;font-weight:900;border:none;}
+.mobile-menu.active{display:flex;}
 @media(max-width:768px){
+  nav{padding:0 4%;gap:8px;}
+  .logo-text{font-size:1rem;}
+  .logo-bee{font-size:1.5rem;}
+  .nav-r{gap:8px;}
   .nav-links{display:none;}
   .ham{display:flex;}
-  nav{padding:0 4%;}
-  .nav-cta{padding:9px 16px;font-size:.72rem;}
+  .theme-btn{width:36px;height:36px;font-size:.9rem;}
+  .nav-cta{display:none;}
   #hero{min-height:95vh;}
   .hero-h1{font-size:clamp(2.2rem,9vw,3.8rem);}
   section{padding:70px 5%;}
@@ -464,6 +477,14 @@ body.dark [style*="color:var(--text-h)"]{color:#FFD000;}
     <button class="ham" id="hamBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#books">Books</a>
+  <a href="#toys">Toys</a>
+  <a href="#gifts">Gifts</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#gifts" class="mobile-cta">Start the collection</a>
+</div>
 
 <!-- HERO — single image, mouse parallax -->
 <section id="hero">
@@ -727,12 +748,16 @@ totop.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth
 
 /* ── MOBILE NAV ── */
 const hamBtn = document.getElementById('hamBtn');
-const navLinks = document.querySelector('.nav-links');
+const mobileMenu = document.getElementById('mobileMenu');
 hamBtn.addEventListener('click', () => {
-  const open = navLinks.style.display === 'flex';
-  navLinks.style.cssText = open
-    ? ''
-    : 'display:flex;flex-direction:column;position:fixed;top:70px;left:0;right:0;background:var(--nav-bg);padding:20px 5%;gap:18px;backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:899;';
+  hamBtn.classList.toggle('active');
+  mobileMenu.classList.toggle('active');
+});
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamBtn.classList.remove('active');
+    mobileMenu.classList.remove('active');
+  });
 });
 </script>
 </body>
